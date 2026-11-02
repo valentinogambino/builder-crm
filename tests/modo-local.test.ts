@@ -24,7 +24,7 @@ function entorno(clave: string, valor: string) {
 
 beforeEach(() => {
   delete process.env.MODO_LOCAL;
-  // vitest corre en "test"; el valor que importa es que no sea "production".
+  // vp test (Vitest) corre en "test"; el valor que importa es que no sea "production".
   entorno("NODE_ENV", "development");
 });
 

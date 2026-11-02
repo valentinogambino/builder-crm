@@ -168,8 +168,9 @@ docs/              MCP, agente, Zernio, Supabase en tu VPS, entrar con Google, c
 |---|---|
 | `npm run local` | **probarlo en tu PC sin cuentas**: Postgres embebido, datos demo, sin login |
 | `npm run dev` / `build` / `start` | desarrollo contra tu Supabase, build, servidor |
-| `npm test` | invariantes del nucleo (vitest, sin base ni red, ~1 s) |
-| `npm run typecheck` / `lint` | gate tecnico (CI corre los tres + build) |
+| `npm test` | invariantes del nucleo (`vp test`, sin base ni red, ~1 s) |
+| `npm run typecheck` / `lint` | gate tecnico (CI corre los tres + build); `lint` es `vp lint` (Oxlint) |
+| `npm run format` / `format:check` | formato con `vp fmt` (Oxfmt) |
 | `npm run db:migrar` / `db:status` | migraciones del nucleo + modulos activos |
 | `npm run admin:crear -- --email --password` | crea o promueve un administrador |
 | `npm run claves:supabase` / `auth:preparar` | base y Auth en tu propio VPS, sin Supabase cloud |
