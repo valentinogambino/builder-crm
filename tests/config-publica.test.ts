@@ -1,9 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import {
-  configPublica,
-  configPublicaSerializada,
-  ID_CONFIG_PUBLICA,
-} from "@/lib/config-publica";
+import { describe, it, expect, beforeEach, afterEach } from "vite-plus/test";
+import { configPublica, configPublicaSerializada, ID_CONFIG_PUBLICA } from "@/lib/config-publica";
 
 /**
  * Este bloque JSON se incrusta dentro de una etiqueta <script> en todas las paginas. Dos

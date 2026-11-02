@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vite-plus/test";
 import type { NextRequest } from "next/server";
 import { autorizadoPorSecreto } from "@/lib/secreto-worker";
 
@@ -41,7 +41,9 @@ describe("secreto de las rutas internas", () => {
   it("acepta el secreto correcto por las dos vias", () => {
     process.env.AGENT_WORKER_SECRET = "a".repeat(64);
     expect(autorizadoPorSecreto(peticion({ "x-agent-secret": "a".repeat(64) }))).toBe(true);
-    expect(autorizadoPorSecreto(peticion({ authorization: `Bearer ${"a".repeat(64)}` }))).toBe(true);
+    expect(autorizadoPorSecreto(peticion({ authorization: `Bearer ${"a".repeat(64)}` }))).toBe(
+      true,
+    );
   });
 
   it("rechaza un secreto distinto, aunque mida lo mismo", () => {

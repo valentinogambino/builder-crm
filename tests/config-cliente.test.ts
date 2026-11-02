@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "vite-plus/test";
 import { esquemaConfig } from "@/lib/config/schema";
 
 /**
@@ -141,12 +141,14 @@ describe("esquema de config/cliente.ts", () => {
   });
 
   it("rechaza una conversacion demo vacia o con direccion invalida", () => {
-    expect(esquemaConfig.safeParse({ ...BASE, demo: { conversaciones: [[]] } }).success).toBe(false);
+    expect(esquemaConfig.safeParse({ ...BASE, demo: { conversaciones: [[]] } }).success).toBe(
+      false,
+    );
     expect(
       esquemaConfig.safeParse({
         ...BASE,
         demo: { conversaciones: [[{ dir: "lateral", body: "x" }]] },
-      }).success
+      }).success,
     ).toBe(false);
   });
 

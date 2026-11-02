@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vite-plus/test";
 import { getConfig } from "@/lib/config";
 import { renderSystemPrompt } from "@/lib/agent/prompt";
 import { formatRelativeDate } from "@/lib/constants";
@@ -39,21 +39,23 @@ describe("zona horaria de la instancia", () => {
     const ahora = new Date("2026-10-08T12:00:00.000Z");
     const hace20h = new Date("2026-10-07T16:00:00.000Z");
     const diaLocal = (d: Date) =>
-      new Intl.DateTimeFormat("en-CA", { timeZone: getConfig().zonaHoraria, dateStyle: "short" })
-        .format(d);
+      new Intl.DateTimeFormat("en-CA", {
+        timeZone: getConfig().zonaHoraria,
+        dateStyle: "short",
+      }).format(d);
 
     vi.useFakeTimers();
     vi.setSystemTime(ahora);
     expect(formatRelativeDate(hace20h)).toBe(
-      diaLocal(hace20h) === diaLocal(ahora) ? "Hoy" : "Ayer"
+      diaLocal(hace20h) === diaLocal(ahora) ? "Hoy" : "Ayer",
     );
   });
 
   it("la zona configurada es valida en este entorno", () => {
     // El esquema ya lo valida; esto cubre el caso de una instancia que declara una zona
     // que su propio Node no conoce (imagen vieja, ICU recortado).
-    expect(() =>
-      new Intl.DateTimeFormat("es", { timeZone: getConfig().zonaHoraria })
+    expect(
+      () => new Intl.DateTimeFormat("es", { timeZone: getConfig().zonaHoraria }),
     ).not.toThrow();
   });
 });

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "vite-plus/test";
 import { PgDialect } from "drizzle-orm/pg-core";
 import { ownerFilter, visibleOwnerId } from "@/lib/team";
 import type { TeamMember } from "@/lib/team";

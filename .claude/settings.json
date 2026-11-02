@@ -13,7 +13,7 @@
       "Bash(npm run pwa:*)",
       "Bash(npm install:*)",
       "Bash(npx tsc:*)",
-      "Bash(npx eslint:*)",
+      "Bash(npx vp lint:*)",
       "Bash(npx drizzle-kit:*)",
       "Bash(npx tsx:*)",
       "Bash(node:*)",

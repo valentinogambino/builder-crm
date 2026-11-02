@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi } from "vite-plus/test";
 
 /**
  * Las plantillas las descarga el servidor de autenticacion y las rellena el: si se pierde
@@ -12,7 +12,7 @@ vi.mock("@/lib/config", async () => {
   return {
     ...real,
     marca: () => ({
-      nombre: 'Clinica <Norte> & Asociados',
+      nombre: "Clinica <Norte> & Asociados",
       nombreCorto: "Norte",
       descripcion: "Turnos por WhatsApp",
       logo: "/marca/logo.png",
