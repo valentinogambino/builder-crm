@@ -22,7 +22,12 @@ export default defineConfig({
       "server-only": path.resolve(process.cwd(), "tests/server-only-vacio.ts"),
     },
   },
-  fmt: {},
+  fmt: {
+    singleQuote: false,
+    printWidth: 100,
+    sortPackageJson: false,
+    ignorePatterns: [".next/**", "out/**", "build/**", "next-env.d.ts", "package-lock.json", "**/*.md", "**/*.generated.ts"],
+  },
   lint: {
     plugins: ["oxc", "typescript", "unicorn", "nextjs", "react"],
     // Solo las reglas listadas abajo (las que activaba eslint-config-next), sin la

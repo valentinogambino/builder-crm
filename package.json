@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "vp lint",
+    "format": "vp fmt",
+    "format:check": "vp fmt --check",
     "seed": "node scripts/seed-demo.mjs",
     "sync:tokko": "npx tsx modules/propiedades/scripts/sync-tokko.ts",
     "connect:whatsapp": "npx tsx scripts/connect-whatsapp-account.ts",
