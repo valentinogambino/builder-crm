@@ -16,10 +16,7 @@ export async function POST(request: NextRequest) {
   const { contacts: contactList } = body;
 
   if (!Array.isArray(contactList) || contactList.length === 0) {
-    return NextResponse.json(
-      { error: "Se requiere un array de contactos" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Se requiere un array de contactos" }, { status: 400 });
   }
 
   const results = {
@@ -57,7 +54,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
       results.failed++;
       results.errors.push(
-        `Error importando ${contact.name}: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Error importando ${contact.name}: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
     }
   }

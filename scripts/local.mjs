@@ -123,7 +123,7 @@ try {
   `);
 
   const aplicadas = new Set(
-    (await db.query("select nombre from public._migraciones")).rows.map((r) => r.nombre)
+    (await db.query("select nombre from public._migraciones")).rows.map((r) => r.nombre),
   );
   const pendientes = listarMigraciones(raiz).filter((a) => !aplicadas.has(a.nombre));
 
@@ -170,7 +170,7 @@ try {
       `insert into auth.users (id, email, raw_user_meta_data)
        values ($1, $2, '{"full_name":"Cuenta demo"}'::jsonb)
        on conflict (id) do nothing`,
-      [ID_ADMIN, EMAIL_ADMIN]
+      [ID_ADMIN, EMAIL_ADMIN],
     );
     const creado = await db.query("select 1 from public.team_members where id = $1", [ID_ADMIN]);
     if (creado.rows.length === 0) {
@@ -180,7 +180,7 @@ try {
       await db.query(
         `insert into public.team_members (id, email, name, role, active)
          values ($1, $2, 'Cuenta demo', 'admin', true) on conflict (id) do nothing`,
-        [ID_ADMIN, EMAIL_ADMIN]
+        [ID_ADMIN, EMAIL_ADMIN],
       );
     }
     paso(`administrador de la demo listo (${EMAIL_ADMIN})`);
@@ -211,7 +211,7 @@ const servidor = spawn(
     stdio: "inherit",
     env: { ...process.env, MODO_LOCAL: "true" },
     shell: process.platform === "win32",
-  }
+  },
 );
 
 servidor.on("exit", (codigo) => process.exit(codigo ?? 0));

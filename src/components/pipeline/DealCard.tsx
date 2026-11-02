@@ -33,14 +33,9 @@ export function DealCard({
   probability,
   docCount = 0,
 }: DealCardProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -61,13 +56,9 @@ export function DealCard({
         className="absolute top-2 right-2 h-3.5 w-3.5 text-muted-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity"
       />
       <div className="space-y-2.5">
-        <p className="text-[13px] font-semibold leading-snug line-clamp-2 pr-4">
-          {title}
-        </p>
+        <p className="text-[13px] font-semibold leading-snug line-clamp-2 pr-4">{title}</p>
 
-        <p className="text-base font-bold tabular-nums text-foreground">
-          {formatCurrency(value)}
-        </p>
+        <p className="text-base font-bold tabular-nums text-foreground">{formatCurrency(value)}</p>
 
         <div className="flex items-center gap-2">
           <div

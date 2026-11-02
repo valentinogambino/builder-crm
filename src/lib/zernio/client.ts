@@ -55,7 +55,7 @@ export interface ZernioFetchOptions {
 
 export async function zernioFetch<T>(
   path: string,
-  options: ZernioFetchOptions = {}
+  options: ZernioFetchOptions = {},
 ): Promise<ZernioResult<T>> {
   if (!hasZernioKey()) {
     return fail(0, "ZERNIO_API_KEY no configurada");
@@ -68,13 +68,7 @@ export async function zernioFetch<T>(
   let last: ZernioError = { status: 0, message: "Sin intentos" };
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const result = await attemptFetch<T>(
-      url,
-      method,
-      body,
-      timeoutMs,
-      options.headers
-    );
+    const result = await attemptFetch<T>(url, method, body, timeoutMs, options.headers);
     if (result.success) return result;
 
     last = result.error;
@@ -92,7 +86,7 @@ async function attemptFetch<T>(
   method: string,
   body: unknown,
   timeoutMs: number,
-  extraHeaders?: Record<string, string>
+  extraHeaders?: Record<string, string>,
 ): Promise<ZernioResult<T>> {
   try {
     const res = await fetch(url, {
@@ -141,10 +135,7 @@ async function attemptFetch<T>(
   }
 }
 
-function buildUrl(
-  path: string,
-  query?: ZernioFetchOptions["query"]
-): string {
+function buildUrl(path: string, query?: ZernioFetchOptions["query"]): string {
   const base = `${apiBase()}${path.startsWith("/") ? path : `/${path}`}`;
   if (!query) return base;
 

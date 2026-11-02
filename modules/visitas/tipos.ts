@@ -18,7 +18,12 @@ export interface VisitaConContacto extends Visita {
   contactPhone: string | null;
 }
 
-export const ESTADOS_VISITA: EstadoVisita[] = ["coordinating", "scheduled", "completed", "cancelled"];
+export const ESTADOS_VISITA: EstadoVisita[] = [
+  "coordinating",
+  "scheduled",
+  "completed",
+  "cancelled",
+];
 
 export const ETIQUETA_ESTADO: Record<EstadoVisita, string> = {
   coordinating: "En coordinacion",

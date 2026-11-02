@@ -26,7 +26,15 @@ export default defineConfig({
     singleQuote: false,
     printWidth: 100,
     sortPackageJson: false,
-    ignorePatterns: [".next/**", "out/**", "build/**", "next-env.d.ts", "package-lock.json", "**/*.md", "**/*.generated.ts"],
+    ignorePatterns: [
+      ".next/**",
+      "out/**",
+      "build/**",
+      "next-env.d.ts",
+      "package-lock.json",
+      "**/*.md",
+      "**/*.generated.ts",
+    ],
   },
   lint: {
     plugins: ["oxc", "typescript", "unicorn", "nextjs", "react"],

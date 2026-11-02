@@ -88,7 +88,8 @@ export function Simulador() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ canal }),
       });
-      if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error ?? "No se pudo crear");
+      if (!res.ok)
+        throw new Error((await res.json().catch(() => ({})))?.error ?? "No se pudo crear");
       const data = (await res.json()) as { conversationId: string; contactId: string };
       setConversationId(data.conversationId);
       setContactId(data.contactId);
@@ -108,14 +109,23 @@ export function Simulador() {
     if (!t || !conversationId || ocupado) return;
     setTexto("");
     setOcupado(true);
-    setMensajes((prev) => [...prev, { id: `tmp-${Date.now()}`, direction: "in", body: t, createdAt: new Date() }]);
+    setMensajes((prev) => [
+      ...prev,
+      { id: `tmp-${Date.now()}`, direction: "in", body: t, createdAt: new Date() },
+    ]);
     try {
       const res = await fetch("/api/simulador/mensajes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ conversationId, texto: t }),
       });
-      const data = (await res.json()) as { agente?: ResultadoAgente; messages?: Mensaje[]; mensaje?: string; error?: string; estado?: unknown };
+      const data = (await res.json()) as {
+        agente?: ResultadoAgente;
+        messages?: Mensaje[];
+        mensaje?: string;
+        error?: string;
+        estado?: unknown;
+      };
       if (!res.ok) throw new Error(data.mensaje ?? data.error ?? "Error");
       setMensajes(data.messages ?? []);
       setUltimo(data.agente ?? null);
@@ -162,15 +172,24 @@ export function Simulador() {
                     className={cn(
                       "flex h-7 w-7 items-center justify-center rounded-full border transition-colors cursor-pointer",
                       canal === c ? "border-primary bg-primary/10" : "border-border bg-muted/40",
-                      CHANNEL_COLORS[c]
+                      CHANNEL_COLORS[c],
                     )}
                   >
                     <ChannelIcon channel={c} className="h-3.5 w-3.5" />
                   </button>
                 ))}
               </div>
-              <Button size="sm" onClick={nuevaConversacion} disabled={creando} className="cursor-pointer">
-                {creando ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
+              <Button
+                size="sm"
+                onClick={nuevaConversacion}
+                disabled={creando}
+                className="cursor-pointer"
+              >
+                {creando ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Plus className="h-3.5 w-3.5" />
+                )}
                 Nueva conversacion
               </Button>
             </div>
@@ -188,17 +207,24 @@ export function Simulador() {
                 </p>
               ) : (
                 mensajes.map((m) => (
-                  <div key={m.id} className={cn("flex", m.direction === "in" ? "justify-end" : "justify-start")}>
+                  <div
+                    key={m.id}
+                    className={cn("flex", m.direction === "in" ? "justify-end" : "justify-start")}
+                  >
                     <div
                       className={cn(
                         "max-w-[80%] rounded-2xl px-3.5 py-2 text-sm whitespace-pre-line shadow-xs",
                         m.direction === "in"
                           ? "bg-primary text-primary-foreground rounded-br-sm"
-                          : "bg-card border rounded-bl-sm"
+                          : "bg-card border rounded-bl-sm",
                       )}
                     >
                       <span className="mr-1.5 inline-flex align-middle opacity-70">
-                        {m.direction === "in" ? <User className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                        {m.direction === "in" ? (
+                          <User className="h-3 w-3" />
+                        ) : (
+                          <Bot className="h-3 w-3" />
+                        )}
                       </span>
                       {m.body}
                     </div>
@@ -226,10 +252,16 @@ export function Simulador() {
                     void enviar();
                   }
                 }}
-                placeholder={conversationId ? "Escribi como el cliente..." : "Primero crea una conversacion"}
+                placeholder={
+                  conversationId ? "Escribi como el cliente..." : "Primero crea una conversacion"
+                }
                 disabled={!conversationId || ocupado}
               />
-              <Button onClick={enviar} disabled={!conversationId || ocupado || !texto.trim()} className="cursor-pointer">
+              <Button
+                onClick={enviar}
+                disabled={!conversationId || ocupado || !texto.trim()}
+                className="cursor-pointer"
+              >
                 <Send className="h-4 w-4" />
                 Enviar
               </Button>
@@ -238,11 +270,15 @@ export function Simulador() {
             {ultimo && (
               <p className="text-[11px] text-muted-foreground">
                 Ultimo turno: {ultimo.ok ? "respondio" : `no respondio (${ultimo.reason ?? "?"})`}
-                {typeof ultimo.toolCalls === "number" && ` · ${ultimo.toolCalls} herramienta${ultimo.toolCalls === 1 ? "" : "s"}`}
+                {typeof ultimo.toolCalls === "number" &&
+                  ` · ${ultimo.toolCalls} herramienta${ultimo.toolCalls === 1 ? "" : "s"}`}
                 {conversationId && (
                   <>
                     {" · "}
-                    <Link href={`/conversations/${conversationId}`} className="text-primary hover:underline inline-flex items-center gap-0.5">
+                    <Link
+                      href={`/conversations/${conversationId}`}
+                      className="text-primary hover:underline inline-flex items-center gap-0.5"
+                    >
                       ver en la bandeja <ExternalLink className="h-3 w-3" />
                     </Link>
                   </>
@@ -259,7 +295,8 @@ export function Simulador() {
           <CardContent className="space-y-4 text-sm">
             {!estado ? (
               <p className="text-muted-foreground">
-                Cuando el agente actue sobre la ficha, lo vas a ver aqui: etapa, campos, resumen y actividades.
+                Cuando el agente actue sobre la ficha, lo vas a ver aqui: etapa, campos, resumen y
+                actividades.
               </p>
             ) : (
               <>
@@ -267,14 +304,19 @@ export function Simulador() {
                   <p className="text-xs text-muted-foreground uppercase tracking-wider">Contacto</p>
                   <p className="font-medium">{estado.name}</p>
                   {estado.tags?.length > 0 && (
-                    <p className="text-xs text-muted-foreground mt-0.5">{estado.tags.join(" · ")}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {estado.tags.join(" · ")}
+                    </p>
                   )}
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground uppercase tracking-wider">Etapa</p>
                   {etapaActual ? (
                     <span className="inline-flex items-center gap-1.5 mt-1 rounded-full border px-2 py-0.5 text-xs font-medium">
-                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: etapaActual.color }} />
+                      <span
+                        className="h-2 w-2 rounded-full"
+                        style={{ backgroundColor: etapaActual.color }}
+                      />
                       {etapaActual.name}
                     </span>
                   ) : (
@@ -282,12 +324,21 @@ export function Simulador() {
                   )}
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Datos</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+                    Datos
+                  </p>
                   <CamposPersonalizadosLista valores={estado.customFields} compacto mostrarVacios />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Resumen del agente</p>
-                  <p className={cn("mt-0.5 whitespace-pre-line", !estado.aiSummary && "text-muted-foreground")}>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                    Resumen del agente
+                  </p>
+                  <p
+                    className={cn(
+                      "mt-0.5 whitespace-pre-line",
+                      !estado.aiSummary && "text-muted-foreground",
+                    )}
+                  >
                     {estado.aiSummary ?? "Todavia no hay resumen."}
                   </p>
                 </div>
@@ -296,15 +347,21 @@ export function Simulador() {
                     Actividades ({estado.activities?.length ?? 0})
                   </p>
                   <ul className="mt-1 space-y-1">
-                    {(estado.activities ?? []).slice(-5).reverse().map((a) => (
-                      <li key={a.id} className="text-xs text-muted-foreground truncate">
-                        {a.description}
-                      </li>
-                    ))}
+                    {(estado.activities ?? [])
+                      .slice(-5)
+                      .reverse()
+                      .map((a) => (
+                        <li key={a.id} className="text-xs text-muted-foreground truncate">
+                          {a.description}
+                        </li>
+                      ))}
                   </ul>
                 </div>
                 {contactId && (
-                  <Link href={`/contacts/${contactId}`} className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                  <Link
+                    href={`/contacts/${contactId}`}
+                    className="text-xs text-primary hover:underline inline-flex items-center gap-1"
+                  >
                     Abrir la ficha <ExternalLink className="h-3 w-3" />
                   </Link>
                 )}

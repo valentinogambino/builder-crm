@@ -19,7 +19,9 @@ export default async function ReportesPage({
   if (!member) redirect("/sin-acceso");
 
   const { dias: param } = await searchParams;
-  const dias: RangoDias = (RANGOS as readonly number[]).includes(Number(param)) ? (Number(param) as RangoDias) : 30;
+  const dias: RangoDias = (RANGOS as readonly number[]).includes(Number(param))
+    ? (Number(param) as RangoDias)
+    : 30;
 
   const reporte = await generarReporte(member, dias);
 

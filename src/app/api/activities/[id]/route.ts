@@ -5,10 +5,7 @@ import { eq } from "drizzle-orm";
 import { canAccessContactId } from "@/lib/team";
 import { requireMember } from "@/lib/api-auth";
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { member } = auth;
@@ -22,18 +19,11 @@ export async function PUT(
   }
 
   try {
-    const existingRows = await db
-      .select()
-      .from(activities)
-      .where(eq(activities.id, id))
-      .limit(1);
+    const existingRows = await db.select().from(activities).where(eq(activities.id, id)).limit(1);
     const existing = existingRows[0];
 
     if (!existing || !(await canAccessContactId(member, existing.contactId))) {
-      return NextResponse.json(
-        { error: "Actividad no encontrada" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Actividad no encontrada" }, { status: 404 });
     }
 
     const updateData: Record<string, unknown> = {};
@@ -46,7 +36,7 @@ export async function PUT(
         if (isNaN(parsed.getTime())) {
           return NextResponse.json(
             { error: "completedAt debe ser una fecha valida" },
-            { status: 400 }
+            { status: 400 },
           );
         }
         updateData.completedAt = parsed;
@@ -57,7 +47,7 @@ export async function PUT(
       if (typeof body.description !== "string" || !body.description.trim()) {
         return NextResponse.json(
           { error: "description debe ser un texto no vacio" },
-          { status: 400 }
+          { status: 400 },
         );
       }
       updateData.description = body.description;
@@ -71,7 +61,7 @@ export async function PUT(
         if (isNaN(parsed.getTime())) {
           return NextResponse.json(
             { error: "scheduledAt debe ser una fecha valida" },
-            { status: 400 }
+            { status: 400 },
           );
         }
         updateData.scheduledAt = parsed;
@@ -79,10 +69,7 @@ export async function PUT(
     }
 
     if (Object.keys(updateData).length === 0) {
-      return NextResponse.json(
-        { error: "No hay campos para actualizar" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No hay campos para actualizar" }, { status: 400 });
     }
 
     const resultRows = await db
@@ -96,14 +83,14 @@ export async function PUT(
   } catch (error) {
     return NextResponse.json(
       { error: `Error al actualizar: ${error instanceof Error ? error.message : "Unknown"}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
@@ -111,18 +98,11 @@ export async function DELETE(
   const { id } = await params;
 
   try {
-    const existingRows = await db
-      .select()
-      .from(activities)
-      .where(eq(activities.id, id))
-      .limit(1);
+    const existingRows = await db.select().from(activities).where(eq(activities.id, id)).limit(1);
     const existing = existingRows[0];
 
     if (!existing || !(await canAccessContactId(member, existing.contactId))) {
-      return NextResponse.json(
-        { error: "Actividad no encontrada" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Actividad no encontrada" }, { status: 404 });
     }
 
     await db.delete(activities).where(eq(activities.id, id));
@@ -130,7 +110,7 @@ export async function DELETE(
   } catch (error) {
     return NextResponse.json(
       { error: `Error al eliminar: ${error instanceof Error ? error.message : "Unknown"}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

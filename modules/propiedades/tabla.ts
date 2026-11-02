@@ -1,4 +1,13 @@
-import { pgTable, text, integer, numeric, boolean, timestamp, jsonb, vector } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  integer,
+  numeric,
+  boolean,
+  timestamp,
+  jsonb,
+  vector,
+} from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 /**
@@ -30,9 +39,14 @@ export const propiedades = pgTable("propiedades", {
   geoLng: numeric("geo_lng"),
   creditEligible: boolean("credit_eligible"),
   expenses: numeric("expenses"),
-  amenities: text("amenities").array().notNull().default(sql`'{}'::text[]`),
+  amenities: text("amenities")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
   coverPhoto: text("cover_photo"),
-  photos: jsonb("photos").notNull().default(sql`'[]'::jsonb`),
+  photos: jsonb("photos")
+    .notNull()
+    .default(sql`'[]'::jsonb`),
   publicUrl: text("public_url"),
   status: integer("status"),
   description: text("description"),

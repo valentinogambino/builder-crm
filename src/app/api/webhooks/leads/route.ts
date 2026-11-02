@@ -42,9 +42,7 @@ const FIELD_MAP: Record<string, string> = {
   descripcion: "notes",
 };
 
-function extractFields(
-  payload: Record<string, unknown>
-): Record<string, string> {
+function extractFields(payload: Record<string, unknown>): Record<string, string> {
   // Handle Typeform-style nested data
   const data =
     payload.data && typeof payload.data === "object"
@@ -64,10 +62,8 @@ function extractFields(
 
   // Handle "first_name + last_name" pattern
   if (!result.name) {
-    const firstName =
-      data.first_name || data.nombre || data.firstName || data.primer_nombre;
-    const lastName =
-      data.last_name || data.apellido || data.lastName || data.apellidos;
+    const firstName = data.first_name || data.nombre || data.firstName || data.primer_nombre;
+    const lastName = data.last_name || data.apellido || data.lastName || data.apellidos;
     if (firstName) {
       result.name = [firstName, lastName].filter(Boolean).join(" ").trim();
     }
@@ -99,10 +95,7 @@ export async function POST(request: NextRequest) {
   if (secreto) {
     const secretHeader = request.headers.get("x-webhook-secret");
     if (!secretHeader || secretHeader !== secreto) {
-      return NextResponse.json(
-        { error: "Secret invalido o faltante" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Secret invalido o faltante" }, { status: 401 });
     }
   }
 
@@ -122,7 +115,7 @@ export async function POST(request: NextRequest) {
         received: Object.keys(payload),
         hint: "Campos soportados: name, nombre, full_name, email, correo, phone, telefono, company, empresa, notes, notas, message",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -164,14 +157,14 @@ export async function POST(request: NextRequest) {
           source: contact.source,
         },
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     return NextResponse.json(
       {
         error: `Error al crear contacto: ${error instanceof Error ? error.message : "Unknown"}`,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -13,15 +13,9 @@ export default async function PipelinePage() {
   const member = await getCurrentMember();
   if (!member) redirect("/sin-acceso");
 
-  const allPipelines = await db
-    .select()
-    .from(pipelines)
-    .orderBy(asc(pipelines.order));
+  const allPipelines = await db.select().from(pipelines).orderBy(asc(pipelines.order));
 
-  const allStages = await db
-    .select()
-    .from(pipelineStages)
-    .orderBy(asc(pipelineStages.order));
+  const allStages = await db.select().from(pipelineStages).orderBy(asc(pipelineStages.order));
 
   const dealRows = await db
     .select({
@@ -67,10 +61,5 @@ export default async function PipelinePage() {
     docCount: docCounts[d.contactId] ?? 0,
   }));
 
-  return (
-    <PipelineWorkspace
-      pipelines={pipelinesWithStages}
-      deals={dealsForClient}
-    />
-  );
+  return <PipelineWorkspace pipelines={pipelinesWithStages} deals={dealsForClient} />;
 }

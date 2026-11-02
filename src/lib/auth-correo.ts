@@ -54,9 +54,15 @@ const SIN_BASE =
 function clienteSinEstado() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !anon) throw new Error("Falta NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY.");
+  if (!url || !anon)
+    throw new Error("Falta NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY.");
   return createSupabaseClient(url, anon, {
-    auth: { flowType: "implicit", persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+    auth: {
+      flowType: "implicit",
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+    },
   });
 }
 
@@ -69,7 +75,7 @@ function clienteSinEstado() {
  */
 export async function invitarPorCorreo(
   email: string,
-  nombre: string
+  nombre: string,
 ): Promise<{ userId: string } | { error: string }> {
   const base = urlPublica();
   if (!base) return { error: SIN_BASE };

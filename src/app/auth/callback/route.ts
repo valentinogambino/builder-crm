@@ -41,7 +41,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${base}/login?error=${encodeURIComponent(descripcion)}`);
   }
   if (!code) {
-    return NextResponse.redirect(`${base}/login?error=${encodeURIComponent("Volviste sin codigo de autorizacion.")}`);
+    return NextResponse.redirect(
+      `${base}/login?error=${encodeURIComponent("Volviste sin codigo de autorizacion.")}`,
+    );
   }
 
   const supabase = await createClient();

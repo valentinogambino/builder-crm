@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
   if (!type || !description || !contactId) {
     return NextResponse.json(
       { error: "Tipo, descripcion y contacto son requeridos" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -75,9 +75,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Unknown";
-    return NextResponse.json(
-      { error: `Error al crear actividad: ${msg}` },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: `Error al crear actividad: ${msg}` }, { status: 500 });
   }
 }

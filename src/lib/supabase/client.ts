@@ -12,7 +12,7 @@ export function createClient() {
   const { supabaseUrl, supabaseAnonKey } = leerConfigPublica();
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error(
-      "Falta la configuracion publica de Supabase. Revisa NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY en la instancia."
+      "Falta la configuracion publica de Supabase. Revisa NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY en la instancia.",
     );
   }
   return createBrowserClient(supabaseUrl, supabaseAnonKey);

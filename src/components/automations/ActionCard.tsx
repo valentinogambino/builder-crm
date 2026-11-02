@@ -31,12 +31,25 @@ import { cn } from "@/lib/utils";
 import type { CatalogAction, RuleAction } from "./types";
 
 /** Color e icono por tipo de accion: la cadena se lee de un vistazo. */
-export const ACTION_STYLE: Record<string, { icon: typeof Bell; bg: string; fg: string; ring: string }> = {
+export const ACTION_STYLE: Record<
+  string,
+  { icon: typeof Bell; bg: string; fg: string; ring: string }
+> = {
   push: { icon: Bell, bg: "bg-primary/10", fg: "text-primary", ring: "ring-primary/20" },
   add_tag: { icon: Tag, bg: "bg-amber-500/10", fg: "text-amber-700", ring: "ring-amber-500/20" },
   remove_tag: { icon: Tag, bg: "bg-zinc-500/10", fg: "text-zinc-600", ring: "ring-zinc-500/20" },
-  assign_owner: { icon: UserCircle2, bg: "bg-indigo-500/10", fg: "text-indigo-700", ring: "ring-indigo-500/20" },
-  create_activity: { icon: FileText, bg: "bg-sky-500/10", fg: "text-sky-700", ring: "ring-sky-500/20" },
+  assign_owner: {
+    icon: UserCircle2,
+    bg: "bg-indigo-500/10",
+    fg: "text-indigo-700",
+    ring: "ring-indigo-500/20",
+  },
+  create_activity: {
+    icon: FileText,
+    bg: "bg-sky-500/10",
+    fg: "text-sky-700",
+    ring: "ring-sky-500/20",
+  },
 };
 
 interface Props {
@@ -66,8 +79,7 @@ export function ActionCard({
   const style = ACTION_STYLE[action.type] ?? ACTION_STYLE.push;
   const Icon = style.icon;
 
-  const setParam = (key: string, value: string) =>
-    onChange({ ...action.params, [key]: value });
+  const setParam = (key: string, value: string) => onChange({ ...action.params, [key]: value });
 
   const insertPlaceholder = (key: string, ph: string) => {
     const current = action.params[key] ?? "";
@@ -83,7 +95,14 @@ export function ActionCard({
         <span className="h-6 w-6 rounded-full bg-foreground text-background text-[11px] font-semibold flex items-center justify-center shrink-0 font-mono">
           {index + 1}
         </span>
-        <div className={cn("h-9 w-9 rounded-xl flex items-center justify-center shrink-0 ring-1", style.bg, style.fg, style.ring)}>
+        <div
+          className={cn(
+            "h-9 w-9 rounded-xl flex items-center justify-center shrink-0 ring-1",
+            style.bg,
+            style.fg,
+            style.ring,
+          )}
+        >
           <Icon className="h-4 w-4" />
         </div>
         <div className="min-w-0 flex-1">
@@ -95,7 +114,14 @@ export function ActionCard({
         {!readOnly && (
           <DropdownMenu>
             <DropdownMenuTrigger
-              render={<Button variant="ghost" size="sm" className="h-8 w-8 p-0 cursor-pointer" aria-label="Opciones" />}
+              render={
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 cursor-pointer"
+                  aria-label="Opciones"
+                />
+              }
             >
               <MoreHorizontal className="h-4 w-4" />
             </DropdownMenuTrigger>
@@ -117,11 +143,15 @@ export function ActionCard({
       {def && (
         <div className="px-4 py-4 space-y-4">
           {def.description && (
-            <p className="text-[13px] text-muted-foreground leading-relaxed -mt-1">{def.description}</p>
+            <p className="text-[13px] text-muted-foreground leading-relaxed -mt-1">
+              {def.description}
+            </p>
           )}
 
           {selects.length > 0 && (
-            <div className={cn("grid gap-3", selects.length > 1 ? "sm:grid-cols-2" : "grid-cols-1")}>
+            <div
+              className={cn("grid gap-3", selects.length > 1 ? "sm:grid-cols-2" : "grid-cols-1")}
+            >
               {selects.map((p) => (
                 <div key={p.key} className="space-y-1.5">
                   <Label className="text-xs text-muted-foreground">

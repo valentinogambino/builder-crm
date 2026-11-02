@@ -54,13 +54,13 @@ export interface PushOutcome {
 
 export async function sendPushToMember(
   memberId: string,
-  payload: PushPayload
+  payload: PushPayload,
 ): Promise<PushOutcome> {
   const outcome: PushOutcome = { sent: 0, failed: 0, removed: 0, noDevices: false };
 
   if (!ensureConfigured()) {
     throw new Error(
-      "Faltan NEXT_PUBLIC_VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY. Generarlas con `npx web-push generate-vapid-keys`."
+      "Faltan NEXT_PUBLIC_VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY. Generarlas con `npx web-push generate-vapid-keys`.",
     );
   }
 
@@ -82,7 +82,7 @@ export async function sendPushToMember(
         await webpush.sendNotification(
           { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
           body,
-          { TTL: 60 * 60, urgency: "high" }
+          { TTL: 60 * 60, urgency: "high" },
         );
         outcome.sent++;
         await db
@@ -99,11 +99,11 @@ export async function sendPushToMember(
           outcome.failed++;
           console.warn(
             `[push] fallo envio a ${sub.endpoint.slice(0, 40)}... status=${status}`,
-            err instanceof Error ? err.message : err
+            err instanceof Error ? err.message : err,
           );
         }
       }
-    })
+    }),
   );
 
   return outcome;
@@ -135,18 +135,10 @@ export async function saveSubscription(input: {
     });
 }
 
-export async function removeSubscription(
-  memberId: string,
-  endpoint: string
-): Promise<void> {
+export async function removeSubscription(memberId: string, endpoint: string): Promise<void> {
   await db
     .delete(pushSubscriptions)
-    .where(
-      and(
-        eq(pushSubscriptions.memberId, memberId),
-        eq(pushSubscriptions.endpoint, endpoint)
-      )
-    );
+    .where(and(eq(pushSubscriptions.memberId, memberId), eq(pushSubscriptions.endpoint, endpoint)));
 }
 
 export async function countSubscriptions(memberId: string): Promise<number> {

@@ -30,9 +30,7 @@ interface ResolvedCreds {
  * Resuelve credenciales de envio: usa las de la cuenta (multi-tenant) o cae a las
  * env globales (fallback de transicion para no romper el flujo single-tenant).
  */
-function resolveCreds(
-  account?: WhatsappSendCredentials | null
-): ResolvedCreds | null {
+function resolveCreds(account?: WhatsappSendCredentials | null): ResolvedCreds | null {
   if (account?.phoneNumberId && account.accessToken) {
     return {
       phoneNumberId: account.phoneNumberId,
@@ -40,9 +38,7 @@ function resolveCreds(
     };
   }
   if (PHONE_NUMBER_ID && ACCESS_TOKEN) {
-    console.warn(
-      "[meta-whatsapp] sin cuenta resuelta, usando credenciales de env (fallback)"
-    );
+    console.warn("[meta-whatsapp] sin cuenta resuelta, usando credenciales de env (fallback)");
     return { phoneNumberId: PHONE_NUMBER_ID, accessToken: ACCESS_TOKEN };
   }
   return null;
@@ -67,7 +63,7 @@ interface SendResult {
 export async function sendTextMessage(
   account: WhatsappSendCredentials | null,
   to: string,
-  body: string
+  body: string,
 ): Promise<SendResult> {
   const creds = resolveCreds(account);
   if (!creds) {
@@ -117,7 +113,7 @@ export async function sendTemplateMessage(
   to: string,
   templateName: string,
   language = "es",
-  components: unknown[] = []
+  components: unknown[] = [],
 ): Promise<SendResult> {
   const creds = resolveCreds(account);
   if (!creds) {
@@ -188,16 +184,12 @@ interface ResolvedWabaCreds {
 }
 
 /** Resuelve WABA + token: prioriza la cuenta multi-tenant, cae a env (transicion). */
-function resolveWabaCreds(
-  account?: WhatsappTemplateCredentials | null
-): ResolvedWabaCreds | null {
+function resolveWabaCreds(account?: WhatsappTemplateCredentials | null): ResolvedWabaCreds | null {
   if (account?.wabaId && account.accessToken) {
     return { wabaId: account.wabaId, accessToken: account.accessToken };
   }
   if (WABA_ID && ACCESS_TOKEN) {
-    console.warn(
-      "[meta-whatsapp] sin cuenta resuelta para plantillas, usando env (fallback)"
-    );
+    console.warn("[meta-whatsapp] sin cuenta resuelta para plantillas, usando env (fallback)");
     return { wabaId: WABA_ID, accessToken: ACCESS_TOKEN };
   }
   return null;
@@ -205,7 +197,7 @@ function resolveWabaCreds(
 
 export async function createTemplate(
   account: WhatsappTemplateCredentials | null,
-  payload: CreateTemplatePayload
+  payload: CreateTemplatePayload,
 ): Promise<SendResult & { templateId?: string; status?: string }> {
   const creds = resolveWabaCreds(account);
   if (!creds) {
@@ -251,9 +243,7 @@ export interface MetaTemplate {
   components: unknown[];
 }
 
-export async function getTemplates(
-  account: WhatsappTemplateCredentials | null
-): Promise<{
+export async function getTemplates(account: WhatsappTemplateCredentials | null): Promise<{
   success: boolean;
   templates?: MetaTemplate[];
   error?: MetaError;
@@ -291,29 +281,20 @@ export async function getTemplates(
  * dejar que pase un webhook sin firma valida en produccion — atacante podria
  * inyectar mensajes/leads falsos.
  */
-export function verifyWebhookSignature(
-  rawBody: string,
-  signatureHeader: string | null
-): boolean {
+export function verifyWebhookSignature(rawBody: string, signatureHeader: string | null): boolean {
   if (!APP_SECRET) {
     console.warn("[meta-whatsapp] WHATSAPP_APP_SECRET no configurado — firma no validada");
     return false;
   }
   if (!signatureHeader) return false;
 
-  const expected = crypto
-    .createHmac("sha256", APP_SECRET)
-    .update(rawBody)
-    .digest("hex");
+  const expected = crypto.createHmac("sha256", APP_SECRET).update(rawBody).digest("hex");
 
   const provided = signatureHeader.replace(/^sha256=/, "");
 
   if (expected.length !== provided.length) return false;
   try {
-    return crypto.timingSafeEqual(
-      Buffer.from(expected, "hex"),
-      Buffer.from(provided, "hex")
-    );
+    return crypto.timingSafeEqual(Buffer.from(expected, "hex"), Buffer.from(provided, "hex"));
   } catch {
     return false;
   }

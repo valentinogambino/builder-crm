@@ -13,7 +13,10 @@ export async function POST(request: NextRequest) {
   const auth = await autorizarSimulador(request);
   if ("response" in auth) return auth.response;
 
-  const body = (await request.json().catch(() => null)) as { conversationId?: unknown; texto?: unknown } | null;
+  const body = (await request.json().catch(() => null)) as {
+    conversationId?: unknown;
+    texto?: unknown;
+  } | null;
   const conversationId = typeof body?.conversationId === "string" ? body.conversationId : "";
   const texto = typeof body?.texto === "string" ? body.texto.trim() : "";
   if (!conversationId || !texto) {
@@ -26,8 +29,13 @@ export async function POST(request: NextRequest) {
   const r = await enviarMensajeSimulado({ conversationId, texto: texto.slice(0, 4000) });
   if ("error" in r) {
     const mensaje =
-      r.error === "no_simulada" ? "Esa conversacion no es del simulador." : "Conversacion no encontrada.";
-    return NextResponse.json({ error: r.error, mensaje }, { status: r.error === "no_encontrada" ? 404 : 400 });
+      r.error === "no_simulada"
+        ? "Esa conversacion no es del simulador."
+        : "Conversacion no encontrada.";
+    return NextResponse.json(
+      { error: r.error, mensaje },
+      { status: r.error === "no_encontrada" ? 404 : 400 },
+    );
   }
   return NextResponse.json(r);
 }

@@ -64,13 +64,7 @@ const ICONS: Record<Channel, (props: IconProps) => React.ReactElement> = {
   facebook: MessengerIcon,
 };
 
-export function ChannelIcon({
-  channel,
-  className,
-}: {
-  channel: Channel;
-  className?: string;
-}) {
+export function ChannelIcon({ channel, className }: { channel: Channel; className?: string }) {
   const Icon = ICONS[channel] ?? WhatsappIcon;
   return <Icon className={className} />;
 }

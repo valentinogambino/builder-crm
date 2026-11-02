@@ -22,16 +22,11 @@ export const CHANNEL_LABELS: Record<Channel, string> = {
 };
 
 export function isChannel(value: unknown): value is Channel {
-  return (
-    typeof value === "string" && (CHANNELS as readonly string[]).includes(value)
-  );
+  return typeof value === "string" && (CHANNELS as readonly string[]).includes(value);
 }
 
 export function isProvider(value: unknown): value is Provider {
-  return (
-    typeof value === "string" &&
-    (PROVIDERS as readonly string[]).includes(value)
-  );
+  return typeof value === "string" && (PROVIDERS as readonly string[]).includes(value);
 }
 
 /** Lo que cada canal permite hacer. Lo consume la UI y el adapter de salida. */
@@ -77,7 +72,7 @@ export function capabilitiesFor(channel: Channel): ChannelCapabilities {
 export function isOutsideFreeFormWindow(
   channel: Channel,
   lastInboundAt: Date | string | null | undefined,
-  now: Date = new Date()
+  now: Date = new Date(),
 ): boolean {
   if (!lastInboundAt) return true;
   const last = new Date(lastInboundAt).getTime();

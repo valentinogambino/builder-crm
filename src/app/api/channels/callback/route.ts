@@ -37,11 +37,11 @@ export async function GET(request: NextRequest) {
     const cuenta = await getAccount(accountId);
     if (!cuenta.success) {
       console.warn(
-        `[channels] la vuelta del OAuth trae un accountId que Zernio no reconoce (${accountId}): se ignora`
+        `[channels] la vuelta del OAuth trae un accountId que Zernio no reconoce (${accountId}): se ignora`,
       );
     } else if (cuenta.data.platform !== platform) {
       console.warn(
-        `[channels] el accountId ${accountId} es de ${cuenta.data.platform}, no de ${platform}: se ignora`
+        `[channels] el accountId ${accountId} es de ${cuenta.data.platform}, no de ${platform}: se ignora`,
       );
     } else {
       const tenantId = await resolveDefaultTenantId();
@@ -73,10 +73,10 @@ export async function GET(request: NextRequest) {
         platform: platform ?? null,
         accountId,
         username,
-        error: ok ? null : params.get("error") ?? "No se pudo conectar la cuenta",
+        error: ok ? null : (params.get("error") ?? "No se pudo conectar la cuenta"),
       },
     }),
-    { headers: { "Content-Type": "text/html; charset=utf-8" } }
+    { headers: { "Content-Type": "text/html; charset=utf-8" } },
   );
 }
 
@@ -87,13 +87,10 @@ interface PopupHtmlArgs {
 
 function popupHtml({ origin, payload }: PopupHtmlArgs): string {
   // Escapar `<` evita que un username con markup pueda cerrar el <script>.
-  const data = JSON.stringify({ source: "zernio-connect", ...payload }).replace(
-    /</g,
-    "\\u003c"
-  );
+  const data = JSON.stringify({ source: "zernio-connect", ...payload }).replace(/</g, "\\u003c");
   const target = JSON.stringify(origin);
   const fallback = JSON.stringify(
-    `${origin}/settings?canal=${payload.platform ?? "desconocido"}&estado=${payload.ok ? "ok" : "error"}`
+    `${origin}/settings?canal=${payload.platform ?? "desconocido"}&estado=${payload.ok ? "ok" : "error"}`,
   );
 
   return `<!doctype html>

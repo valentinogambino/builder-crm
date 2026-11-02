@@ -22,11 +22,13 @@ interface SessionUser {
 
 function initials(name: string | null, email: string | null) {
   const source = name?.trim() || email?.split("@")[0] || "?";
-  return source
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase() ?? "")
-    .join("") || "?";
+  return (
+    source
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((p) => p[0]?.toUpperCase() ?? "")
+      .join("") || "?"
+  );
 }
 
 export function UserMenu() {
@@ -97,12 +99,8 @@ export function UserMenu() {
           />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-medium truncate text-sidebar-foreground">
-            {displayName}
-          </p>
-          <p className="text-[11px] text-sidebar-foreground/60 truncate">
-            {user.email}
-          </p>
+          <p className="text-[13px] font-medium truncate text-sidebar-foreground">{displayName}</p>
+          <p className="text-[11px] text-sidebar-foreground/60 truncate">{user.email}</p>
         </div>
         <ChevronsUpDown className="h-3.5 w-3.5 text-sidebar-foreground/50 shrink-0" />
       </DropdownMenuTrigger>

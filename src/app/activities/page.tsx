@@ -119,118 +119,106 @@ export default function ActivitiesPage() {
       />
 
       <div className="space-y-6">
-      <ActivityForm
-        open={showForm}
-        onClose={() => {
-          setShowForm(false);
-          loadData();
-        }}
-      />
+        <ActivityForm
+          open={showForm}
+          onClose={() => {
+            setShowForm(false);
+            loadData();
+          }}
+        />
 
-      {/* Follow-ups section */}
-      {followUps && (followUps.overdue.length > 0 || followUps.today.length > 0) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {followUps.overdue.length > 0 && (
-            <Card className="border-destructive/40 bg-destructive/[0.03]">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2 text-destructive font-heading">
-                  <span className="rounded-full p-1.5 bg-destructive/10">
-                    <AlertCircle className="h-3.5 w-3.5" />
-                  </span>
-                  Vencidos ({followUps.overdue.length})
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {followUps.overdue.map((f) => (
-                  <div
-                    key={f.id}
-                    className="p-2.5 rounded-lg bg-card border border-destructive/15 text-sm"
-                  >
-                    <p className="font-medium leading-snug">{f.description}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {f.contactName} &middot; {formatDate(f.scheduledAt)}
-                    </p>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
+        {/* Follow-ups section */}
+        {followUps && (followUps.overdue.length > 0 || followUps.today.length > 0) && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {followUps.overdue.length > 0 && (
+              <Card className="border-destructive/40 bg-destructive/[0.03]">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center gap-2 text-destructive font-heading">
+                    <span className="rounded-full p-1.5 bg-destructive/10">
+                      <AlertCircle className="h-3.5 w-3.5" />
+                    </span>
+                    Vencidos ({followUps.overdue.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {followUps.overdue.map((f) => (
+                    <div
+                      key={f.id}
+                      className="p-2.5 rounded-lg bg-card border border-destructive/15 text-sm"
+                    >
+                      <p className="font-medium leading-snug">{f.description}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {f.contactName} &middot; {formatDate(f.scheduledAt)}
+                      </p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
 
-          {followUps.today.length > 0 && (
-            <Card className="border-amber-500/40 bg-amber-50/50">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2 text-amber-700 font-heading">
-                  <span className="rounded-full p-1.5 bg-amber-100">
-                    <Clock className="h-3.5 w-3.5" />
-                  </span>
-                  Hoy ({followUps.today.length})
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {followUps.today.map((f) => (
-                  <div
-                    key={f.id}
-                    className="p-2.5 rounded-lg bg-card border border-amber-500/20 text-sm"
-                  >
-                    <p className="font-medium leading-snug">{f.description}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {f.contactName}
-                    </p>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      )}
+            {followUps.today.length > 0 && (
+              <Card className="border-amber-500/40 bg-amber-50/50">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center gap-2 text-amber-700 font-heading">
+                    <span className="rounded-full p-1.5 bg-amber-100">
+                      <Clock className="h-3.5 w-3.5" />
+                    </span>
+                    Hoy ({followUps.today.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {followUps.today.map((f) => (
+                    <div
+                      key={f.id}
+                      className="p-2.5 rounded-lg bg-card border border-amber-500/20 text-sm"
+                    >
+                      <p className="font-medium leading-snug">{f.description}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{f.contactName}</p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        )}
 
-      {/* All activities timeline */}
-      <Card className="surface-card">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-base font-semibold tracking-tight font-heading">
-            Todas las Actividades
-          </CardTitle>
-          <p className="text-xs text-muted-foreground">
-            Timeline cronologico
-          </p>
-        </CardHeader>
-        <CardContent>
-          {allActivities.length === 0 ? (
-            <EmptyState
-              icon={Activity}
-              title="No hay actividades"
-              description="Las actividades aparecen cuando registras llamadas, emails, reuniones o notas."
-            />
-          ) : (
-            <ActivityTimeline activities={allActivities} />
-          )}
-        </CardContent>
-      </Card>
+        {/* All activities timeline */}
+        <Card className="surface-card">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-base font-semibold tracking-tight font-heading">
+              Todas las Actividades
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">Timeline cronologico</p>
+          </CardHeader>
+          <CardContent>
+            {allActivities.length === 0 ? (
+              <EmptyState
+                icon={Activity}
+                title="No hay actividades"
+                description="Las actividades aparecen cuando registras llamadas, emails, reuniones o notas."
+              />
+            ) : (
+              <ActivityTimeline activities={allActivities} />
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
 }
 
 function ActivityTimeline({ activities }: { activities: ActivityItem[] }) {
-  const groups = activities.reduce<Record<string, ActivityItem[]>>(
-    (acc, item) => {
-      const key = activityGroupLabel(new Date(item.createdAt));
-      (acc[key] ??= []).push(item);
-      return acc;
-    },
-    {},
-  );
+  const groups = activities.reduce<Record<string, ActivityItem[]>>((acc, item) => {
+    const key = activityGroupLabel(new Date(item.createdAt));
+    (acc[key] ??= []).push(item);
+    return acc;
+  }, {});
 
-  const groupOrder = ["Hoy", "Ayer", "Esta semana", "Este mes", "Antes"].filter(
-    (k) => groups[k],
-  );
+  const groupOrder = ["Hoy", "Ayer", "Esta semana", "Este mes", "Antes"].filter((k) => groups[k]);
 
   return (
     <div className="relative">
-      <div
-        aria-hidden
-        className="absolute left-[19px] top-2 bottom-2 w-px bg-border/60"
-      />
+      <div aria-hidden className="absolute left-[19px] top-2 bottom-2 w-px bg-border/60" />
       {groupOrder.map((groupName, gIdx) => (
         <Fragment key={groupName}>
           <p
@@ -244,16 +232,10 @@ function ActivityTimeline({ activities }: { activities: ActivityItem[] }) {
           <div className="space-y-3">
             {groups[groupName].map((activity) => {
               const Icon = typeIcons[activity.type] || FileText;
-              const config =
-                ACTIVITY_TYPE_CONFIG[activity.type as ActivityType];
-              const styleCls =
-                typeStyles[activity.type] ||
-                "bg-muted text-muted-foreground";
+              const config = ACTIVITY_TYPE_CONFIG[activity.type as ActivityType];
+              const styleCls = typeStyles[activity.type] || "bg-muted text-muted-foreground";
               return (
-                <div
-                  key={activity.id}
-                  className="relative flex gap-4 items-start"
-                >
+                <div key={activity.id} className="relative flex gap-4 items-start">
                   <div
                     className={cn(
                       "relative z-10 rounded-full p-2.5 shrink-0 ring-4 ring-card",
@@ -276,9 +258,7 @@ function ActivityTimeline({ activities }: { activities: ActivityItem[] }) {
                         <Clock className="h-3.5 w-3.5 text-amber-600" />
                       ) : null}
                     </div>
-                    <p className="text-sm mt-1.5 leading-snug">
-                      {activity.description}
-                    </p>
+                    <p className="text-sm mt-1.5 leading-snug">{activity.description}</p>
                     <p className="text-xs text-muted-foreground mt-1">
                       {formatRelativeDate(activity.createdAt)}
                     </p>

@@ -29,9 +29,7 @@ export function ConversationsList({ conversations, selectedId }: Props) {
 
   const filtered = useMemo(() => {
     const byChannel =
-      channel === "all"
-        ? conversations
-        : conversations.filter((c) => c.channel === channel);
+      channel === "all" ? conversations : conversations.filter((c) => c.channel === channel);
 
     const q = search.trim().toLowerCase();
     if (!q) return byChannel;
@@ -40,8 +38,7 @@ export function ConversationsList({ conversations, selectedId }: Props) {
       if (c.name?.toLowerCase().includes(q)) return true;
       if (c.lastBody?.toLowerCase().includes(q)) return true;
       if (c.handle?.toLowerCase().includes(q)) return true;
-      if (digits && c.phone && c.phone.replace(/\D/g, "").includes(digits))
-        return true;
+      if (digits && c.phone && c.phone.replace(/\D/g, "").includes(digits)) return true;
       return false;
     });
   }, [conversations, search, channel]);
@@ -52,13 +49,11 @@ export function ConversationsList({ conversations, selectedId }: Props) {
         "w-full md:w-[340px] shrink-0 border-r border-border h-full flex-col bg-card",
         // En telefono no hay lugar para lista + chat: con un hilo abierto se ve solo el
         // chat (y el boton de volver en su cabecera). Sin eso, el chat colapsaba a 0 px.
-        selectedId ? "hidden md:flex" : "flex"
+        selectedId ? "hidden md:flex" : "flex",
       )}
     >
       <div className="h-14 px-4 flex items-center border-b border-border bg-muted/40">
-        <h2 className="text-sm font-semibold tracking-tight font-heading">
-          Conversaciones
-        </h2>
+        <h2 className="text-sm font-semibold tracking-tight font-heading">Conversaciones</h2>
         <span className="ml-auto text-[11px] font-mono text-muted-foreground tabular-nums">
           {filtered.length}
           {search && filtered.length !== conversations.length && (
@@ -95,12 +90,9 @@ export function ConversationsList({ conversations, selectedId }: Props) {
       <div className="flex-1 overflow-auto">
         {conversations.length === 0 ? (
           <div className="px-4 py-12 text-center">
-            <p className="text-sm text-muted-foreground">
-              Aun no hay conversaciones.
-            </p>
+            <p className="text-sm text-muted-foreground">Aun no hay conversaciones.</p>
             <p className="text-xs text-muted-foreground mt-1">
-              Cuando alguien te escriba por WhatsApp, Instagram o Messenger,
-              va a aparecer aca.
+              Cuando alguien te escriba por WhatsApp, Instagram o Messenger, va a aparecer aca.
             </p>
           </div>
         ) : filtered.length === 0 ? (
@@ -122,9 +114,7 @@ export function ConversationsList({ conversations, selectedId }: Props) {
                     href={`/conversations/${c.conversationId}`}
                     className={cn(
                       "relative flex items-start gap-3 px-3 py-3 cursor-pointer transition-all",
-                      isActive
-                        ? "bg-primary/10"
-                        : "hover:bg-muted/60 hover:shadow-xs",
+                      isActive ? "bg-primary/10" : "hover:bg-muted/60 hover:shadow-xs",
                     )}
                   >
                     {isActive && (
@@ -202,9 +192,7 @@ export function ConversationsList({ conversations, selectedId }: Props) {
                       <div className="flex items-center gap-2 mt-0.5">
                         <p className="text-xs text-muted-foreground truncate flex-1">
                           {c.lastDirection === "out" && (
-                            <span className="text-muted-foreground/70">
-                              tu:{" "}
-                            </span>
+                            <span className="text-muted-foreground/70">tu: </span>
                           )}
                           {c.lastBody ?? "(sin cuerpo)"}
                         </p>

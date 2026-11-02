@@ -63,9 +63,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
         <CardTitle className="text-base font-semibold tracking-tight font-heading">
           Actividad Reciente
         </CardTitle>
-        <p className="text-xs text-muted-foreground">
-          Ultimos eventos del equipo
-        </p>
+        <p className="text-xs text-muted-foreground">Ultimos eventos del equipo</p>
       </CardHeader>
       <CardContent>
         {items.length === 0 ? (
@@ -89,16 +87,8 @@ export function RecentActivity({ activities }: RecentActivityProps) {
                     const Icon = typeIcons[activity.type] || FileText;
                     const styleCls = typeStyles[activity.type] || "bg-muted text-muted-foreground";
                     return (
-                      <div
-                        key={activity.id}
-                        className="flex items-start gap-3"
-                      >
-                        <div
-                          className={cn(
-                            "rounded-full p-2 shrink-0 mt-0.5",
-                            styleCls,
-                          )}
-                        >
+                      <div key={activity.id} className="flex items-start gap-3">
+                        <div className={cn("rounded-full p-2 shrink-0 mt-0.5", styleCls)}>
                           <Icon className="h-3.5 w-3.5" />
                         </div>
                         <div className="flex-1 min-w-0 pt-0.5">

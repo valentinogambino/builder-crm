@@ -12,11 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { Search, Users, Download, Plus, X } from "lucide-react";
 import { formatDistanceToNow, differenceInDays, format } from "date-fns";
@@ -57,7 +53,11 @@ export function ContactsTable({ contacts, onChange }: ContactsTableProps) {
       c.company?.toLowerCase().includes(q) ||
       c.phone?.toLowerCase().includes(q) ||
       (c.tags ?? []).some((t) => t.toLowerCase().includes(q)) ||
-      Object.values(c.customFields ?? {}).some((v) => String(v ?? "").toLowerCase().includes(q))
+      Object.values(c.customFields ?? {}).some((v) =>
+        String(v ?? "")
+          .toLowerCase()
+          .includes(q),
+      )
     );
   });
 
@@ -146,9 +146,7 @@ export function ContactsTable({ contacts, onChange }: ContactsTableProps) {
                       {getInitials(contact.name)}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-medium leading-tight truncate">
-                        {contact.name}
-                      </p>
+                      <p className="font-medium leading-tight truncate">{contact.name}</p>
                       <p className="text-xs text-muted-foreground truncate">
                         {contact.email || "Sin email"}
                       </p>
@@ -156,14 +154,10 @@ export function ContactsTable({ contacts, onChange }: ContactsTableProps) {
                   </div>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell text-sm text-muted-foreground">
-                  {contact.phone || (
-                    <span className="text-muted-foreground/60">—</span>
-                  )}
+                  {contact.phone || <span className="text-muted-foreground/60">—</span>}
                 </TableCell>
                 <TableCell className="hidden md:table-cell text-sm">
-                  {contact.company || (
-                    <span className="text-muted-foreground/60">—</span>
-                  )}
+                  {contact.company || <span className="text-muted-foreground/60">—</span>}
                 </TableCell>
                 {columnasExtra.map((c) => (
                   <TableCell key={c.clave} className="hidden md:table-cell text-sm">
@@ -176,7 +170,7 @@ export function ContactsTable({ contacts, onChange }: ContactsTableProps) {
                       <span
                         className={cn(
                           "h-5 w-5 rounded-full flex items-center justify-center text-[9px] font-semibold",
-                          avatarBg(contact.ownerName || contact.ownerEmail || "")
+                          avatarBg(contact.ownerName || contact.ownerEmail || ""),
                         )}
                       >
                         {getInitials(contact.ownerName || contact.ownerEmail || "")}
@@ -264,9 +258,7 @@ function TagsCell({ contact, onChange }: TagsCellProps) {
         </span>
       ))}
       {tags.length > 3 && (
-        <span className="text-[11px] text-muted-foreground">
-          +{tags.length - 3}
-        </span>
+        <span className="text-[11px] text-muted-foreground">+{tags.length - 3}</span>
       )}
       <Popover>
         <PopoverTrigger
@@ -285,9 +277,7 @@ function TagsCell({ contact, onChange }: TagsCellProps) {
             <p className="text-xs font-medium">Etiquetas</p>
             <div className="flex flex-wrap gap-1.5">
               {tags.length === 0 && (
-                <span className="text-xs text-muted-foreground">
-                  Sin etiquetas
-                </span>
+                <span className="text-xs text-muted-foreground">Sin etiquetas</span>
               )}
               {tags.map((tag) => (
                 <span

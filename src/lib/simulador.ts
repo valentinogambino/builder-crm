@@ -29,14 +29,19 @@ export const PROVEEDOR_SIMULADOR = "simulador";
  * caso el "miembro" es el primer admin activo de la instancia.
  */
 export async function autorizarSimulador(
-  request: NextRequest
+  request: NextRequest,
 ): Promise<{ member: TeamMember } | { response: NextResponse }> {
   const secreto = process.env.AGENT_WORKER_SECRET;
   const bearer = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (secreto && bearer === secreto) {
     const admin = (await listMembers({ onlyActive: true })).find((m) => m.role === "admin");
     if (admin) return { member: admin };
-    return { response: NextResponse.json({ error: "La instancia no tiene ningun administrador" }, { status: 409 }) };
+    return {
+      response: NextResponse.json(
+        { error: "La instancia no tiene ningun administrador" },
+        { status: 409 },
+      ),
+    };
   }
   return requireAdmin();
 }
@@ -69,7 +74,11 @@ export async function crearConversacionSimulada(input: {
   await linkExtraIdentity(contact.id, input.canal, externalId, null);
   await emitContactCreated(contact.id, { name: nombre, source: "simulador" });
   // Quien simula se queda con el contacto: un asesor no ve los de otros, y el admin ve todo.
-  await assignContact({ contactId: contact.id, ownerId: input.member.id, by: { type: "member", member: input.member } });
+  await assignContact({
+    contactId: contact.id,
+    ownerId: input.member.id,
+    by: { type: "member", member: input.member },
+  });
 
   const conversation = await upsertConversation({
     tenantId,
@@ -148,7 +157,11 @@ export async function enviarMensajeSimulado(input: {
   conversationId: string;
   texto: string;
 }): Promise<ResultadoSimulacion | { error: "no_simulada" | "no_encontrada" }> {
-  const [conv] = await db.select().from(conversations).where(eq(conversations.id, input.conversationId)).limit(1);
+  const [conv] = await db
+    .select()
+    .from(conversations)
+    .where(eq(conversations.id, input.conversationId))
+    .limit(1);
   if (!conv) return { error: "no_encontrada" };
   if (conv.provider !== PROVEEDOR_SIMULADOR) return { error: "no_simulada" };
 

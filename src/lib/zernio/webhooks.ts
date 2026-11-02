@@ -20,30 +20,25 @@ function webhookSecret(): string {
 export function verifyZernioSignature(
   rawBody: string,
   signatureHeader: string | null | undefined,
-  secret: string = webhookSecret()
+  secret: string = webhookSecret(),
 ): boolean {
   if (!secret) {
-    console.warn(
-      "[zernio] ZERNIO_WEBHOOK_SECRET no configurado: se rechaza el webhook"
-    );
+    console.warn("[zernio] ZERNIO_WEBHOOK_SECRET no configurado: se rechaza el webhook");
     return false;
   }
   if (!signatureHeader) return false;
 
-  const expected = crypto
-    .createHmac("sha256", secret)
-    .update(rawBody)
-    .digest("hex");
-  const provided = signatureHeader.trim().toLowerCase().replace(/^sha256=/, "");
+  const expected = crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
+  const provided = signatureHeader
+    .trim()
+    .toLowerCase()
+    .replace(/^sha256=/, "");
 
   // timingSafeEqual lanza si los buffers difieren en longitud: comparar antes.
   if (expected.length !== provided.length) return false;
 
   try {
-    return crypto.timingSafeEqual(
-      Buffer.from(expected, "hex"),
-      Buffer.from(provided, "hex")
-    );
+    return crypto.timingSafeEqual(Buffer.from(expected, "hex"), Buffer.from(provided, "hex"));
   } catch {
     return false;
   }

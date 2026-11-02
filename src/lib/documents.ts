@@ -50,7 +50,9 @@ export async function listDocuments(contactId: string): Promise<DocumentItem[]> 
       name: documents.name,
       mime: documents.mime,
       size: documents.size,
-      uploadedBy: sql<string | null>`coalesce(${teamMembers.name}, split_part(${teamMembers.email}, '@', 1))`,
+      uploadedBy: sql<
+        string | null
+      >`coalesce(${teamMembers.name}, split_part(${teamMembers.email}, '@', 1))`,
       createdAt: documents.createdAt,
     })
     .from(documents)
@@ -64,7 +66,7 @@ export async function listDocuments(contactId: string): Promise<DocumentItem[]> 
 
 /** Cuantos documentos listos tiene cada contacto (para el contador del kanban). */
 export async function countDocumentsByContact(
-  contactIds: string[]
+  contactIds: string[],
 ): Promise<Record<string, number>> {
   if (contactIds.length === 0) return {};
   const rows = await db
@@ -163,7 +165,7 @@ export async function getDocument(id: string) {
 
 export async function documentDownloadUrl(
   doc: { storageKey: string; name: string; mime: string },
-  inline: boolean
+  inline: boolean,
 ): Promise<string> {
   return signDownload(doc.storageKey, { filename: doc.name, mime: doc.mime, inline });
 }

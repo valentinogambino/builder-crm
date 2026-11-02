@@ -44,7 +44,12 @@ export function AuthForm({ mode, proveedores = [], errorInicial = null }: AuthFo
         <>
           <div className="space-y-2">
             {proveedores.map((p) => (
-              <BotonProveedor key={p.id} proveedor={p.id} nombre={p.nombre} deshabilitado={isPending} />
+              <BotonProveedor
+                key={p.id}
+                proveedor={p.id}
+                nombre={p.nombre}
+                deshabilitado={isPending}
+              />
             ))}
           </div>
           <div className="relative">
@@ -116,11 +121,7 @@ export function AuthForm({ mode, proveedores = [], errorInicial = null }: AuthFo
           </div>
         )}
 
-        <Button
-          type="submit"
-          className="w-full h-10 cursor-pointer"
-          disabled={isPending}
-        >
+        <Button type="submit" className="w-full h-10 cursor-pointer" disabled={isPending}>
           {isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
           {isSignup ? "Crear cuenta" : "Iniciar sesion"}
         </Button>
@@ -129,20 +130,14 @@ export function AuthForm({ mode, proveedores = [], errorInicial = null }: AuthFo
           {isSignup ? (
             <>
               Ya tienes cuenta?{" "}
-              <Link
-                href="/login"
-                className="font-medium text-foreground hover:text-primary"
-              >
+              <Link href="/login" className="font-medium text-foreground hover:text-primary">
                 Inicia sesion
               </Link>
             </>
           ) : (
             <>
               Aun no tienes cuenta?{" "}
-              <Link
-                href="/signup"
-                className="font-medium text-foreground hover:text-primary"
-              >
+              <Link href="/signup" className="font-medium text-foreground hover:text-primary">
                 Crea una
               </Link>
             </>

@@ -19,10 +19,7 @@ function rehydrate(raw: ConversationListItem): ConversationListItem {
   };
 }
 
-export function ConversationsListLive({
-  initialConversations,
-  selectedId,
-}: Props) {
+export function ConversationsListLive({ initialConversations, selectedId }: Props) {
   const [conversations, setConversations] = useState(initialConversations);
   const mountedRef = useRef(true);
 
@@ -43,9 +40,7 @@ export function ConversationsListLive({
     };
 
     const schedule = () => {
-      const delay = document.hidden
-        ? POLL_INTERVAL_HIDDEN_MS
-        : POLL_INTERVAL_MS;
+      const delay = document.hidden ? POLL_INTERVAL_HIDDEN_MS : POLL_INTERVAL_MS;
       timer = setTimeout(async () => {
         await refetch();
         if (mountedRef.current) schedule();
@@ -72,7 +67,5 @@ export function ConversationsListLive({
     };
   }, []);
 
-  return (
-    <ConversationsList conversations={conversations} selectedId={selectedId} />
-  );
+  return <ConversationsList conversations={conversations} selectedId={selectedId} />;
 }

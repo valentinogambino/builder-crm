@@ -27,7 +27,7 @@ export function toolsDeModulos() {
  */
 export function resolverPatron<T>(
   patrones: Record<string, T>,
-  segmentos: string[]
+  segmentos: string[],
 ): { valor: T; params: Record<string, string> } | null {
   const candidatos = Object.keys(patrones)
     .map((clave) => ({ clave, partes: clave === "" ? [] : clave.split("/") }))
@@ -64,6 +64,7 @@ export function resolverApi(modulo: ModuloServidor, metodo: MetodoHttp, segmento
   const match = resolverPatron(modulo.api ?? {}, segmentos);
   if (!match) return null;
   const handler: HandlerModulo | undefined = match.valor[metodo];
-  if (!handler) return { handler: null, params: match.params, metodosPermitidos: Object.keys(match.valor) };
+  if (!handler)
+    return { handler: null, params: match.params, metodosPermitidos: Object.keys(match.valor) };
   return { handler, params: match.params, metodosPermitidos: Object.keys(match.valor) };
 }

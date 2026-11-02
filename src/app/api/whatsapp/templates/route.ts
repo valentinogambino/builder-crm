@@ -4,11 +4,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { whatsappTemplates } from "@/db/schema";
 import { getPrimaryAccount } from "@/lib/whatsapp-accounts";
-import {
-  createTemplate,
-  getTemplates,
-  type MetaTemplate,
-} from "@/lib/meta-whatsapp";
+import { createTemplate, getTemplates, type MetaTemplate } from "@/lib/meta-whatsapp";
 import {
   buildBodyComponent,
   extractVariables,
@@ -103,10 +99,7 @@ async function createRemoteTemplate(input: {
 type TemplateValues = typeof whatsappTemplates.$inferInsert;
 
 function listLocal() {
-  return db
-    .select()
-    .from(whatsappTemplates)
-    .orderBy(desc(whatsappTemplates.updatedAt));
+  return db.select().from(whatsappTemplates).orderBy(desc(whatsappTemplates.updatedAt));
 }
 
 /** Inserta o actualiza por (name, language) y devuelve la fila resultante. */
@@ -117,8 +110,8 @@ async function upsertTemplate(values: TemplateValues) {
     .where(
       and(
         eq(whatsappTemplates.name, values.name),
-        eq(whatsappTemplates.language, values.language ?? "es")
-      )
+        eq(whatsappTemplates.language, values.language ?? "es"),
+      ),
     )
     .limit(1);
 
@@ -170,7 +163,7 @@ const createSchema = z.object({
     .max(512)
     .regex(
       /^[a-z0-9_]+$/,
-      "El nombre solo admite minusculas, numeros y guion bajo (ej: recordatorio_visita)"
+      "El nombre solo admite minusculas, numeros y guion bajo (ej: recordatorio_visita)",
     ),
   category: z.enum(["MARKETING", "UTILITY"]),
   language: z.string().min(2).max(10).default("es"),
@@ -193,7 +186,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: parsed.error.issues[0]?.message || "Datos invalidos" },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const { name, category, language, bodyText, examples } = parsed.data;
@@ -202,17 +195,16 @@ export async function POST(request: NextRequest) {
   if (!variablesAreSequential(vars)) {
     return NextResponse.json(
       {
-        error:
-          "Las variables deben ser secuenciales empezando en {{1}} (sin huecos ni saltos).",
+        error: "Las variables deben ser secuenciales empezando en {{1}} (sin huecos ni saltos).",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const filledExamples = examples.map((e) => e.trim());
   if (vars.length > 0 && filledExamples.filter(Boolean).length < vars.length) {
     return NextResponse.json(
       { error: `Hay ${vars.length} variable(s): da un ejemplo para cada una.` },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -231,7 +223,7 @@ export async function POST(request: NextRequest) {
         error: result.error,
         hint: getTemplateHint(result.error?.code, result.error?.message),
       },
-      { status: 502 }
+      { status: 502 },
     );
   }
 

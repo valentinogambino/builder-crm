@@ -37,7 +37,7 @@ export function listarMigraciones(raiz) {
   return [
     ...listarSql(join(raiz, "supabase", "migrations"), ""),
     ...modulosActivos(raiz).flatMap((m) =>
-      listarSql(join(raiz, "modules", m, "migrations"), `modules/${m}/`)
+      listarSql(join(raiz, "modules", m, "migrations"), `modules/${m}/`),
     ),
   ];
 }

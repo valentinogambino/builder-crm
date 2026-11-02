@@ -18,16 +18,20 @@ function subscribe(callback: () => void) {
 const notifyChange = () => window.dispatchEvent(new Event("storage"));
 
 export function NotificationToggle() {
-  const mounted = useSyncExternalStore(subscribe, () => true, () => false);
+  const mounted = useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
   const supported = useSyncExternalStore(
     subscribe,
     () => "Notification" in window,
-    () => false
+    () => false,
   );
   const enabled = useSyncExternalStore(
     subscribe,
     () => localStorage.getItem(STORAGE_KEY) === "true",
-    () => false
+    () => false,
   );
 
   const toggle = async () => {
@@ -82,9 +86,7 @@ export function NotificationToggle() {
           <BellOff className="h-5 w-5 text-muted-foreground" />
         )}
         <div>
-          <p className="text-sm font-medium">
-            Notificaciones del navegador
-          </p>
+          <p className="text-sm font-medium">Notificaciones del navegador</p>
           <p className="text-xs text-muted-foreground">
             {enabled
               ? "Recibiras alertas de seguimientos vencidos"

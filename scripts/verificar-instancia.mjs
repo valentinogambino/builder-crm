@@ -38,31 +38,47 @@ const opt = (flag, def) => {
 };
 const flag = (f) => args.includes(f);
 
-const base = (opt("--url", process.env.APP_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")).replace(/\/$/, "");
+const base = opt(
+  "--url",
+  process.env.APP_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+).replace(/\/$/, "");
 const email = opt("--email", process.env.DEMO_ADMIN_EMAIL);
 const password = opt("--password", process.env.DEMO_ADMIN_PASSWORD);
 const secreto = opt("--secreto", process.env.AGENT_WORKER_SECRET);
 const marcaEsperada = opt("--marca", null);
-const etapasEsperadas = (opt("--etapas", "") || "").split(",").map((s) => s.trim()).filter(Boolean);
-const modulosEsperados = (opt("--modulos", "") || "").split(",").map((s) => s.trim()).filter(Boolean);
+const etapasEsperadas = (opt("--etapas", "") || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+const modulosEsperados = (opt("--modulos", "") || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 const sinAgente = flag("--sin-agente");
-const guion = (opt("--guion", "") || "")
-  ? [opt("--guion", "")]
-  : [
-      "Hola! Vi una publicacion de ustedes y quiero mas informacion.",
-      "Busco algo de 2 dormitorios, por la zona centro, tengo un presupuesto de 150 mil para comprar.",
-    ];
+const guion =
+  opt("--guion", "") || ""
+    ? [opt("--guion", "")]
+    : [
+        "Hola! Vi una publicacion de ustedes y quiero mas informacion.",
+        "Busco algo de 2 dormitorios, por la zona centro, tengo un presupuesto de 150 mil para comprar.",
+      ];
 
 const resultados = [];
 const ok = (nombre, detalle = "") => resultados.push({ check: nombre, estado: "OK", detalle });
-const fallo = (nombre, detalle = "") => resultados.push({ check: nombre, estado: "FALLO", detalle });
-const salto = (nombre, detalle = "") => resultados.push({ check: nombre, estado: "SALTADO", detalle });
+const fallo = (nombre, detalle = "") =>
+  resultados.push({ check: nombre, estado: "FALLO", detalle });
+const salto = (nombre, detalle = "") =>
+  resultados.push({ check: nombre, estado: "SALTADO", detalle });
 
 const bearer = secreto ? { Authorization: `Bearer ${secreto}` } : {};
 let cookie = "";
 
 async function getJson(path, init = {}) {
-  const res = await fetch(base + path, { ...init, headers: { ...(init.headers || {}), ...(cookie ? { cookie } : {}) }, signal: AbortSignal.timeout(init.timeout ?? 30_000) });
+  const res = await fetch(base + path, {
+    ...init,
+    headers: { ...(init.headers || {}), ...(cookie ? { cookie } : {}) },
+    signal: AbortSignal.timeout(init.timeout ?? 30_000),
+  });
   const text = await res.text();
   let json = null;
   try {
@@ -79,9 +95,15 @@ try {
   const { res, json } = await getJson("/api/health");
   if (res.ok && json?.ok) {
     salud = json;
-    ok("Responde (/api/health)", `v${json.version}${json.commit ? " " + json.commit.slice(0, 7) : ""}`);
+    ok(
+      "Responde (/api/health)",
+      `v${json.version}${json.commit ? " " + json.commit.slice(0, 7) : ""}`,
+    );
   } else {
-    fallo("Responde (/api/health)", `${res.status} ${json?.error ?? ""} ${json?.faltan ? "faltan: " + json.faltan.join(", ") : ""} ${json?.detalle ? json.detalle.join("; ") : ""}`.trim());
+    fallo(
+      "Responde (/api/health)",
+      `${res.status} ${json?.error ?? ""} ${json?.faltan ? "faltan: " + json.faltan.join(", ") : ""} ${json?.detalle ? json.detalle.join("; ") : ""}`.trim(),
+    );
   }
 } catch (err) {
   fallo("Responde (/api/health)", err.message);
@@ -107,7 +129,10 @@ if (!email || !password) {
     });
     const sesion = await res.json();
     if (!res.ok || !sesion.access_token) {
-      fallo("Login (Supabase Auth)", sesion.error_description ?? sesion.msg ?? `HTTP ${res.status}`);
+      fallo(
+        "Login (Supabase Auth)",
+        sesion.error_description ?? sesion.msg ?? `HTTP ${res.status}`,
+      );
     } else {
       ok("Login (Supabase Auth)", email);
 
@@ -124,7 +149,9 @@ if (!email || !password) {
             .filter(([, encendido]) => encendido === true)
             .map(([nombre]) => nombre)
             .filter((n) => n !== "email" && n !== "phone");
-          const formas = externos.length ? `email y ${externos.join(", ")}` : "solo email y contrasena";
+          const formas = externos.length
+            ? `email y ${externos.join(", ")}`
+            : "solo email y contrasena";
           // El correo lo declara la instancia (/api/health), no el proveedor: GoTrue no
           // dice si tiene SMTP. Ver docs/CORREO.md.
           const correo = salud?.correo
@@ -143,11 +170,18 @@ if (!email || !password) {
       const ref = new URL(supabaseUrl).hostname.split(".")[0];
       const valor = "base64-" + Buffer.from(JSON.stringify(sesion)).toString("base64url");
       const trozos = valor.match(/.{1,3180}/g) ?? [valor];
-      cookie = trozos.length === 1 ? `sb-${ref}-auth-token=${valor}` : trozos.map((t, i) => `sb-${ref}-auth-token.${i}=${t}`).join("; ");
+      cookie =
+        trozos.length === 1
+          ? `sb-${ref}-auth-token=${valor}`
+          : trozos.map((t, i) => `sb-${ref}-auth-token.${i}=${t}`).join("; ");
       const yo = await getJson("/api/team/me");
-      if (yo.res.ok && yo.json?.member) ok("Sesion en el CRM (/api/team/me)", `rol ${yo.json.member.role}`);
+      if (yo.res.ok && yo.json?.member)
+        ok("Sesion en el CRM (/api/team/me)", `rol ${yo.json.member.role}`);
       else {
-        fallo("Sesion en el CRM (/api/team/me)", `${yo.res.status}: la cuenta no esta en team_members o la cookie no fue aceptada`);
+        fallo(
+          "Sesion en el CRM (/api/team/me)",
+          `${yo.res.status}: la cuenta no esta en team_members o la cookie no fue aceptada`,
+        );
         cookie = "";
       }
     }
@@ -160,7 +194,8 @@ if (!email || !password) {
 try {
   const { res, json } = await getJson("/manifest.webmanifest");
   if (!res.ok || !json?.name) fallo("Marca (manifest)", `HTTP ${res.status}`);
-  else if (marcaEsperada && json.name !== marcaEsperada) fallo("Marca (manifest)", `esperaba "${marcaEsperada}", hay "${json.name}"`);
+  else if (marcaEsperada && json.name !== marcaEsperada)
+    fallo("Marca (manifest)", `esperaba "${marcaEsperada}", hay "${json.name}"`);
   else {
     ok("Marca (manifest)", json.name);
     // La plantilla viene con la marca de IA Builder Lab. Para una instancia de cliente
@@ -170,7 +205,8 @@ try {
       resultados.push({
         check: "Marca propia del cliente",
         estado: "INFO",
-        detalle: "sigue la marca de la plantilla; si la instancia es para un cliente, cambiala en config/cliente.ts y corre pwa:icons",
+        detalle:
+          "sigue la marca de la plantilla; si la instancia es para un cliente, cambiala en config/cliente.ts y corre pwa:icons",
       });
     }
   }
@@ -186,16 +222,28 @@ let estado = null;
     estado = json;
     const claves = json.etapas.map((e) => e.clave ?? e.nombre);
     const faltan = etapasEsperadas.filter((e) => !claves.includes(e));
-    if (faltan.length) fallo("Pipeline", `faltan etapas: ${faltan.join(", ")} (hay: ${claves.join(", ")})`);
+    if (faltan.length)
+      fallo("Pipeline", `faltan etapas: ${faltan.join(", ")} (hay: ${claves.join(", ")})`);
     else ok("Pipeline", `${json.etapas.length} etapas: ${claves.join(", ")}`);
     const faltanM = modulosEsperados.filter((m) => !json.modulos.includes(m));
-    if (faltanM.length) fallo("Modulos activos", `faltan: ${faltanM.join(", ")} (hay: ${json.modulos.join(", ") || "ninguno"})`);
+    if (faltanM.length)
+      fallo(
+        "Modulos activos",
+        `faltan: ${faltanM.join(", ")} (hay: ${json.modulos.join(", ") || "ninguno"})`,
+      );
     else ok("Modulos activos", json.modulos.join(", ") || "ninguno");
-    ok("Campos del contacto", `${json.campos.length}: ${json.campos.map((c) => c.clave).join(", ") || "ninguno"}`);
-    if (!json.agente.configurado) salto("Agente configurado", "falta OPENROUTER_API_KEY en la instancia");
+    ok(
+      "Campos del contacto",
+      `${json.campos.length}: ${json.campos.map((c) => c.clave).join(", ") || "ninguno"}`,
+    );
+    if (!json.agente.configurado)
+      salto("Agente configurado", "falta OPENROUTER_API_KEY en la instancia");
     else ok("Agente configurado", json.agente.modelo);
   } else {
-    fallo("Pipeline/config (/api/simulador/estado)", `${res.status} ${json?.error ?? ""} (hace falta --secreto o una sesion admin)`);
+    fallo(
+      "Pipeline/config (/api/simulador/estado)",
+      `${res.status} ${json?.error ?? ""} (hace falta --secreto o una sesion admin)`,
+    );
   }
 }
 
@@ -209,7 +257,8 @@ if (sinAgente || !estado?.agente?.configurado) {
       headers: { "Content-Type": "application/json", ...bearer },
       body: JSON.stringify({ canal: "whatsapp", nombre: "Prueba automatica" }),
     });
-    if (!creada.res.ok) throw new Error(`crear conversacion: ${creada.res.status} ${creada.json?.error ?? ""}`);
+    if (!creada.res.ok)
+      throw new Error(`crear conversacion: ${creada.res.status} ${creada.json?.error ?? ""}`);
     const { conversationId, contactId } = creada.json;
     let respondio = false;
     let ultimo = null;
@@ -220,11 +269,16 @@ if (sinAgente || !estado?.agente?.configurado) {
         body: JSON.stringify({ conversationId, texto }),
         timeout: 90_000,
       });
-      if (!r.res.ok) throw new Error(`mensaje: ${r.res.status} ${r.json?.mensaje ?? r.json?.error ?? ""}`);
+      if (!r.res.ok)
+        throw new Error(`mensaje: ${r.res.status} ${r.json?.mensaje ?? r.json?.error ?? ""}`);
       ultimo = r.json;
       if (r.json.agente?.ok) respondio = true;
     }
-    if (respondio) ok("El agente responde", `"${(ultimo.agente.reply ?? "").slice(0, 80)}..." (${ultimo.agente.toolCalls ?? 0} tools)`);
+    if (respondio)
+      ok(
+        "El agente responde",
+        `"${(ultimo.agente.reply ?? "").slice(0, 80)}..." (${ultimo.agente.toolCalls ?? 0} tools)`,
+      );
     else fallo("El agente responde", ultimo?.agente?.reason ?? "sin respuesta");
 
     // Lo que se comprueba es que el agente ACTUE sobre el CRM, no que use una tool
@@ -233,9 +287,11 @@ if (sinAgente || !estado?.agente?.configurado) {
     const e = ultimo?.estado;
     const rastros = [];
     if (e?.etapa) rastros.push(`etapa: ${e.etapa}`);
-    if (e?.campos && Object.keys(e.campos).length) rastros.push(`campos: ${Object.keys(e.campos).join(", ")}`);
+    if (e?.campos && Object.keys(e.campos).length)
+      rastros.push(`campos: ${Object.keys(e.campos).join(", ")}`);
     if (e?.resumen) rastros.push("resumen del lead");
-    if (e?.nombre && e.nombre !== "Simulador" && !e.nombre.startsWith("+")) rastros.push(`nombre: ${e.nombre}`);
+    if (e?.nombre && e.nombre !== "Simulador" && !e.nombre.startsWith("+"))
+      rastros.push(`nombre: ${e.nombre}`);
     if (rastros.length) {
       ok("El agente actua sobre el CRM", rastros.join(" · "));
       if (!e?.etapa) {
@@ -246,20 +302,30 @@ if (sinAgente || !estado?.agente?.configurado) {
         });
       }
     } else {
-      fallo("El agente actua sobre el CRM", "no dejo rastro: ni etapa, ni campos, ni resumen, ni nombre");
+      fallo(
+        "El agente actua sobre el CRM",
+        "no dejo rastro: ni etapa, ni campos, ni resumen, ni nombre",
+      );
     }
 
     if (cookie) {
       const lista = await getJson("/api/conversations");
-      const items = Array.isArray(lista.json) ? lista.json : lista.json?.conversations ?? [];
-      const esta = Array.isArray(items) && items.some((c) => c.conversationId === conversationId || c.id === conversationId);
+      const items = Array.isArray(lista.json) ? lista.json : (lista.json?.conversations ?? []);
+      const esta =
+        Array.isArray(items) &&
+        items.some((c) => c.conversationId === conversationId || c.id === conversationId);
       if (lista.res.ok && esta) ok("La conversacion esta en la bandeja", conversationId);
-      else if (lista.res.ok) fallo("La conversacion esta en la bandeja", "no aparece en /api/conversations");
+      else if (lista.res.ok)
+        fallo("La conversacion esta en la bandeja", "no aparece en /api/conversations");
       else salto("La conversacion esta en la bandeja", `/api/conversations ${lista.res.status}`);
     } else {
       salto("La conversacion esta en la bandeja", "sin sesion");
     }
-    resultados.push({ check: "Contacto de prueba", estado: "INFO", detalle: `${contactId} (etiqueta simulador; se puede borrar)` });
+    resultados.push({
+      check: "Contacto de prueba",
+      estado: "INFO",
+      detalle: `${contactId} (etiqueta simulador; se puede borrar)`,
+    });
   } catch (err) {
     fallo("Conversacion de prueba", err.message);
   }
@@ -273,7 +339,8 @@ for (const m of estado?.modulos ?? modulosEsperados) {
   }
   const r = await getJson(`/api/m/${m}`);
   if (r.res.status === 200) ok(`Modulo ${m}`, `/api/m/${m} responde`);
-  else if (r.res.status === 405 || r.res.status === 404) salto(`Modulo ${m}`, `sin GET en la raiz (${r.res.status}); probar su pagina a mano`);
+  else if (r.res.status === 405 || r.res.status === 404)
+    salto(`Modulo ${m}`, `sin GET en la raiz (${r.res.status}); probar su pagina a mano`);
   else fallo(`Modulo ${m}`, `${r.res.status}`);
 }
 
@@ -281,7 +348,8 @@ for (const m of estado?.modulos ?? modulosEsperados) {
 console.log(`\nVerificacion de ${base}${salud ? ` (v${salud.version})` : ""}\n`);
 const ancho = Math.max(...resultados.map((r) => r.check.length));
 for (const r of resultados) {
-  const icono = r.estado === "OK" ? "✔" : r.estado === "FALLO" ? "✘" : r.estado === "INFO" ? "ℹ" : "–";
+  const icono =
+    r.estado === "OK" ? "✔" : r.estado === "FALLO" ? "✘" : r.estado === "INFO" ? "ℹ" : "–";
   console.log(`${icono} ${r.check.padEnd(ancho)}  ${r.estado.padEnd(7)} ${r.detalle}`);
 }
 const fallos = resultados.filter((r) => r.estado === "FALLO").length;

@@ -13,11 +13,7 @@ import {
   getEnabledToolNames,
   nombresDeTools,
 } from "@/lib/agent/tools";
-import {
-  getAgentConfig,
-  resetAgentConfig,
-  saveAgentConfig,
-} from "@/lib/agent/config";
+import { getAgentConfig, resetAgentConfig, saveAgentConfig } from "@/lib/agent/config";
 import { isChannel } from "@/lib/channels/types";
 import { requireMember } from "@/lib/api-auth";
 
@@ -103,10 +99,7 @@ export async function PUT(request: NextRequest) {
     body.enabled === undefined &&
     body.model === undefined
   ) {
-    return NextResponse.json(
-      { error: "Nada para actualizar" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Nada para actualizar" }, { status: 400 });
   }
 
   const channel = request.nextUrl.searchParams.get("channel");
@@ -116,7 +109,7 @@ export async function PUT(request: NextRequest) {
     if (prompt && prompt.length < MIN_PROMPT_LENGTH) {
       return NextResponse.json(
         { error: `El prompt es demasiado corto (minimo ${MIN_PROMPT_LENGTH} caracteres)` },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const saved = await saveAgentConfig(channel, {
@@ -126,10 +119,7 @@ export async function PUT(request: NextRequest) {
       model: body.model,
     });
     if (!saved) {
-      return NextResponse.json(
-        { error: "No existe el tenant default" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "No existe el tenant default" }, { status: 500 });
     }
     return NextResponse.json({
       channel,
@@ -149,7 +139,7 @@ export async function PUT(request: NextRequest) {
     if (trimmed.length < MIN_PROMPT_LENGTH) {
       return NextResponse.json(
         { error: `El prompt es demasiado corto (minimo ${MIN_PROMPT_LENGTH} caracteres)` },
-        { status: 400 }
+        { status: 400 },
       );
     }
     await upsertSetting(SYSTEM_PROMPT_SETTINGS_KEY, trimmed);
@@ -157,10 +147,7 @@ export async function PUT(request: NextRequest) {
 
   if (body.enabledTools !== undefined) {
     if (!Array.isArray(body.enabledTools)) {
-      return NextResponse.json(
-        { error: "enabledTools debe ser un array" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "enabledTools debe ser un array" }, { status: 400 });
     }
     const validNames = new Set(nombresDeTools());
     const cleaned: string[] = [];
@@ -198,12 +185,8 @@ export async function DELETE(request: NextRequest) {
     });
   }
 
-  await db
-    .delete(crmSettings)
-    .where(eq(crmSettings.key, SYSTEM_PROMPT_SETTINGS_KEY));
-  await db
-    .delete(crmSettings)
-    .where(eq(crmSettings.key, ENABLED_TOOLS_SETTINGS_KEY));
+  await db.delete(crmSettings).where(eq(crmSettings.key, SYSTEM_PROMPT_SETTINGS_KEY));
+  await db.delete(crmSettings).where(eq(crmSettings.key, ENABLED_TOOLS_SETTINGS_KEY));
 
   return NextResponse.json({
     systemPrompt: getDefaultSystemPromptTemplate(),

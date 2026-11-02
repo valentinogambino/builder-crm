@@ -9,23 +9,37 @@ export type ValoresCampos = Record<string, ValorCampo>;
 
 const FECHA = /^\d{4}-\d{2}-\d{2}$/;
 
-function limpiar(campo: CampoConfig, crudo: unknown): { ok: true; valor: ValorCampo } | { ok: false; error: string } {
+function limpiar(
+  campo: CampoConfig,
+  crudo: unknown,
+): { ok: true; valor: ValorCampo } | { ok: false; error: string } {
   if (crudo === undefined || crudo === null || crudo === "") return { ok: true, valor: null };
   switch (campo.tipo) {
     case "texto": {
-      if (typeof crudo !== "string") return { ok: false, error: `${campo.etiqueta}: debe ser texto` };
+      if (typeof crudo !== "string")
+        return { ok: false, error: `${campo.etiqueta}: debe ser texto` };
       const v = crudo.trim().slice(0, 500);
       return { ok: true, valor: v === "" ? null : v };
     }
     case "numero": {
-      const n = typeof crudo === "number" ? crudo : Number(String(crudo).replace(/[^\d.,-]/g, "").replace(",", "."));
+      const n =
+        typeof crudo === "number"
+          ? crudo
+          : Number(
+              String(crudo)
+                .replace(/[^\d.,-]/g, "")
+                .replace(",", "."),
+            );
       if (!Number.isFinite(n)) return { ok: false, error: `${campo.etiqueta}: debe ser un numero` };
       return { ok: true, valor: n };
     }
     case "seleccion": {
       const v = String(crudo);
       if (!campo.opciones?.includes(v)) {
-        return { ok: false, error: `${campo.etiqueta}: valor fuera de las opciones (${campo.opciones?.join(", ")})` };
+        return {
+          ok: false,
+          error: `${campo.etiqueta}: valor fuera de las opciones (${campo.opciones?.join(", ")})`,
+        };
       }
       return { ok: true, valor: v };
     }
@@ -54,7 +68,7 @@ function limpiar(campo: CampoConfig, crudo: unknown): { ok: true; valor: ValorCa
 export function validarCamposPersonalizados(
   campos: CampoConfig[],
   entrada: unknown,
-  opts: { parcial?: boolean } = {}
+  opts: { parcial?: boolean } = {},
 ): { ok: true; valores: ValoresCampos } | { ok: false; error: string } {
   if (entrada === undefined || entrada === null) {
     entrada = {};
@@ -99,12 +113,18 @@ export function formatearValorCampo(campo: CampoConfig, valor: unknown, moneda =
       if (!Number.isFinite(n)) return String(valor);
       const esMonto = /presupuesto|precio|monto|valor|importe/i.test(campo.clave + campo.etiqueta);
       return esMonto
-        ? new Intl.NumberFormat("es", { style: "currency", currency: moneda, maximumFractionDigits: 0 }).format(n)
+        ? new Intl.NumberFormat("es", {
+            style: "currency",
+            currency: moneda,
+            maximumFractionDigits: 0,
+          }).format(n)
         : new Intl.NumberFormat("es").format(n);
     }
     case "fecha": {
       const d = new Date(String(valor) + "T00:00:00");
-      return Number.isNaN(d.getTime()) ? String(valor) : d.toLocaleDateString("es", { day: "2-digit", month: "short", year: "numeric" });
+      return Number.isNaN(d.getTime())
+        ? String(valor)
+        : d.toLocaleDateString("es", { day: "2-digit", month: "short", year: "numeric" });
     }
     default:
       return String(valor);
@@ -112,9 +132,14 @@ export function formatearValorCampo(campo: CampoConfig, valor: unknown, moneda =
 }
 
 /** Resumen "Etiqueta: valor" de los campos con valor, para el prompt del agente y la ficha. */
-export function resumirCampos(campos: CampoConfig[], valores: ValoresCampos | null | undefined): string[] {
+export function resumirCampos(
+  campos: CampoConfig[],
+  valores: ValoresCampos | null | undefined,
+): string[] {
   if (!valores) return [];
   return campos
-    .filter((c) => valores[c.clave] !== null && valores[c.clave] !== undefined && valores[c.clave] !== "")
+    .filter(
+      (c) => valores[c.clave] !== null && valores[c.clave] !== undefined && valores[c.clave] !== "",
+    )
     .map((c) => `${c.etiqueta}: ${formatearValorCampo(c, valores[c.clave])}`);
 }

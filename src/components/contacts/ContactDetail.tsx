@@ -66,10 +66,7 @@ interface ContactDetailClientProps {
   }>;
 }
 
-export function ContactDetailClient({
-  contact,
-  activities,
-}: ContactDetailClientProps) {
+export function ContactDetailClient({ contact, activities }: ContactDetailClientProps) {
   const router = useRouter();
   const [showEditForm, setShowEditForm] = useState(false);
   const [showActivityForm, setShowActivityForm] = useState(false);
@@ -177,7 +174,10 @@ export function ContactDetailClient({
             {contact.email && (
               <div className="flex items-center gap-2 text-sm">
                 <Mail className="h-4 w-4 text-muted-foreground shrink-0" />
-                <a href={`mailto:${contact.email}`} className="text-primary hover:underline flex-1 truncate">
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="text-primary hover:underline flex-1 truncate"
+                >
                   {contact.email}
                 </a>
                 <button
@@ -264,9 +264,7 @@ export function ContactDetailClient({
         {/* Activity timeline */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">
-              Actividades ({activities.length})
-            </CardTitle>
+            <CardTitle className="text-base">Actividades ({activities.length})</CardTitle>
             <Button
               variant="ghost"
               size="sm"

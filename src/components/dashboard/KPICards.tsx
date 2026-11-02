@@ -1,7 +1,14 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import {
+  Users,
+  Briefcase,
+  DollarSign,
+  TrendingUp,
+  ArrowUpRight,
+  ArrowDownRight,
+} from "lucide-react";
 import { LineChart, Line } from "recharts";
 import { formatCurrency } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -100,12 +107,19 @@ export function KPICards({ stats, contactos }: KPICardsProps) {
                   {card.delta && (
                     <div className="inline-flex items-center gap-0.5 text-[11.5px] font-medium">
                       {pct !== null && (
-                        <span className={cn("inline-flex items-center gap-0.5", isPositive ? "text-emerald-600" : "text-rose-600")}>
+                        <span
+                          className={cn(
+                            "inline-flex items-center gap-0.5",
+                            isPositive ? "text-emerald-600" : "text-rose-600",
+                          )}
+                        >
                           <DeltaArrow className="h-3 w-3" />
                           {Math.abs(pct)}%
                         </span>
                       )}
-                      <span className="text-muted-foreground font-normal ml-0.5">{card.delta.label}</span>
+                      <span className="text-muted-foreground font-normal ml-0.5">
+                        {card.delta.label}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -117,7 +131,13 @@ export function KPICards({ stats, contactos }: KPICardsProps) {
                       data={card.sparkline.map((v, i) => ({ i, v }))}
                       margin={{ top: 2, right: 2, bottom: 2, left: 2 }}
                     >
-                      <Line type="monotone" dataKey="v" stroke="var(--primary)" strokeWidth={1.75} dot={false} />
+                      <Line
+                        type="monotone"
+                        dataKey="v"
+                        stroke="var(--primary)"
+                        strokeWidth={1.75}
+                        dot={false}
+                      />
                     </LineChart>
                   </div>
                 )}

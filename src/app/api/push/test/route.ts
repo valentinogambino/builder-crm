@@ -23,7 +23,7 @@ export async function POST() {
     console.error("[push] fallo la notificacion de prueba:", err);
     return NextResponse.json(
       { error: "No se pudo enviar la notificacion de prueba" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,14 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import {
-  Plus,
-  RefreshCw,
-  FileText,
-  CheckCircle2,
-  Clock,
-  XCircle,
-} from "lucide-react";
+import { Plus, RefreshCw, FileText, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -28,10 +21,7 @@ interface Template {
   metaTemplateId: string | null;
 }
 
-const STATUS_META: Record<
-  string,
-  { label: string; badge: string; icon: typeof CheckCircle2 }
-> = {
+const STATUS_META: Record<string, { label: string; badge: string; icon: typeof CheckCircle2 }> = {
   APPROVED: {
     label: "Aprobada",
     badge: "bg-emerald-50 text-emerald-700 border-emerald-200",
@@ -69,10 +59,9 @@ export default function PlantillasPage() {
     if (sync) setSyncing(true);
     else setLoading(true);
     try {
-      const res = await fetch(
-        `/api/whatsapp/templates${sync ? "?sync=1" : ""}`,
-        { cache: "no-store" }
-      );
+      const res = await fetch(`/api/whatsapp/templates${sync ? "?sync=1" : ""}`, {
+        cache: "no-store",
+      });
       const json = await res.json();
       setTemplates(json.templates || []);
       if (json.syncError) {
@@ -108,15 +97,10 @@ export default function PlantillasPage() {
               disabled={syncing || loading}
               className="cursor-pointer"
             >
-              <RefreshCw
-                className={cn("h-4 w-4", syncing && "animate-spin")}
-              />
+              <RefreshCw className={cn("h-4 w-4", syncing && "animate-spin")} />
               Sincronizar
             </Button>
-            <Button
-              onClick={() => setShowForm(true)}
-              className="cursor-pointer"
-            >
+            <Button onClick={() => setShowForm(true)} className="cursor-pointer">
               <Plus className="h-4 w-4" />
               Nueva plantilla
             </Button>
@@ -174,7 +158,7 @@ function TemplateCard({ template }: { template: Template }) {
           <span
             className={cn(
               "inline-flex items-center gap-1 shrink-0 text-[10.5px] px-2 py-0.5 rounded-full border font-medium",
-              info.badge
+              info.badge,
             )}
           >
             <Icon className="h-3 w-3" />
@@ -183,9 +167,7 @@ function TemplateCard({ template }: { template: Template }) {
         </div>
 
         <p className="text-[13px] text-foreground/90 leading-relaxed whitespace-pre-wrap line-clamp-4">
-          {body || (
-            <span className="italic text-muted-foreground">(sin cuerpo)</span>
-          )}
+          {body || <span className="italic text-muted-foreground">(sin cuerpo)</span>}
         </p>
 
         {varCount > 0 && (

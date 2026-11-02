@@ -25,7 +25,9 @@ config({ path: ".env.local", quiet: true });
 
 const { S3_ENDPOINT, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY } = process.env;
 if (!S3_ENDPOINT || !S3_BUCKET || !S3_ACCESS_KEY_ID || !S3_SECRET_ACCESS_KEY) {
-  console.error("Faltan S3_ENDPOINT, S3_BUCKET, S3_ACCESS_KEY_ID o S3_SECRET_ACCESS_KEY en .env.local");
+  console.error(
+    "Faltan S3_ENDPOINT, S3_BUCKET, S3_ACCESS_KEY_ID o S3_SECRET_ACCESS_KEY en .env.local",
+  );
   process.exit(1);
 }
 
@@ -37,7 +39,7 @@ const origins = [
   ...new Set(
     [process.env.APP_BASE_URL, "http://localhost:3000", ...argOrigins]
       .filter(Boolean)
-      .map((o) => o.replace(/\/$/, ""))
+      .map((o) => o.replace(/\/$/, "")),
   ),
 ];
 
@@ -67,7 +69,7 @@ async function main() {
           },
         ],
       },
-    })
+    }),
   );
   const cors = await s3.send(new GetBucketCorsCommand({ Bucket: S3_BUCKET }));
   console.log("    ok:", JSON.stringify(cors.CORSRules?.[0]?.AllowedOrigins));
@@ -76,7 +78,12 @@ async function main() {
   const key = `_healthcheck/${Date.now()}.txt`;
   console.log(`>>> Subiendo ${key} ...`);
   await s3.send(
-    new PutObjectCommand({ Bucket: S3_BUCKET, Key: key, Body: "builder crm ok", ContentType: "text/plain" })
+    new PutObjectCommand({
+      Bucket: S3_BUCKET,
+      Key: key,
+      Body: "builder crm ok",
+      ContentType: "text/plain",
+    }),
   );
   const head = await s3.send(new HeadObjectCommand({ Bucket: S3_BUCKET, Key: key }));
   console.log(`    ok (${head.ContentLength} bytes)`);
@@ -88,7 +95,8 @@ async function main() {
   const res = await fetch(url);
   const text = await res.text();
   console.log(`    HTTP ${res.status}: "${text}"`);
-  if (!res.ok || text !== "builder crm ok") throw new Error("La lectura firmada no devolvio lo esperado");
+  if (!res.ok || text !== "builder crm ok")
+    throw new Error("La lectura firmada no devolvio lo esperado");
 
   await s3.send(new DeleteObjectCommand({ Bucket: S3_BUCKET, Key: key }));
   console.log(">>> Borrado. Todo en orden.");

@@ -16,16 +16,23 @@ export async function register() {
   const { erroresConfig } = await import("./lib/config");
   const problemas = erroresConfig();
   if (problemas.length > 0) {
-    console.error(`[boot] config/cliente.ts invalido:\n${problemas.map((p) => `  - ${p}`).join("\n")}`);
+    console.error(
+      `[boot] config/cliente.ts invalido:\n${problemas.map((p) => `  - ${p}`).join("\n")}`,
+    );
   } else if (faltan.length === 0) {
     // El pipeline de config/cliente.ts existe en la base antes de atender la primera
     // request. Si la base no esta, se avisa y la app arranca igual.
     try {
       const { sincronizarPipeline } = await import("./lib/pipeline/sincronizar");
       const r = await sincronizarPipeline();
-      console.log(`[boot] pipeline sincronizado: ${r.creadas} creadas, ${r.actualizadas} actualizadas, ${r.conservadas} conservadas`);
+      console.log(
+        `[boot] pipeline sincronizado: ${r.creadas} creadas, ${r.actualizadas} actualizadas, ${r.conservadas} conservadas`,
+      );
     } catch (err) {
-      console.error("[boot] no se pudo sincronizar el pipeline:", err instanceof Error ? err.message : err);
+      console.error(
+        "[boot] no se pudo sincronizar el pipeline:",
+        err instanceof Error ? err.message : err,
+      );
     }
   }
 

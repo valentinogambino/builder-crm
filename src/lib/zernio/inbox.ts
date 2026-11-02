@@ -22,22 +22,19 @@ export interface ListConversationsParams {
 }
 
 export async function listConversations(
-  params: ListConversationsParams = {}
+  params: ListConversationsParams = {},
 ): Promise<ZernioResult<ZernioListResponse<ZernioConversation>>> {
-  return zernioFetch<ZernioListResponse<ZernioConversation>>(
-    "/inbox/conversations",
-    {
-      query: {
-        profileId: params.profileId ?? getProfileId() ?? undefined,
-        platform: params.platform,
-        accountId: params.accountId,
-        status: params.status,
-        sortOrder: params.sortOrder,
-        limit: params.limit,
-        cursor: params.cursor,
-      },
-    }
-  );
+  return zernioFetch<ZernioListResponse<ZernioConversation>>("/inbox/conversations", {
+    query: {
+      profileId: params.profileId ?? getProfileId() ?? undefined,
+      platform: params.platform,
+      accountId: params.accountId,
+      status: params.status,
+      sortOrder: params.sortOrder,
+      limit: params.limit,
+      cursor: params.cursor,
+    },
+  });
 }
 
 /**
@@ -47,7 +44,7 @@ export async function listConversations(
 export async function* iterateConversations(
   params: ListConversationsParams = {},
   maxPages = 20,
-  onError?: (message: string) => void
+  onError?: (message: string) => void,
 ): AsyncGenerator<ZernioConversation[], void, void> {
   let cursor = params.cursor;
 
@@ -67,7 +64,7 @@ export async function* iterateConversations(
       // sincronizacion parcial se lee como completa.
       console.warn(
         "[zernio] cuentas que fallaron en la consulta:",
-        meta.failedAccounts.map((a) => `${a.accountUsername ?? a.accountId}: ${a.error}`)
+        meta.failedAccounts.map((a) => `${a.accountUsername ?? a.accountId}: ${a.error}`),
       );
     }
 
@@ -102,7 +99,7 @@ export interface ListMessagesResponse {
 
 export async function listMessages(
   conversationId: string,
-  params: ListMessagesParams = {}
+  params: ListMessagesParams = {},
 ): Promise<ZernioResult<ListMessagesResponse>> {
   return zernioFetch<ListMessagesResponse>(
     `/inbox/conversations/${encodeURIComponent(conversationId)}/messages`,
@@ -113,7 +110,7 @@ export async function listMessages(
         cursor: params.cursor,
         sortOrder: params.sortOrder,
       },
-    }
+    },
   );
 }
 
@@ -168,15 +165,13 @@ export interface SendMessageResponse {
 
 export async function sendMessage(
   conversationId: string,
-  input: SendMessageInput
+  input: SendMessageInput,
 ): Promise<ZernioResult<SendMessageResponse>> {
   return zernioFetch<SendMessageResponse>(
     `/inbox/conversations/${encodeURIComponent(conversationId)}/messages`,
     {
       method: "POST",
-      headers: input.idempotencyKey
-        ? { "Idempotency-Key": input.idempotencyKey }
-        : undefined,
+      headers: input.idempotencyKey ? { "Idempotency-Key": input.idempotencyKey } : undefined,
       body: {
         accountId: input.accountId,
         ...(input.message ? { message: input.message } : {}),
@@ -185,11 +180,9 @@ export async function sendMessage(
         ...(input.attachments?.length ? { attachments: input.attachments } : {}),
         ...(input.category ? { category: input.category } : {}),
         // El endpoint espera la plantilla envuelta en `elements`, con un solo elemento.
-        ...(input.template
-          ? { template: { elements: [input.template] } }
-          : {}),
+        ...(input.template ? { template: { elements: [input.template] } } : {}),
       },
-    }
+    },
   );
 }
 
@@ -227,27 +220,19 @@ export interface CreateConversationResponse {
  * Si ya existe un hilo con ese numero, la plantilla entra en ese mismo hilo.
  */
 export async function createConversation(
-  input: CreateConversationInput
+  input: CreateConversationInput,
 ): Promise<ZernioResult<CreateConversationResponse>> {
   return zernioFetch<CreateConversationResponse>("/inbox/conversations", {
     method: "POST",
-    headers: input.idempotencyKey
-      ? { "Idempotency-Key": input.idempotencyKey }
-      : undefined,
+    headers: input.idempotencyKey ? { "Idempotency-Key": input.idempotencyKey } : undefined,
     body: {
       accountId: input.accountId,
       ...(input.participantId ? { participantId: input.participantId } : {}),
-      ...(input.participantUsername
-        ? { participantUsername: input.participantUsername }
-        : {}),
+      ...(input.participantUsername ? { participantUsername: input.participantUsername } : {}),
       ...(input.message ? { message: input.message } : {}),
       ...(input.templateName ? { templateName: input.templateName } : {}),
-      ...(input.templateLanguage
-        ? { templateLanguage: input.templateLanguage }
-        : {}),
-      ...(input.templateParams?.length
-        ? { templateParams: input.templateParams }
-        : {}),
+      ...(input.templateLanguage ? { templateLanguage: input.templateLanguage } : {}),
+      ...(input.templateParams?.length ? { templateParams: input.templateParams } : {}),
       ...(input.category ? { category: input.category } : {}),
     },
   });
@@ -267,11 +252,5 @@ export async function createConversation(
  * cambie de opinion.
  */
 export function extractMessageId(res: SendMessageResponse): string | null {
-  return (
-    res.data?.messageId ??
-    res.data?.messageIds?.[0] ??
-    res.messageId ??
-    res.id ??
-    null
-  );
+  return res.data?.messageId ?? res.data?.messageIds?.[0] ?? res.messageId ?? res.id ?? null;
 }

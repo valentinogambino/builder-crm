@@ -20,12 +20,11 @@ export interface ZernioTemplate {
 }
 
 export async function listTemplates(
-  accountId: string
+  accountId: string,
 ): Promise<ZernioResult<{ success?: boolean; templates: ZernioTemplate[] }>> {
-  return zernioFetch<{ success?: boolean; templates: ZernioTemplate[] }>(
-    "/whatsapp/templates",
-    { query: { accountId } }
-  );
+  return zernioFetch<{ success?: boolean; templates: ZernioTemplate[] }>("/whatsapp/templates", {
+    query: { accountId },
+  });
 }
 
 export interface CreateTemplateInput {
@@ -39,21 +38,21 @@ export interface CreateTemplateInput {
 }
 
 export async function createTemplate(
-  input: CreateTemplateInput
+  input: CreateTemplateInput,
 ): Promise<ZernioResult<{ id?: string; status?: string; name?: string }>> {
-  return zernioFetch<{ id?: string; status?: string; name?: string }>(
-    "/whatsapp/templates",
-    { method: "POST", body: input }
-  );
+  return zernioFetch<{ id?: string; status?: string; name?: string }>("/whatsapp/templates", {
+    method: "POST",
+    body: input,
+  });
 }
 
 export async function deleteTemplate(
   accountId: string,
-  templateName: string
+  templateName: string,
 ): Promise<ZernioResult<{ success?: boolean }>> {
   return zernioFetch<{ success?: boolean }>(
     `/whatsapp/templates/${encodeURIComponent(templateName)}`,
-    { method: "DELETE", query: { accountId } }
+    { method: "DELETE", query: { accountId } },
   );
 }
 
@@ -72,10 +71,10 @@ export interface ConnectWhatsappInput {
 }
 
 export async function connectWhatsapp(
-  input: ConnectWhatsappInput
+  input: ConnectWhatsappInput,
 ): Promise<ZernioResult<{ accountId?: string; success?: boolean }>> {
-  return zernioFetch<{ accountId?: string; success?: boolean }>(
-    "/connect/whatsapp/credentials",
-    { method: "POST", body: input }
-  );
+  return zernioFetch<{ accountId?: string; success?: boolean }>("/connect/whatsapp/credentials", {
+    method: "POST",
+    body: input,
+  });
 }

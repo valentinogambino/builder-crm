@@ -65,9 +65,12 @@ export function ChannelsSettings() {
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
-      const data = event.data as
-        | { source?: string; ok?: boolean; platform?: string; error?: string }
-        | null;
+      const data = event.data as {
+        source?: string;
+        ok?: boolean;
+        platform?: string;
+        error?: string;
+      } | null;
       if (data?.source !== "zernio-connect") return;
 
       setConnecting(null);
@@ -110,7 +113,7 @@ export function ChannelsSettings() {
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? "sync_failed");
       toast.success(
-        `Sincronizadas ${json.synced} cuentas${json.skipped ? ` (${json.skipped} de otras plataformas, ignoradas)` : ""}`
+        `Sincronizadas ${json.synced} cuentas${json.skipped ? ` (${json.skipped} de otras plataformas, ignoradas)` : ""}`,
       );
       await load();
     } catch (err) {
@@ -124,7 +127,7 @@ export function ChannelsSettings() {
     if (
       !confirm(
         "Importar el historial que Zernio ya tiene replicado (hasta 500 conversaciones por cuenta)?\n\n" +
-          "El agente NO se dispara: no se le va a contestar a ningun cliente viejo."
+          "El agente NO se dispara: no se le va a contestar a ningun cliente viejo.",
       )
     ) {
       return;
@@ -143,18 +146,15 @@ export function ChannelsSettings() {
         return;
       }
 
-      toast.success(
-        `${json.conversations} conversaciones y ${json.messages} mensajes importados`,
-        {
-          id: "backfill",
-          description: json.incomplete
-            ? "Quedaron hilos sin importar: volvé a tocar el botón para continuar."
-            : json.errors?.length
-              ? `Con avisos: ${json.errors[0]}`
-              : undefined,
-          duration: 8000,
-        }
-      );
+      toast.success(`${json.conversations} conversaciones y ${json.messages} mensajes importados`, {
+        id: "backfill",
+        description: json.incomplete
+          ? "Quedaron hilos sin importar: volvé a tocar el botón para continuar."
+          : json.errors?.length
+            ? `Con avisos: ${json.errors[0]}`
+            : undefined,
+        duration: 8000,
+      });
       await load();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Error importando", {
@@ -172,7 +172,7 @@ export function ChannelsSettings() {
     const popup = window.open(
       "about:blank",
       "zernio-connect",
-      "width=620,height=780,menubar=no,toolbar=no"
+      "width=620,height=780,menubar=no,toolbar=no",
     );
     if (!popup) {
       toast.error("El navegador bloqueo la ventana", {
@@ -185,9 +185,7 @@ export function ChannelsSettings() {
     setConnecting(platform);
 
     const query =
-      platform === "whatsapp"
-        ? `platform=whatsapp&onboarding=${waMode}`
-        : `platform=${platform}`;
+      platform === "whatsapp" ? `platform=whatsapp&onboarding=${waMode}` : `platform=${platform}`;
 
     try {
       const res = await fetch(`/api/channels/connect?${query}`);
@@ -217,21 +215,19 @@ export function ChannelsSettings() {
     <div className="space-y-4">
       {!config.hasApiKey && (
         <Warning>
-          Falta <code className="bg-muted px-1 rounded">ZERNIO_API_KEY</code> en las
-          variables de la instancia (en Coolify, Environment Variables; en desarrollo,{" "}
-          <code className="bg-muted px-1 rounded">.env.local</code>). Sin eso no se
-          pueden listar ni conectar cuentas. Hay que volver a desplegar para que tome el
-          valor nuevo.
+          Falta <code className="bg-muted px-1 rounded">ZERNIO_API_KEY</code> en las variables de la
+          instancia (en Coolify, Environment Variables; en desarrollo,{" "}
+          <code className="bg-muted px-1 rounded">.env.local</code>). Sin eso no se pueden listar ni
+          conectar cuentas. Hay que volver a desplegar para que tome el valor nuevo.
         </Warning>
       )}
       {!config.hasWebhookSecret && (
         <Warning>
-          Falta <code className="bg-muted px-1 rounded">ZERNIO_WEBHOOK_SECRET</code> en
-          las variables de la instancia. El webhook rechaza todo hasta que este
-          configurado (fail-closed), asi que no van a entrar mensajes. Tiene que ser
-          identico al de la suscripcion en Zernio:{" "}
-          <code className="bg-muted px-1 rounded">npm run zernio:webhook</code> la deja
-          igual.
+          Falta <code className="bg-muted px-1 rounded">ZERNIO_WEBHOOK_SECRET</code> en las
+          variables de la instancia. El webhook rechaza todo hasta que este configurado
+          (fail-closed), asi que no van a entrar mensajes. Tiene que ser identico al de la
+          suscripcion en Zernio:{" "}
+          <code className="bg-muted px-1 rounded">npm run zernio:webhook</code> la deja igual.
         </Warning>
       )}
 
@@ -247,7 +243,7 @@ export function ChannelsSettings() {
             <span
               className={cn(
                 "mt-1 h-2 w-2 shrink-0 rounded-full",
-                c.configurado ? "bg-emerald-500" : "bg-amber-500"
+                c.configurado ? "bg-emerald-500" : "bg-amber-500",
               )}
             />
             <div className="min-w-0 flex-1">
@@ -272,8 +268,7 @@ export function ChannelsSettings() {
       <div className="space-y-2">
         {CHANNELS.map((channel) => {
           const accounts = data.accounts.filter((a) => a.platform === channel);
-          const isWhatsappOnMeta =
-            channel === "whatsapp" && config.whatsappProvider !== "zernio";
+          const isWhatsappOnMeta = channel === "whatsapp" && config.whatsappProvider !== "zernio";
 
           return (
             <div
@@ -283,7 +278,7 @@ export function ChannelsSettings() {
               <span
                 className={cn(
                   "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted/60",
-                  CHANNEL_COLORS[channel]
+                  CHANNEL_COLORS[channel],
                 )}
               >
                 <ChannelIcon channel={channel} className="h-3.5 w-3.5" />
@@ -306,17 +301,15 @@ export function ChannelsSettings() {
                         <span className="truncate">
                           {a.username ?? a.displayName ?? a.zernioAccountId}
                         </span>
-                        <span className="font-mono opacity-60">
-                          via {a.provider}
-                        </span>
+                        <span className="font-mono opacity-60">via {a.provider}</span>
                       </li>
                     ))}
                   </ul>
                 )}
                 {isWhatsappOnMeta ? (
                   <p className="text-[11px] text-muted-foreground mt-1">
-                    Modo valvula de escape: WhatsApp sale por Meta Cloud API directo
-                    (<code className="bg-muted px-1 rounded">WHATSAPP_PROVIDER=meta</code>).
+                    Modo valvula de escape: WhatsApp sale por Meta Cloud API directo (
+                    <code className="bg-muted px-1 rounded">WHATSAPP_PROVIDER=meta</code>).
                   </p>
                 ) : (
                   channel === "whatsapp" &&
@@ -337,17 +330,16 @@ export function ChannelsSettings() {
                       <p className="text-[11px] text-muted-foreground">
                         {waMode === "business_app" ? (
                           <>
-                            El numero sigue funcionando en la app WhatsApp Business del
-                            celular, y lo que se conteste desde ahi tambien queda
-                            registrado en el CRM. Es lo que corresponde si el negocio ya
-                            atiende por ese numero.
+                            El numero sigue funcionando en la app WhatsApp Business del celular, y
+                            lo que se conteste desde ahi tambien queda registrado en el CRM. Es lo
+                            que corresponde si el negocio ya atiende por ese numero.
                           </>
                         ) : (
                           <>
-                            El numero pasa a vivir solo en Cloud API y deja de funcionar
-                            en el celular. Solo elegi esto si el numero ya estaba en Cloud
-                            API. Un numero que esta en la app WhatsApp Business aparece
-                            como <em>no cumple los requisitos</em> en este modo.
+                            El numero pasa a vivir solo en Cloud API y deja de funcionar en el
+                            celular. Solo elegi esto si el numero ya estaba en Cloud API. Un numero
+                            que esta en la app WhatsApp Business aparece como{" "}
+                            <em>no cumple los requisitos</em> en este modo.
                           </>
                         )}
                       </p>
@@ -404,9 +396,9 @@ export function ChannelsSettings() {
           </Button>
         </div>
         <p className="text-[11px] text-muted-foreground">
-          Sincronizar trae las cuentas conectadas. Importar historial trae las
-          conversaciones que Zernio ya replicó al conectar cada cuenta — no llegan por
-          webhook, y el agente no se dispara con ellas.
+          Sincronizar trae las cuentas conectadas. Importar historial trae las conversaciones que
+          Zernio ya replicó al conectar cada cuenta — no llegan por webhook, y el agente no se
+          dispara con ellas.
         </p>
       </div>
     </div>
@@ -431,7 +423,7 @@ function WaModeButton({
         "rounded-full border px-2.5 py-0.5 text-[11px] transition-colors",
         active
           ? "border-primary bg-primary/10 text-primary font-medium"
-          : "border-border text-muted-foreground hover:text-foreground"
+          : "border-border text-muted-foreground hover:text-foreground",
       )}
     >
       {label}
@@ -446,7 +438,7 @@ function StatusDot({ status }: { status: string }) {
       title={status}
       className={cn(
         "inline-flex h-3 w-3 items-center justify-center rounded-full",
-        ok ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
+        ok ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground",
       )}
     >
       {ok ? <Check className="h-2.5 w-2.5" /> : <AlertTriangle className="h-2.5 w-2.5" />}

@@ -46,7 +46,7 @@ function crearClienteLocal() {
     ({ drizzle: drizzleLocal } = requerir(nombreDrizzle));
   } catch {
     throw new Error(
-      "Modo local: falta el paquete del Postgres embebido. Corre `npm install` y volve a `npm run local`."
+      "Modo local: falta el paquete del Postgres embebido. Corre `npm install` y volve a `npm run local`.",
     );
   }
 
@@ -63,7 +63,7 @@ function crearCliente() {
   if (!connectionString) {
     throw new Error(
       "DATABASE_URL no esta seteada. Configurala en .env.local (Supabase: Settings -> Database -> Connection string).\n" +
-        "Para probar el CRM sin crear nada: npm run local"
+        "Para probar el CRM sin crear nada: npm run local",
     );
   }
 

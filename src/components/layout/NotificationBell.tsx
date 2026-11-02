@@ -45,9 +45,7 @@ export function NotificationBell() {
     if (newest && newestSeen.current && newest.id !== newestSeen.current && !newest.readAt) {
       toast(newest.title, {
         description: newest.body ?? undefined,
-        action: newest.url
-          ? { label: "Ver", onClick: () => router.push(newest.url!) }
-          : undefined,
+        action: newest.url ? { label: "Ver", onClick: () => router.push(newest.url!) } : undefined,
       });
     }
     newestSeen.current = newest?.id ?? newestSeen.current ?? "none";
@@ -170,13 +168,13 @@ export function NotificationBell() {
               onClick={() => openItem(n)}
               className={cn(
                 "w-full text-left px-3 py-2.5 hover:bg-muted/50 cursor-pointer flex gap-2.5",
-                !n.readAt && "bg-primary/[0.04]"
+                !n.readAt && "bg-primary/[0.04]",
               )}
             >
               <span
                 className={cn(
                   "mt-1.5 h-2 w-2 rounded-full shrink-0",
-                  n.readAt ? "bg-transparent" : "bg-primary"
+                  n.readAt ? "bg-transparent" : "bg-primary",
                 )}
               />
               <span className="min-w-0 flex-1">
@@ -184,9 +182,7 @@ export function NotificationBell() {
                   {n.title}
                 </span>
                 {n.body && (
-                  <span className="block text-xs text-muted-foreground line-clamp-2">
-                    {n.body}
-                  </span>
+                  <span className="block text-xs text-muted-foreground line-clamp-2">{n.body}</span>
                 )}
                 <span className="block text-[11px] text-muted-foreground/80 mt-0.5">
                   {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true, locale: es })}

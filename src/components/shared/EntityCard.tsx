@@ -69,8 +69,7 @@ export function EntityCard({
       onClick={onClick}
       className={cn(
         "group rounded-xl border border-border bg-card p-3.5 shadow-sm transition-all",
-        onClick &&
-          "cursor-pointer hover:border-primary/30 hover:shadow-md hover:-translate-y-px",
+        onClick && "cursor-pointer hover:border-primary/30 hover:shadow-md hover:-translate-y-px",
         className,
       )}
     >
@@ -90,9 +89,7 @@ export function EntityCard({
           <p className="text-[13.5px] font-semibold text-foreground truncate font-heading">
             {title}
           </p>
-          {subtitle && (
-            <p className="text-xs text-muted-foreground truncate">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-xs text-muted-foreground truncate">{subtitle}</p>}
         </div>
 
         <div className="flex items-center gap-1 shrink-0">
@@ -140,9 +137,7 @@ export function EntityCard({
                   {field.value}
                 </Badge>
               ) : (
-                <p className="text-xs text-foreground truncate">
-                  {field.value}
-                </p>
+                <p className="text-xs text-foreground truncate">{field.value}</p>
               )}
             </div>
           ))}

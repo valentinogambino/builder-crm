@@ -96,7 +96,7 @@ async function main() {
     if (/token/i.test(text)) {
       console.error(
         "\nSi el error habla del token de Meta: tiene que ser un System User token permanente\n" +
-          "con whatsapp_business_management y whatsapp_business_messaging."
+          "con whatsapp_business_management y whatsapp_business_messaging.",
       );
     }
     process.exitCode = 1;
@@ -108,7 +108,7 @@ async function main() {
 
   if (!accountId) {
     console.log(
-      "\nZernio no devolvio accountId. Corre `npm run zernio:setup --sync` para traerla."
+      "\nZernio no devolvio accountId. Corre `npm run zernio:setup --sync` para traerla.",
     );
     return;
   }
@@ -155,12 +155,12 @@ async function main() {
     console.log(`Guardada en channel_accounts.`);
     if (repointed.length > 0) {
       console.log(
-        `${repointed.length} conversacion(es) de WhatsApp legacy quedaron apuntando a la cuenta de Zernio.`
+        `${repointed.length} conversacion(es) de WhatsApp legacy quedaron apuntando a la cuenta de Zernio.`,
       );
       console.log(
         "Siguen con provider='meta' a proposito: cuando el cliente vuelva a escribir,\n" +
           "Zernio crea el hilo nuevo con su propio id. Si preferis empezar limpio:\n" +
-          "  delete from messages; delete from conversations;"
+          "  delete from messages; delete from conversations;",
       );
     }
   } finally {

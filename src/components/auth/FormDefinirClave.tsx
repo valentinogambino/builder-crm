@@ -130,8 +130,8 @@ export function FormDefinirClave() {
           {motivo}
         </div>
         <p className="text-sm text-muted-foreground">
-          Los enlaces de acceso valen una sola vez y vencen a las 24 horas. Pedi uno nuevo
-          o que te lo reenvie un administrador.
+          Los enlaces de acceso valen una sola vez y vencen a las 24 horas. Pedi uno nuevo o que te
+          lo reenvie un administrador.
         </p>
         <Button render={<Link href="/auth/recuperar" />} className="w-full h-10">
           Pedir un enlace nuevo

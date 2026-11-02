@@ -78,9 +78,11 @@ export function DocumentsPanel({ contactId }: { contactId: string }) {
   const load = useCallback(
     () =>
       fetch(`/api/documents?contactId=${contactId}`).then((r) =>
-        r.ok ? (r.json() as Promise<{ items: DocItem[]; storage: boolean }>) : { items: [], storage: true }
+        r.ok
+          ? (r.json() as Promise<{ items: DocItem[]; storage: boolean }>)
+          : { items: [], storage: true },
       ),
-    [contactId]
+    [contactId],
   );
 
   useEffect(() => {
@@ -185,7 +187,7 @@ export function DocumentsPanel({ contactId }: { contactId: string }) {
         }}
         className={cn(
           "space-y-2 rounded-b-xl transition-colors",
-          dragging && "bg-primary/5 ring-2 ring-inset ring-primary/40"
+          dragging && "bg-primary/5 ring-2 ring-inset ring-primary/40",
         )}
       >
         {!storageReady && (
@@ -224,7 +226,10 @@ export function DocumentsPanel({ contactId }: { contactId: string }) {
                     <p className="text-xs text-destructive">{u.error}</p>
                   ) : (
                     <div className="mt-1 h-1 rounded-full bg-muted overflow-hidden">
-                      <div className="h-full bg-primary transition-all" style={{ width: `${u.progress}%` }} />
+                      <div
+                        className="h-full bg-primary transition-all"
+                        style={{ width: `${u.progress}%` }}
+                      />
                     </div>
                   )}
                 </div>
@@ -259,7 +264,10 @@ export function DocumentsPanel({ contactId }: { contactId: string }) {
                       {formatSize(doc.size)}
                       {doc.uploadedBy && ` · ${doc.uploadedBy}`}
                       {" · "}
-                      {formatDistanceToNow(new Date(doc.createdAt), { addSuffix: true, locale: es })}
+                      {formatDistanceToNow(new Date(doc.createdAt), {
+                        addSuffix: true,
+                        locale: es,
+                      })}
                       {doc.stageName && (
                         <span className="ml-1.5 inline-flex items-center rounded-md bg-muted px-1.5 py-0.5 text-[10.5px] font-medium text-foreground/70">
                           {doc.stageName}

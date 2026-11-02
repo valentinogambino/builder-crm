@@ -47,13 +47,20 @@ function compacto(v: number): string {
 }
 
 function Delta({ kpi, bueno = true }: { kpi: Kpi; bueno?: boolean }) {
-  if (kpi.anterior === 0 && kpi.actual === 0) return <span className="text-[11px] text-muted-foreground">sin datos previos</span>;
-  if (kpi.anterior === 0) return <span className="text-[11px] text-muted-foreground">nuevo en el periodo</span>;
+  if (kpi.anterior === 0 && kpi.actual === 0)
+    return <span className="text-[11px] text-muted-foreground">sin datos previos</span>;
+  if (kpi.anterior === 0)
+    return <span className="text-[11px] text-muted-foreground">nuevo en el periodo</span>;
   const pct = Math.round(((kpi.actual - kpi.anterior) / kpi.anterior) * 100);
   const sube = pct >= 0;
   const positivo = bueno ? sube : !sube;
   return (
-    <span className={cn("text-[11px] font-medium", positivo ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400")}>
+    <span
+      className={cn(
+        "text-[11px] font-medium",
+        positivo ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400",
+      )}
+    >
       {sube ? "+" : ""}
       {pct}% <span className="font-normal text-muted-foreground">vs periodo anterior</span>
     </span>
@@ -74,7 +81,15 @@ function Tile({ titulo, valor, sub }: { titulo: string; valor: string; sub?: Rea
   );
 }
 
-function TooltipBox({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color?: string }>; label?: string }) {
+function TooltipBox({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: Array<{ name: string; value: number; color?: string }>;
+  label?: string;
+}) {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-lg border border-border bg-card shadow-lg px-3 py-2 text-[12px]">
@@ -82,7 +97,8 @@ function TooltipBox({ active, payload, label }: { active?: boolean; payload?: Ar
       {payload.map((p) => (
         <p key={p.name} className="text-muted-foreground flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-full" style={{ backgroundColor: p.color }} />
-          {p.name}: <span className="font-semibold text-foreground">{p.value.toLocaleString("es")}</span>
+          {p.name}:{" "}
+          <span className="font-semibold text-foreground">{p.value.toLocaleString("es")}</span>
         </p>
       ))}
     </div>
@@ -98,9 +114,17 @@ function Vacio({ texto }: { texto: string }) {
 export function Reportes({ reporte }: { reporte: Reporte }) {
   const { kpis, dias } = reporte;
   const porDia = reporte.porDia.map((d) => ({ ...d, etiqueta: d.dia.slice(5).replace("-", "/") }));
-  const fuentes = reporte.porFuente.map((f) => ({ nombre: SOURCE_LABELS[f.fuente as LeadSource] ?? f.fuente, cantidad: f.cantidad }));
-  const canales = reporte.porCanal.map((c) => ({ nombre: CHANNEL_LABELS[c.canal as Channel] ?? c.canal, cantidad: c.cantidad }));
-  const humano = reporte.salientesPorOrigen.filter((s) => s.origen !== "agent").reduce((a, b) => a + b.cantidad, 0);
+  const fuentes = reporte.porFuente.map((f) => ({
+    nombre: SOURCE_LABELS[f.fuente as LeadSource] ?? f.fuente,
+    cantidad: f.cantidad,
+  }));
+  const canales = reporte.porCanal.map((c) => ({
+    nombre: CHANNEL_LABELS[c.canal as Channel] ?? c.canal,
+    cantidad: c.cantidad,
+  }));
+  const humano = reporte.salientesPorOrigen
+    .filter((s) => s.origen !== "agent")
+    .reduce((a, b) => a + b.cantidad, 0);
   const agente = reporte.salientesPorOrigen.find((s) => s.origen === "agent")?.cantidad ?? 0;
 
   return (
@@ -114,7 +138,9 @@ export function Reportes({ reporte }: { reporte: Reporte }) {
             href={`/reportes?dias=${r}`}
             className={cn(
               "rounded-full border px-3 py-1 text-xs transition-colors",
-              r === dias ? "border-primary bg-primary/10 text-primary font-medium" : "border-border text-muted-foreground hover:text-foreground"
+              r === dias
+                ? "border-primary bg-primary/10 text-primary font-medium"
+                : "border-border text-muted-foreground hover:text-foreground",
             )}
           >
             Ultimos {r} dias
@@ -123,9 +149,21 @@ export function Reportes({ reporte }: { reporte: Reporte }) {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Tile titulo="Contactos nuevos" valor={compacto(kpis.contactosNuevos.actual)} sub={<Delta kpi={kpis.contactosNuevos} />} />
-        <Tile titulo="Conversaciones nuevas" valor={compacto(kpis.conversacionesNuevas.actual)} sub={<Delta kpi={kpis.conversacionesNuevas} />} />
-        <Tile titulo="Mensajes recibidos" valor={compacto(kpis.mensajesEntrantes.actual)} sub={<Delta kpi={kpis.mensajesEntrantes} />} />
+        <Tile
+          titulo="Contactos nuevos"
+          valor={compacto(kpis.contactosNuevos.actual)}
+          sub={<Delta kpi={kpis.contactosNuevos} />}
+        />
+        <Tile
+          titulo="Conversaciones nuevas"
+          valor={compacto(kpis.conversacionesNuevas.actual)}
+          sub={<Delta kpi={kpis.conversacionesNuevas} />}
+        />
+        <Tile
+          titulo="Mensajes recibidos"
+          valor={compacto(kpis.mensajesEntrantes.actual)}
+          sub={<Delta kpi={kpis.mensajesEntrantes} />}
+        />
         <Tile
           titulo="Operaciones ganadas"
           valor={compacto(kpis.operacionesGanadas.actual)}
@@ -138,30 +176,56 @@ export function Reportes({ reporte }: { reporte: Reporte }) {
         <Tile
           titulo="Tasa de cierre"
           valor={kpis.tasaCierre === null ? "—" : `${kpis.tasaCierre}%`}
-          sub={<span className="text-[11px] text-muted-foreground">{kpis.tasaCierre === null ? "sin cierres en el periodo" : "ganadas sobre cerradas"}</span>}
+          sub={
+            <span className="text-[11px] text-muted-foreground">
+              {kpis.tasaCierre === null ? "sin cierres en el periodo" : "ganadas sobre cerradas"}
+            </span>
+          }
         />
         <Tile
           titulo="Respondido por el agente"
           valor={kpis.porcentajeAgente === null ? "—" : `${kpis.porcentajeAgente}%`}
-          sub={<span className="text-[11px] text-muted-foreground">{agente.toLocaleString("es")} del agente · {humano.toLocaleString("es")} de personas</span>}
+          sub={
+            <span className="text-[11px] text-muted-foreground">
+              {agente.toLocaleString("es")} del agente · {humano.toLocaleString("es")} de personas
+            </span>
+          }
         />
         <Tile
           titulo="Primera respuesta"
-          valor={kpis.primeraRespuestaMin === null ? "—" : kpis.primeraRespuestaMin < 60 ? `${kpis.primeraRespuestaMin} min` : `${(kpis.primeraRespuestaMin / 60).toFixed(1)} h`}
-          sub={<span className="text-[11px] text-muted-foreground">promedio en conversaciones nuevas</span>}
+          valor={
+            kpis.primeraRespuestaMin === null
+              ? "—"
+              : kpis.primeraRespuestaMin < 60
+                ? `${kpis.primeraRespuestaMin} min`
+                : `${(kpis.primeraRespuestaMin / 60).toFixed(1)} h`
+          }
+          sub={
+            <span className="text-[11px] text-muted-foreground">
+              promedio en conversaciones nuevas
+            </span>
+          }
         />
         <Tile
           titulo="Derivadas a humano"
           valor={compacto(kpis.derivaciones)}
-          sub={<span className="text-[11px] text-muted-foreground">conversaciones que pidieron una persona</span>}
+          sub={
+            <span className="text-[11px] text-muted-foreground">
+              conversaciones que pidieron una persona
+            </span>
+          }
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <Card className="surface-card lg:col-span-2">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-base font-semibold tracking-tight font-heading">Mensajes por dia</CardTitle>
-            <p className="text-xs text-muted-foreground">Entrantes de clientes y salientes del equipo y el agente</p>
+            <CardTitle className="text-base font-semibold tracking-tight font-heading">
+              Mensajes por dia
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">
+              Entrantes de clientes y salientes del equipo y el agente
+            </p>
           </CardHeader>
           <CardContent>
             {porDia.every((d) => d.entrantes === 0 && d.salientes === 0) ? (
@@ -170,12 +234,41 @@ export function Reportes({ reporte }: { reporte: Reporte }) {
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={porDia} margin={{ top: 8, right: 12, bottom: 0, left: -16 }}>
                   <CartesianGrid stroke="var(--viz-grid)" vertical={false} />
-                  <XAxis dataKey="etiqueta" tick={EJE} tickLine={false} axisLine={{ stroke: "var(--viz-axis)" }} interval="preserveStartEnd" minTickGap={24} />
-                  <YAxis tick={EJE} tickLine={false} axisLine={false} width={40} allowDecimals={false} />
+                  <XAxis
+                    dataKey="etiqueta"
+                    tick={EJE}
+                    tickLine={false}
+                    axisLine={{ stroke: "var(--viz-axis)" }}
+                    interval="preserveStartEnd"
+                    minTickGap={24}
+                  />
+                  <YAxis
+                    tick={EJE}
+                    tickLine={false}
+                    axisLine={false}
+                    width={40}
+                    allowDecimals={false}
+                  />
                   <Tooltip content={<TooltipBox />} cursor={{ stroke: "var(--viz-axis)" }} />
                   <Legend iconType="plainline" wrapperStyle={{ fontSize: 12 }} />
-                  <Line type="monotone" name="Entrantes" dataKey="entrantes" stroke="var(--viz-1)" strokeWidth={2} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--card)" }} />
-                  <Line type="monotone" name="Salientes" dataKey="salientes" stroke="var(--viz-2)" strokeWidth={2} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--card)" }} />
+                  <Line
+                    type="monotone"
+                    name="Entrantes"
+                    dataKey="entrantes"
+                    stroke="var(--viz-1)"
+                    strokeWidth={2}
+                    dot={false}
+                    activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--card)" }}
+                  />
+                  <Line
+                    type="monotone"
+                    name="Salientes"
+                    dataKey="salientes"
+                    stroke="var(--viz-2)"
+                    strokeWidth={2}
+                    dot={false}
+                    activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--card)" }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             )}
@@ -184,7 +277,9 @@ export function Reportes({ reporte }: { reporte: Reporte }) {
 
         <Card className="surface-card">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-base font-semibold tracking-tight font-heading">Contactos por fuente</CardTitle>
+            <CardTitle className="text-base font-semibold tracking-tight font-heading">
+              Contactos por fuente
+            </CardTitle>
             <p className="text-xs text-muted-foreground">Nuevos en el periodo</p>
           </CardHeader>
           <CardContent>
@@ -192,12 +287,36 @@ export function Reportes({ reporte }: { reporte: Reporte }) {
               <Vacio texto="Sin contactos nuevos en el periodo." />
             ) : (
               <ResponsiveContainer width="100%" height={Math.max(160, fuentes.length * 36)}>
-                <BarChart data={fuentes} layout="vertical" margin={{ top: 0, right: 40, bottom: 0, left: 8 }} barSize={18}>
+                <BarChart
+                  data={fuentes}
+                  layout="vertical"
+                  margin={{ top: 0, right: 40, bottom: 0, left: 8 }}
+                  barSize={18}
+                >
                   <XAxis type="number" hide />
-                  <YAxis type="category" dataKey="nombre" tick={EJE} tickLine={false} axisLine={false} width={110} />
-                  <Tooltip content={<TooltipBox />} cursor={{ fill: "var(--muted)", opacity: 0.4 }} />
-                  <Bar name="Contactos" dataKey="cantidad" fill="var(--viz-1)" radius={[0, 4, 4, 0]}>
-                    <LabelList dataKey="cantidad" position="right" style={{ fontSize: 11, fill: "var(--foreground)" }} />
+                  <YAxis
+                    type="category"
+                    dataKey="nombre"
+                    tick={EJE}
+                    tickLine={false}
+                    axisLine={false}
+                    width={110}
+                  />
+                  <Tooltip
+                    content={<TooltipBox />}
+                    cursor={{ fill: "var(--muted)", opacity: 0.4 }}
+                  />
+                  <Bar
+                    name="Contactos"
+                    dataKey="cantidad"
+                    fill="var(--viz-1)"
+                    radius={[0, 4, 4, 0]}
+                  >
+                    <LabelList
+                      dataKey="cantidad"
+                      position="right"
+                      style={{ fontSize: 11, fill: "var(--foreground)" }}
+                    />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -207,7 +326,9 @@ export function Reportes({ reporte }: { reporte: Reporte }) {
 
         <Card className="surface-card">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-base font-semibold tracking-tight font-heading">Conversaciones por canal</CardTitle>
+            <CardTitle className="text-base font-semibold tracking-tight font-heading">
+              Conversaciones por canal
+            </CardTitle>
             <p className="text-xs text-muted-foreground">Hilos nuevos en el periodo</p>
           </CardHeader>
           <CardContent>
@@ -215,12 +336,36 @@ export function Reportes({ reporte }: { reporte: Reporte }) {
               <Vacio texto="Sin conversaciones nuevas en el periodo." />
             ) : (
               <ResponsiveContainer width="100%" height={Math.max(160, canales.length * 36)}>
-                <BarChart data={canales} layout="vertical" margin={{ top: 0, right: 40, bottom: 0, left: 8 }} barSize={18}>
+                <BarChart
+                  data={canales}
+                  layout="vertical"
+                  margin={{ top: 0, right: 40, bottom: 0, left: 8 }}
+                  barSize={18}
+                >
                   <XAxis type="number" hide />
-                  <YAxis type="category" dataKey="nombre" tick={EJE} tickLine={false} axisLine={false} width={110} />
-                  <Tooltip content={<TooltipBox />} cursor={{ fill: "var(--muted)", opacity: 0.4 }} />
-                  <Bar name="Conversaciones" dataKey="cantidad" fill="var(--viz-1)" radius={[0, 4, 4, 0]}>
-                    <LabelList dataKey="cantidad" position="right" style={{ fontSize: 11, fill: "var(--foreground)" }} />
+                  <YAxis
+                    type="category"
+                    dataKey="nombre"
+                    tick={EJE}
+                    tickLine={false}
+                    axisLine={false}
+                    width={110}
+                  />
+                  <Tooltip
+                    content={<TooltipBox />}
+                    cursor={{ fill: "var(--muted)", opacity: 0.4 }}
+                  />
+                  <Bar
+                    name="Conversaciones"
+                    dataKey="cantidad"
+                    fill="var(--viz-1)"
+                    radius={[0, 4, 4, 0]}
+                  >
+                    <LabelList
+                      dataKey="cantidad"
+                      position="right"
+                      style={{ fontSize: 11, fill: "var(--foreground)" }}
+                    />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -230,8 +375,12 @@ export function Reportes({ reporte }: { reporte: Reporte }) {
 
         <Card className="surface-card lg:col-span-2">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-base font-semibold tracking-tight font-heading">Embudo del pipeline</CardTitle>
-            <p className="text-xs text-muted-foreground">Operaciones abiertas y cerradas por etapa (total, no solo el periodo)</p>
+            <CardTitle className="text-base font-semibold tracking-tight font-heading">
+              Embudo del pipeline
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">
+              Operaciones abiertas y cerradas por etapa (total, no solo el periodo)
+            </p>
           </CardHeader>
           <CardContent>
             {reporte.embudo.length === 0 ? (
@@ -240,9 +389,21 @@ export function Reportes({ reporte }: { reporte: Reporte }) {
               <Vacio texto="Todavia no hay operaciones en el pipeline." />
             ) : (
               <ResponsiveContainer width="100%" height={Math.max(200, reporte.embudo.length * 36)}>
-                <BarChart data={reporte.embudo} layout="vertical" margin={{ top: 0, right: 120, bottom: 0, left: 8 }} barSize={18}>
+                <BarChart
+                  data={reporte.embudo}
+                  layout="vertical"
+                  margin={{ top: 0, right: 120, bottom: 0, left: 8 }}
+                  barSize={18}
+                >
                   <XAxis type="number" hide />
-                  <YAxis type="category" dataKey="etapa" tick={EJE} tickLine={false} axisLine={false} width={140} />
+                  <YAxis
+                    type="category"
+                    dataKey="etapa"
+                    tick={EJE}
+                    tickLine={false}
+                    axisLine={false}
+                    width={140}
+                  />
                   <Tooltip
                     content={({ active, payload }) => {
                       if (!active || !payload?.length) return null;
@@ -251,8 +412,11 @@ export function Reportes({ reporte }: { reporte: Reporte }) {
                         <div className="rounded-lg border border-border bg-card shadow-lg px-3 py-2 text-[12px]">
                           <p className="font-medium mb-1">{e.etapa}</p>
                           <p className="text-muted-foreground">
-                            <span className="font-semibold text-foreground">{e.cantidad}</span> operaciones ·{" "}
-                            <span className="font-semibold text-foreground">{formatCurrency(e.valor)}</span>
+                            <span className="font-semibold text-foreground">{e.cantidad}</span>{" "}
+                            operaciones ·{" "}
+                            <span className="font-semibold text-foreground">
+                              {formatCurrency(e.valor)}
+                            </span>
                           </p>
                         </div>
                       );

@@ -12,12 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -47,8 +42,7 @@ export function PipelineHeader({
   const [newName, setNewName] = useState("");
   const [creating, setCreating] = useState(false);
 
-  const selected =
-    pipelines.find((p) => p.id === selectedPipelineId) ?? pipelines[0] ?? null;
+  const selected = pipelines.find((p) => p.id === selectedPipelineId) ?? pipelines[0] ?? null;
 
   const handleCreate = async () => {
     const name = newName.trim();
@@ -88,9 +82,7 @@ export function PipelineHeader({
                 <button className="flex items-center gap-2 rounded-lg border border-border/60 bg-card px-3 py-2 text-sm font-medium hover:bg-muted/40 transition-colors cursor-pointer min-w-50" />
               }
             >
-              <span className="truncate flex-1 text-left">
-                {selected?.name ?? "Sin pipeline"}
-              </span>
+              <span className="truncate flex-1 text-left">{selected?.name ?? "Sin pipeline"}</span>
               <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="min-w-60">
@@ -98,16 +90,11 @@ export function PipelineHeader({
                 <DropdownMenuItem
                   key={p.id}
                   onClick={() => onSelect(p.id)}
-                  className={cn(
-                    "cursor-pointer",
-                    p.id === selected?.id && "bg-muted/60"
-                  )}
+                  className={cn("cursor-pointer", p.id === selected?.id && "bg-muted/60")}
                 >
                   <span className="flex-1 truncate">{p.name}</span>
                   {p.isDefault && (
-                    <span className="text-[10px] text-muted-foreground">
-                      default
-                    </span>
+                    <span className="text-[10px] text-muted-foreground">default</span>
                   )}
                 </DropdownMenuItem>
               ))}
@@ -136,7 +123,7 @@ export function PipelineHeader({
                 "flex h-7 w-7 items-center justify-center rounded-md transition-colors cursor-pointer",
                 view === "kanban"
                   ? "bg-muted text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
               )}
               aria-label="Vista kanban"
               title="Kanban"
@@ -150,7 +137,7 @@ export function PipelineHeader({
                 "flex h-7 w-7 items-center justify-center rounded-md transition-colors cursor-pointer",
                 view === "list"
                   ? "bg-muted text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
               )}
               aria-label="Vista lista"
               title="Lista"
@@ -186,7 +173,8 @@ export function PipelineHeader({
                 autoFocus
               />
               <p className="text-xs text-muted-foreground">
-                Se creará con etapas por defecto: Prospecto · Contactado · Propuesta · Negociación · Cerrado Ganado · Cerrado Perdido.
+                Se creará con etapas por defecto: Prospecto · Contactado · Propuesta · Negociación ·
+                Cerrado Ganado · Cerrado Perdido.
               </p>
             </div>
             <div className="flex justify-end gap-2 pt-2">
@@ -197,11 +185,7 @@ export function PipelineHeader({
               >
                 Cancelar
               </Button>
-              <Button
-                onClick={handleCreate}
-                disabled={creating}
-                className="cursor-pointer"
-              >
+              <Button onClick={handleCreate} disabled={creating} className="cursor-pointer">
                 {creating ? "Creando..." : "Crear"}
               </Button>
             </div>

@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isChannel } from "@/lib/channels/types";
 import { moduloActivo } from "@/lib/config";
-import { autorizarSimulador, crearConversacionSimulada, listarConversacionesSimuladas } from "@/lib/simulador";
+import {
+  autorizarSimulador,
+  crearConversacionSimulada,
+  listarConversacionesSimuladas,
+} from "@/lib/simulador";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +27,10 @@ export async function POST(request: NextRequest) {
   const auth = await guard(request);
   if ("response" in auth) return auth.response;
 
-  const body = (await request.json().catch(() => null)) as { canal?: unknown; nombre?: unknown } | null;
+  const body = (await request.json().catch(() => null)) as {
+    canal?: unknown;
+    nombre?: unknown;
+  } | null;
   const canal = isChannel(body?.canal) ? body.canal : "whatsapp";
   const nombre = typeof body?.nombre === "string" ? body.nombre.slice(0, 80) : null;
 

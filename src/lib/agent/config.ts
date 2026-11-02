@@ -30,9 +30,7 @@ export interface ResolvedAgentConfig {
   modelInherited: boolean;
 }
 
-export async function getAgentConfig(
-  channel: Channel
-): Promise<ResolvedAgentConfig> {
+export async function getAgentConfig(channel: Channel): Promise<ResolvedAgentConfig> {
   const tenantId = await resolveDefaultTenantId();
 
   const row = tenantId ? await readRow(tenantId, channel) : null;
@@ -47,9 +45,7 @@ export async function getAgentConfig(
     // tambien: la fila de la migracion los crea explicitamente en false.
     enabled: row?.enabled ?? true,
     systemPrompt: ownPrompt || (await getGlobalSystemPromptTemplate()),
-    enabledTools: ownTools?.length
-      ? filterValidTools(ownTools)
-      : await getEnabledToolNames(),
+    enabledTools: ownTools?.length ? filterValidTools(ownTools) : await getEnabledToolNames(),
     model: ownModel || getAgentModel(),
     promptInherited: !ownPrompt,
     toolsInherited: !ownTools?.length,
@@ -61,9 +57,7 @@ async function readRow(tenantId: string, channel: Channel) {
   const [row] = await db
     .select()
     .from(agentConfigs)
-    .where(
-      and(eq(agentConfigs.tenantId, tenantId), eq(agentConfigs.channel, channel))
-    )
+    .where(and(eq(agentConfigs.tenantId, tenantId), eq(agentConfigs.channel, channel)))
     .limit(1);
   return row ?? null;
 }
@@ -83,7 +77,7 @@ export interface AgentConfigPatch {
 
 export async function saveAgentConfig(
   channel: Channel,
-  patch: AgentConfigPatch
+  patch: AgentConfigPatch,
 ): Promise<ResolvedAgentConfig | null> {
   const tenantId = await resolveDefaultTenantId();
   if (!tenantId) return null;
@@ -93,9 +87,7 @@ export async function saveAgentConfig(
     channel,
     enabled: patch.enabled ?? true,
     systemPrompt: patch.systemPrompt?.trim() || null,
-    enabledTools: patch.enabledTools?.length
-      ? filterValidTools(patch.enabledTools)
-      : null,
+    enabledTools: patch.enabledTools?.length ? filterValidTools(patch.enabledTools) : null,
     model: patch.model?.trim() || null,
     updatedAt: new Date(),
   };
@@ -107,12 +99,8 @@ export async function saveAgentConfig(
       target: [agentConfigs.tenantId, agentConfigs.channel],
       set: {
         ...(patch.enabled !== undefined ? { enabled: values.enabled } : {}),
-        ...(patch.systemPrompt !== undefined
-          ? { systemPrompt: values.systemPrompt }
-          : {}),
-        ...(patch.enabledTools !== undefined
-          ? { enabledTools: values.enabledTools }
-          : {}),
+        ...(patch.systemPrompt !== undefined ? { systemPrompt: values.systemPrompt } : {}),
+        ...(patch.enabledTools !== undefined ? { enabledTools: values.enabledTools } : {}),
         ...(patch.model !== undefined ? { model: values.model } : {}),
         updatedAt: values.updatedAt,
       },
@@ -122,9 +110,7 @@ export async function saveAgentConfig(
 }
 
 /** Vuelve a heredar todo del global sin borrar el on/off del canal. */
-export async function resetAgentConfig(
-  channel: Channel
-): Promise<ResolvedAgentConfig | null> {
+export async function resetAgentConfig(channel: Channel): Promise<ResolvedAgentConfig | null> {
   return saveAgentConfig(channel, {
     systemPrompt: null,
     enabledTools: null,

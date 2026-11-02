@@ -29,7 +29,10 @@ export async function POST(request: NextRequest) {
 
   const valid = validateAutomation(body);
   if (!valid.ok) {
-    return NextResponse.json({ error: valid.errors.join(". "), errors: valid.errors }, { status: 400 });
+    return NextResponse.json(
+      { error: valid.errors.join(". "), errors: valid.errors },
+      { status: 400 },
+    );
   }
 
   const created = await createAutomation(valid.data);

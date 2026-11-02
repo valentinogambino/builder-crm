@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  getConversation,
-  markConversationAsRead,
-} from "@/lib/conversations";
+import { getConversation, markConversationAsRead } from "@/lib/conversations";
 import { requireMember } from "@/lib/api-auth";
 import { canAccessContact } from "@/lib/team";
 
@@ -21,9 +18,7 @@ export async function GET(
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
   // Hilo de un contacto ajeno (o sin contacto, si no es admin): como si no existiera.
-  const accesible = contact
-    ? canAccessContact(auth.member, contact)
-    : auth.member.role === "admin";
+  const accesible = contact ? canAccessContact(auth.member, contact) : auth.member.role === "admin";
   if (!accesible) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }

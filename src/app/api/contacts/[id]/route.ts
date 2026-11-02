@@ -9,27 +9,17 @@ import { canAccessContact } from "@/lib/team";
 import { assignContact } from "@/lib/contacts/assign";
 import { purgeContactDocuments } from "@/lib/documents";
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { id } = await params;
 
-  const contactRows = await db
-    .select()
-    .from(contacts)
-    .where(eq(contacts.id, id))
-    .limit(1);
+  const contactRows = await db.select().from(contacts).where(eq(contacts.id, id)).limit(1);
   const contact = contactRows[0];
 
   // 404 tambien para lo ajeno: no confirmar que existe.
   if (!contact || !canAccessContact(auth.member, contact)) {
-    return NextResponse.json(
-      { error: "Contacto no encontrado" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Contacto no encontrado" }, { status: 404 });
   }
 
   const [owner] = contact.ownerId
@@ -40,15 +30,9 @@ export async function GET(
         .limit(1)
     : [];
 
-  const contactDeals = await db
-    .select()
-    .from(deals)
-    .where(eq(deals.contactId, id));
+  const contactDeals = await db.select().from(deals).where(eq(deals.contactId, id));
 
-  const contactActivities = await db
-    .select()
-    .from(activities)
-    .where(eq(activities.contactId, id));
+  const contactActivities = await db.select().from(activities).where(eq(activities.contactId, id));
 
   return NextResponse.json({
     ...contact,
@@ -58,10 +42,7 @@ export async function GET(
   });
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { id } = await params;
@@ -73,18 +54,11 @@ export async function PUT(
     return NextResponse.json({ error: "JSON invalido" }, { status: 400 });
   }
 
-  const existingRows = await db
-    .select()
-    .from(contacts)
-    .where(eq(contacts.id, id))
-    .limit(1);
+  const existingRows = await db.select().from(contacts).where(eq(contacts.id, id)).limit(1);
   const existing = existingRows[0];
 
   if (!existing || !canAccessContact(auth.member, existing)) {
-    return NextResponse.json(
-      { error: "Contacto no encontrado" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Contacto no encontrado" }, { status: 404 });
   }
 
   // El propietario va por `assignContact`: es lo que emite el evento de la
@@ -93,7 +67,7 @@ export async function PUT(
     if (auth.member.role !== "admin") {
       return NextResponse.json(
         { error: "Solo un administrador puede cambiar el propietario" },
-        { status: 403 }
+        { status: 403 },
       );
     }
     const result = await assignContact({
@@ -124,7 +98,9 @@ export async function PUT(
   }
   if (body.customFields !== undefined) {
     // Parcial: se mezclan con lo guardado, solo se validan las claves que vienen.
-    const campos = validarCamposPersonalizados(camposContacto(), body.customFields, { parcial: true });
+    const campos = validarCamposPersonalizados(camposContacto(), body.customFields, {
+      parcial: true,
+    });
     if (!campos.ok) {
       return NextResponse.json({ error: campos.error }, { status: 400 });
     }
@@ -146,24 +122,17 @@ export async function PUT(
 
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { id } = await params;
 
-  const existingRows = await db
-    .select()
-    .from(contacts)
-    .where(eq(contacts.id, id))
-    .limit(1);
+  const existingRows = await db.select().from(contacts).where(eq(contacts.id, id)).limit(1);
   const existing = existingRows[0];
 
   if (!existing || !canAccessContact(auth.member, existing)) {
-    return NextResponse.json(
-      { error: "Contacto no encontrado" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Contacto no encontrado" }, { status: 404 });
   }
 
   // Los archivos del bucket no se van por cascade: primero ellos, despues la fila.

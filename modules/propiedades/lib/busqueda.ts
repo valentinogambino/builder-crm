@@ -116,8 +116,7 @@ function rowToMatch(r: PropRow): PropertyMatch {
     valor: fmtValor(r),
     expensas: r.expenses ?? "",
     amenities: (r.amenities ?? []).join(", "),
-    aptoCredito:
-      r.creditEligible === true ? "Si" : r.creditEligible === false ? "No" : "",
+    aptoCredito: r.creditEligible === true ? "Si" : r.creditEligible === false ? "No" : "",
     link: r.publicUrl ?? "",
     descripcion: r.description ?? "",
     referenceCode: r.referenceCode ?? "",
@@ -166,9 +165,7 @@ function isUrl(query: string): boolean {
  * Regex fallback para extraer dirección del markdown scrapeado de un portal.
  * Captura el primer patrón "<calle> <num>, <barrio>".
  */
-function extractAddressViaRegex(
-  markdown: string
-): { direccion?: string; barrio?: string } | null {
+function extractAddressViaRegex(markdown: string): { direccion?: string; barrio?: string } | null {
   const patterns = [
     /####\s*([^,\n]+?)\s*,\s*([^,\n]+?)\s*,/,
     /Direccion[:\s]*([^,\n]+?)\s*,\s*([^,\n]+)/i,
@@ -193,7 +190,7 @@ function extractAddressViaRegex(
  * un modelo mini vía OpenRouter con response_format JSON si la regex falló.
  */
 async function extractAddressFromScrape(
-  markdown: string
+  markdown: string,
 ): Promise<{ direccion?: string; barrio?: string } | null> {
   const fromRegex = extractAddressViaRegex(markdown);
   if (fromRegex?.direccion) return fromRegex;

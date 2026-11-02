@@ -37,7 +37,7 @@ let client: S3Client | null = null;
 function s3(): S3Client {
   if (!storageConfigured()) {
     throw new Error(
-      "Storage sin configurar: faltan S3_ENDPOINT, S3_BUCKET, S3_ACCESS_KEY_ID o S3_SECRET_ACCESS_KEY"
+      "Storage sin configurar: faltan S3_ENDPOINT, S3_BUCKET, S3_ACCESS_KEY_ID o S3_SECRET_ACCESS_KEY",
     );
   }
   if (!client) {
@@ -71,14 +71,14 @@ export async function signUpload(key: string, mime: string): Promise<string> {
   return getSignedUrl(
     s3(),
     new PutObjectCommand({ Bucket: bucket(), Key: key, ContentType: mime }),
-    { expiresIn: UPLOAD_URL_TTL }
+    { expiresIn: UPLOAD_URL_TTL },
   );
 }
 
 /** URL firmada de lectura. `inline` abre en el navegador (PDF/imagen); si no, descarga. */
 export async function signDownload(
   key: string,
-  opts: { filename: string; mime: string; inline: boolean }
+  opts: { filename: string; mime: string; inline: boolean },
 ): Promise<string> {
   const disposition = `${opts.inline ? "inline" : "attachment"}; filename*=UTF-8''${encodeURIComponent(opts.filename)}`;
   return getSignedUrl(
@@ -89,7 +89,7 @@ export async function signDownload(
       ResponseContentType: opts.mime,
       ResponseContentDisposition: disposition,
     }),
-    { expiresIn: DOWNLOAD_URL_TTL }
+    { expiresIn: DOWNLOAD_URL_TTL },
   );
 }
 
@@ -119,7 +119,7 @@ export async function deleteObjects(keys: string[]): Promise<void> {
       new DeleteObjectsCommand({
         Bucket: bucket(),
         Delete: { Objects: chunk.map((Key) => ({ Key })), Quiet: true },
-      })
+      }),
     );
   }
 }

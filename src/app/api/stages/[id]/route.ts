@@ -4,10 +4,7 @@ import { pipelineStages, deals } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { requireMember } from "@/lib/api-auth";
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { id } = await params;
@@ -49,16 +46,13 @@ export async function PUT(
 
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { id } = await params;
 
-  const dealRows = await db
-    .select({ id: deals.id })
-    .from(deals)
-    .where(eq(deals.stageId, id));
+  const dealRows = await db.select({ id: deals.id }).from(deals).where(eq(deals.stageId, id));
 
   if (dealRows.length > 0) {
     return NextResponse.json(
@@ -66,14 +60,11 @@ export async function DELETE(
         error: "La etapa tiene deals",
         dealCount: dealRows.length,
       },
-      { status: 409 }
+      { status: 409 },
     );
   }
 
-  const deleted = await db
-    .delete(pipelineStages)
-    .where(eq(pipelineStages.id, id))
-    .returning();
+  const deleted = await db.delete(pipelineStages).where(eq(pipelineStages.id, id)).returning();
 
   if (deleted.length === 0) {
     return NextResponse.json({ error: "Etapa no encontrada" }, { status: 404 });

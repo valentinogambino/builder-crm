@@ -29,7 +29,9 @@ function validar(): { config: ConfigCliente | null; errores: string[] } {
   const vistas = new Set(r.data.contacto.campos.map((c) => c.clave));
   for (const campo of camposDeModulos()) {
     if (vistas.has(campo.clave)) {
-      problemas.push(`contacto.campos: la clave "${campo.clave}" esta repetida entre config/cliente.ts y un modulo`);
+      problemas.push(
+        `contacto.campos: la clave "${campo.clave}" esta repetida entre config/cliente.ts y un modulo`,
+      );
     }
     vistas.add(campo.clave);
   }

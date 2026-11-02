@@ -23,7 +23,11 @@ if (!process.env.AGENT_WORKER_SECRET && existsSync(join(raiz, ".env.local"))) {
 
 const args = process.argv.slice(2);
 const i = args.indexOf("--url");
-const base = (i >= 0 ? args[i + 1] : process.env.APP_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");
+const base = (
+  i >= 0
+    ? args[i + 1]
+    : process.env.APP_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+).replace(/\/$/, "");
 const secreto = process.env.AGENT_WORKER_SECRET;
 if (!secreto) {
   console.error("[seed] falta AGENT_WORKER_SECRET (el mismo que tiene la instancia).");
@@ -43,6 +47,6 @@ if (!res.ok || !json.ok) {
 console.log(
   json.yaExistia
     ? "[seed] la demo del nucleo ya estaba cargada (no se duplico)"
-    : `[seed] contactos: ${json.contactos}, operaciones: ${json.operaciones}, conversaciones: ${json.conversaciones}, mensajes: ${json.mensajes}`
+    : `[seed] contactos: ${json.contactos}, operaciones: ${json.operaciones}, conversaciones: ${json.conversaciones}, mensajes: ${json.mensajes}`,
 );
 if (json.modulos?.length) console.log(`[seed] modulos sembrados: ${json.modulos.join(", ")}`);

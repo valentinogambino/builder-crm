@@ -11,8 +11,7 @@ const AUTH_PATHS = ["/login", "/signup"];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAuthRoute =
-    AUTH_PATHS.includes(pathname) || pathname.startsWith("/auth");
+  const isAuthRoute = AUTH_PATHS.includes(pathname) || pathname.startsWith("/auth");
 
   const m = marca();
 
@@ -41,17 +40,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               unoptimized
               className="h-9 w-9 rounded-full object-cover shadow-lg shadow-primary/20 shrink-0"
             />
-            <span className="text-lg font-semibold tracking-tight font-heading">
-              {m.nombre}
-            </span>
+            <span className="text-lg font-semibold tracking-tight font-heading">{m.nombre}</span>
           </div>
           <div className="relative space-y-6 max-w-md">
             <p className="text-3xl lg:text-[34px] font-heading font-semibold tracking-tight leading-[1.15] text-balance">
               Tu pipeline de ventas, ordenado y conectado a WhatsApp.
             </p>
-            <p className="text-sm text-white/60 leading-relaxed">
-              {m.descripcion}
-            </p>
+            <p className="text-sm text-white/60 leading-relaxed">{m.descripcion}</p>
           </div>
           <div className="relative flex items-center gap-3 text-xs text-white/40">
             <span className="h-1 w-1 rounded-full bg-emerald-400" />
@@ -70,9 +65,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 unoptimized
                 className="h-9 w-9 rounded-full object-cover shadow-sm shrink-0"
               />
-              <span className="text-lg font-semibold tracking-tight font-heading">
-                {m.nombre}
-              </span>
+              <span className="text-lg font-semibold tracking-tight font-heading">{m.nombre}</span>
             </div>
 
             <div className="space-y-6">{children}</div>

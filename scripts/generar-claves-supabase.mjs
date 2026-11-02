@@ -27,7 +27,11 @@ const anos = Number(valor("--anos", "10"));
 const soloEnv = args.includes("--env");
 
 const base64url = (entrada) =>
-  Buffer.from(entrada).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  Buffer.from(entrada)
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 
 function firmar(payload, secreto) {
   const cabecera = base64url(JSON.stringify({ alg: "HS256", typ: "JWT" }));

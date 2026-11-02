@@ -56,14 +56,22 @@ function construirSecciones(esAdmin: boolean): NavSection[] {
         { href: "/pipeline", label: "Pipeline", icon: Kanban },
         { href: "/contacts", label: "Contactos", icon: Users },
         { href: "/conversations", label: "Conversaciones", icon: MessageSquare },
-        ...si(moduloActivo("plantillas"), { href: "/plantillas", label: "Plantillas", icon: FileText }),
+        ...si(moduloActivo("plantillas"), {
+          href: "/plantillas",
+          label: "Plantillas",
+          icon: FileText,
+        }),
         ...seccion("Operaciones"),
       ],
     },
     {
       title: "Productividad",
       items: [
-        ...si(moduloActivo("actividades"), { href: "/activities", label: "Actividades", icon: Activity }),
+        ...si(moduloActivo("actividades"), {
+          href: "/activities",
+          label: "Actividades",
+          icon: Activity,
+        }),
         ...seccion("Productividad"),
       ],
     },
@@ -71,17 +79,23 @@ function construirSecciones(esAdmin: boolean): NavSection[] {
       title: "Inteligencia",
       items: [
         ...si(moduloActivo("reportes"), { href: "/reportes", label: "Reportes", icon: BarChart3 }),
-        ...si(moduloActivo("automatizaciones"), { href: "/automatizaciones", label: "Automatizaciones", icon: Workflow }),
-        ...si(esAdmin && moduloActivo("simulador"), { href: "/simulador", label: "Simulador", icon: FlaskConical }),
+        ...si(moduloActivo("automatizaciones"), {
+          href: "/automatizaciones",
+          label: "Automatizaciones",
+          icon: Workflow,
+        }),
+        ...si(esAdmin && moduloActivo("simulador"), {
+          href: "/simulador",
+          label: "Simulador",
+          icon: FlaskConical,
+        }),
         ...seccion("Inteligencia"),
       ],
     },
   ].filter((s) => s.items.length > 0);
 }
 
-const footerItems: NavItem[] = [
-  { href: "/settings", label: "Configuracion", icon: Settings },
-];
+const footerItems: NavItem[] = [{ href: "/settings", label: "Configuracion", icon: Settings }];
 
 export function Sidebar() {
   return (
@@ -136,9 +150,7 @@ export function SidebarNav({ className }: { className?: string }) {
 }
 
 function NavLink({ item, pathname }: { item: NavItem; pathname: string }) {
-  const isActive =
-    pathname === item.href ||
-    (item.href !== "/" && pathname.startsWith(item.href));
+  const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
 
   return (
     <Link
@@ -157,10 +169,7 @@ function NavLink({ item, pathname }: { item: NavItem; pathname: string }) {
         />
       )}
       <item.icon
-        className={cn(
-          "h-4 w-4 shrink-0",
-          isActive ? "text-primary" : "text-sidebar-foreground/55",
-        )}
+        className={cn("h-4 w-4 shrink-0", isActive ? "text-primary" : "text-sidebar-foreground/55")}
       />
       <span className="truncate">{item.label}</span>
     </Link>

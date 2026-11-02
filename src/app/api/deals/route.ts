@@ -50,10 +50,7 @@ export async function POST(request: NextRequest) {
   const { title, value, stageId, contactId, expectedClose, probability, notes } = body;
 
   if (!title || !contactId) {
-    return NextResponse.json(
-      { error: "Titulo y contacto son requeridos" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Titulo y contacto son requeridos" }, { status: 400 });
   }
 
   // Get first stage if none provided
@@ -69,10 +66,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (!finalStageId) {
-    return NextResponse.json(
-      { error: "No hay etapas de pipeline configuradas" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "No hay etapas de pipeline configuradas" }, { status: 400 });
   }
 
   try {
@@ -100,14 +94,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Unknown";
     if (msg.includes("FOREIGN KEY") || msg.includes("foreign key")) {
-      return NextResponse.json(
-        { error: "Contacto no encontrado" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Contacto no encontrado" }, { status: 400 });
     }
-    return NextResponse.json(
-      { error: `Error al crear deal: ${msg}` },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: `Error al crear deal: ${msg}` }, { status: 500 });
   }
 }

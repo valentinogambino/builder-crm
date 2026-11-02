@@ -24,10 +24,7 @@ export function variablesAreSequential(vars: number[]): boolean {
 }
 
 /** Componente BODY para CREAR la plantilla (incluye `example` si hay variables). */
-export function buildBodyComponent(
-  bodyText: string,
-  examples: string[]
-): Record<string, unknown> {
+export function buildBodyComponent(bodyText: string, examples: string[]): Record<string, unknown> {
   const vars = extractVariables(bodyText);
   const comp: Record<string, unknown> = { type: "BODY", text: bodyText };
   if (vars.length > 0) {
@@ -37,10 +34,7 @@ export function buildBodyComponent(
 }
 
 /** Componentes para ENVIAR la plantilla, rellenando las variables del BODY. */
-export function buildSendComponents(
-  bodyText: string,
-  values: string[]
-): unknown[] {
+export function buildSendComponents(bodyText: string, values: string[]): unknown[] {
   const vars = extractVariables(bodyText);
   if (vars.length === 0) return [];
   return [
@@ -98,7 +92,7 @@ interface BodyLikeComponent {
 export function getBodyText(components: unknown): string {
   if (!Array.isArray(components)) return "";
   const body = (components as BodyLikeComponent[]).find(
-    (c) => typeof c?.type === "string" && c.type.toUpperCase() === "BODY"
+    (c) => typeof c?.type === "string" && c.type.toUpperCase() === "BODY",
   );
   return body?.text ?? "";
 }

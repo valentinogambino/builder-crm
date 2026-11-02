@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Plus, MapPin, Phone, CalendarClock, Pencil, Trash2, CheckCircle2, XCircle } from "lucide-react";
+import {
+  Plus,
+  MapPin,
+  Phone,
+  CalendarClock,
+  Pencil,
+  Trash2,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +19,13 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { VisitForm } from "./VisitForm";
-import { API_VISITAS, ETIQUETA_ESTADO, type Visita, type EstadoVisita, type VisitaConContacto } from "../tipos";
+import {
+  API_VISITAS,
+  ETIQUETA_ESTADO,
+  type Visita,
+  type EstadoVisita,
+  type VisitaConContacto,
+} from "../tipos";
 
 const STATUS_BADGE: Record<EstadoVisita, string> = {
   coordinating: "bg-amber-50 text-amber-700 border-amber-200",
@@ -23,7 +38,12 @@ function formatDateTime(d: Date | string | null | undefined): string {
   if (!d) return "Sin fecha";
   const date = typeof d === "string" ? new Date(d) : d;
   if (Number.isNaN(date.getTime())) return "Sin fecha";
-  return new Intl.DateTimeFormat("es", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }).format(date);
+  return new Intl.DateTimeFormat("es", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
 }
 
 export function VisitasPage() {
@@ -111,7 +131,12 @@ export function VisitasPage() {
         }
       />
 
-      <VisitForm open={showForm} onClose={handleClose} visit={editing} defaultStatus={defaultStatus} />
+      <VisitForm
+        open={showForm}
+        onClose={handleClose}
+        visit={editing}
+        defaultStatus={defaultStatus}
+      />
 
       {loading ? (
         <div className="space-y-3">
@@ -193,7 +218,21 @@ interface SectionProps {
   muted?: boolean;
 }
 
-function VisitSection({ title, description, count, visits, emptyText, onEdit, onMarkCompleted, onCancel, onConfirm, onRemove, showQuickActions, actionAddNew, muted }: SectionProps) {
+function VisitSection({
+  title,
+  description,
+  count,
+  visits,
+  emptyText,
+  onEdit,
+  onMarkCompleted,
+  onCancel,
+  onConfirm,
+  onRemove,
+  showQuickActions,
+  actionAddNew,
+  muted,
+}: SectionProps) {
   return (
     <Card className={cn("surface-card", muted && "opacity-90")}>
       <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0">
@@ -215,7 +254,13 @@ function VisitSection({ title, description, count, visits, emptyText, onEdit, on
       </CardHeader>
       <CardContent>
         {visits.length === 0 ? (
-          emptyText ? <EmptyState icon={CalendarClock} title={emptyText} description="Las visitas que crees apareceran aqui." /> : null
+          emptyText ? (
+            <EmptyState
+              icon={CalendarClock}
+              title={emptyText}
+              description="Las visitas que crees apareceran aqui."
+            />
+          ) : null
         ) : (
           <div className="space-y-2">
             {visits.map((v) => (
@@ -237,7 +282,15 @@ function VisitSection({ title, description, count, visits, emptyText, onEdit, on
   );
 }
 
-function VisitRow({ visit, onEdit, onMarkCompleted, onCancel, onConfirm, onRemove, showQuickActions }: {
+function VisitRow({
+  visit,
+  onEdit,
+  onMarkCompleted,
+  onCancel,
+  onConfirm,
+  onRemove,
+  showQuickActions,
+}: {
   visit: VisitaConContacto;
   onEdit: () => void;
   onMarkCompleted?: () => void;
@@ -251,8 +304,17 @@ function VisitRow({ visit, onEdit, onMarkCompleted, onCancel, onConfirm, onRemov
     <div className="flex items-center gap-3 p-3 rounded-lg border border-border/60 bg-card hover:bg-muted/30 transition-colors">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-medium truncate">{visit.contactName || "Sin contacto"}</span>
-          <span className={cn("text-[10.5px] px-1.5 py-0.5 rounded border font-medium", STATUS_BADGE[status])}>{ETIQUETA_ESTADO[status]}</span>
+          <span className="text-sm font-medium truncate">
+            {visit.contactName || "Sin contacto"}
+          </span>
+          <span
+            className={cn(
+              "text-[10.5px] px-1.5 py-0.5 rounded border font-medium",
+              STATUS_BADGE[status],
+            )}
+          >
+            {ETIQUETA_ESTADO[status]}
+          </span>
         </div>
         <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
           {visit.propertyAddress && (
@@ -272,7 +334,9 @@ function VisitRow({ visit, onEdit, onMarkCompleted, onCancel, onConfirm, onRemov
             </span>
           )}
         </div>
-        {visit.notes && <p className="mt-1 text-xs text-muted-foreground/90 line-clamp-2">{visit.notes}</p>}
+        {visit.notes && (
+          <p className="mt-1 text-xs text-muted-foreground/90 line-clamp-2">{visit.notes}</p>
+        )}
       </div>
       <div className="flex items-center gap-1 shrink-0">
         {onConfirm && (
@@ -282,19 +346,43 @@ function VisitRow({ visit, onEdit, onMarkCompleted, onCancel, onConfirm, onRemov
           </Button>
         )}
         {showQuickActions && onMarkCompleted && (
-          <Button size="sm" variant="ghost" onClick={onMarkCompleted} title="Marcar como realizada" className="cursor-pointer h-8 w-8 p-0">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={onMarkCompleted}
+            title="Marcar como realizada"
+            className="cursor-pointer h-8 w-8 p-0"
+          >
             <CheckCircle2 className="h-4 w-4 text-emerald-600" />
           </Button>
         )}
         {showQuickActions && onCancel && (
-          <Button size="sm" variant="ghost" onClick={onCancel} title="Cancelar" className="cursor-pointer h-8 w-8 p-0">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={onCancel}
+            title="Cancelar"
+            className="cursor-pointer h-8 w-8 p-0"
+          >
             <XCircle className="h-4 w-4 text-rose-600" />
           </Button>
         )}
-        <Button size="sm" variant="ghost" onClick={onEdit} title="Editar" className="cursor-pointer h-8 w-8 p-0">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={onEdit}
+          title="Editar"
+          className="cursor-pointer h-8 w-8 p-0"
+        >
           <Pencil className="h-3.5 w-3.5" />
         </Button>
-        <Button size="sm" variant="ghost" onClick={onRemove} title="Eliminar" className="cursor-pointer h-8 w-8 p-0 text-destructive hover:text-destructive">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={onRemove}
+          title="Eliminar"
+          className="cursor-pointer h-8 w-8 p-0 text-destructive hover:text-destructive"
+        >
           <Trash2 className="h-3.5 w-3.5" />
         </Button>
       </div>

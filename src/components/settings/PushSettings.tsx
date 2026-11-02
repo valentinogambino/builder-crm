@@ -13,14 +13,13 @@ export function PushSettings() {
   const push = usePush();
 
   const onToggle = async () => {
-    const error =
-      push.state === "subscribed" ? await push.unsubscribe() : await push.subscribe();
+    const error = push.state === "subscribed" ? await push.unsubscribe() : await push.subscribe();
     if (error) toast.error(error);
     else
       toast.success(
         push.state === "subscribed"
           ? "Notificaciones desactivadas en este dispositivo"
-          : "Notificaciones activadas en este dispositivo"
+          : "Notificaciones activadas en este dispositivo",
       );
   };
 
@@ -47,8 +46,8 @@ export function PushSettings() {
           <div>
             <p className="text-sm font-medium">Primero instala el CRM en tu iPhone</p>
             <p className="text-xs text-muted-foreground">
-              En iPhone las notificaciones solo funcionan con la app instalada en la
-              pantalla de inicio.
+              En iPhone las notificaciones solo funcionan con la app instalada en la pantalla de
+              inicio.
             </p>
           </div>
         </div>
@@ -127,12 +126,7 @@ export function PushSettings() {
       </div>
 
       {subscribed && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onTest}
-          className="cursor-pointer text-xs"
-        >
+        <Button variant="ghost" size="sm" onClick={onTest} className="cursor-pointer text-xs">
           Enviar notificacion de prueba
         </Button>
       )}

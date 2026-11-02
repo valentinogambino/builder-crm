@@ -36,9 +36,7 @@ export default async function ConversationPage({ params }: Props) {
   }
 
   // Hilo de un contacto ajeno: como si no existiera.
-  const accesible = contact
-    ? canAccessContact(member, contact)
-    : member.role === "admin";
+  const accesible = contact ? canAccessContact(member, contact) : member.role === "admin";
   if (!accesible) notFound();
 
   await markConversationAsRead(conversationId);
@@ -50,10 +48,7 @@ export default async function ConversationPage({ params }: Props) {
 
   return (
     <div className="flex h-[calc(100dvh-3.5rem-env(safe-area-inset-top)-2rem)] -m-4 md:-m-6 lg:-m-8 overflow-hidden border border-border rounded-lg bg-background">
-      <ConversationsListLive
-        initialConversations={conversations}
-        selectedId={conversationId}
-      />
+      <ConversationsListLive initialConversations={conversations} selectedId={conversationId} />
       <ConversationView
         conversation={conversation}
         threads={contactThreads.map((t) => ({

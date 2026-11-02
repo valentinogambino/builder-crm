@@ -19,10 +19,7 @@ export async function POST(request: NextRequest) {
   const color = typeof body.color === "string" ? body.color : "#64748b";
 
   if (!pipelineId || !name) {
-    return NextResponse.json(
-      { error: "pipelineId y name son requeridos" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "pipelineId y name son requeridos" }, { status: 400 });
   }
 
   const pipelineExists = await db

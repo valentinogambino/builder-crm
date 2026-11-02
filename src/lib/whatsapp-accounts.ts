@@ -30,7 +30,7 @@ function mapRow(row: typeof whatsappAccounts.$inferSelect): WhatsappAccount {
 
 /** Routing entrante: resuelve la cuenta del CRM por el phone_number_id del webhook. */
 export async function getAccountByPhoneNumberId(
-  phoneNumberId: string | null | undefined
+  phoneNumberId: string | null | undefined,
 ): Promise<WhatsappAccount | null> {
   if (!phoneNumberId) return null;
   const [row] = await db
@@ -43,26 +43,19 @@ export async function getAccountByPhoneNumberId(
 
 /** Saliente: primera cuenta activa de un tenant (Fase 1 = una cuenta por tenant). */
 export async function getAccountByTenant(
-  tenantId: string | null | undefined
+  tenantId: string | null | undefined,
 ): Promise<WhatsappAccount | null> {
   if (!tenantId) return null;
   const [row] = await db
     .select()
     .from(whatsappAccounts)
-    .where(
-      and(
-        eq(whatsappAccounts.tenantId, tenantId),
-        eq(whatsappAccounts.status, "active")
-      )
-    )
+    .where(and(eq(whatsappAccounts.tenantId, tenantId), eq(whatsappAccounts.status, "active")))
     .limit(1);
   return row ? mapRow(row) : null;
 }
 
 /** Saliente: resuelve la cuenta con la que responder a un contacto (via su tenant). */
-export async function getAccountForContact(
-  contactId: string
-): Promise<WhatsappAccount | null> {
+export async function getAccountForContact(contactId: string): Promise<WhatsappAccount | null> {
   const [contact] = await db
     .select({ tenantId: contacts.tenantId })
     .from(contacts)

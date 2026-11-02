@@ -8,9 +8,7 @@ import { z } from "zod";
  * credencial; eso es entorno (.env), no configuracion.
  */
 
-const hex = z
-  .string()
-  .regex(/^#([0-9a-fA-F]{6})$/, "Color en formato #rrggbb");
+const hex = z.string().regex(/^#([0-9a-fA-F]{6})$/, "Color en formato #rrggbb");
 
 const clave = z
   .string()
@@ -68,7 +66,7 @@ export const esquemaPipeline = z.object({
     .min(2, "Un pipeline necesita al menos dos etapas")
     .refine(
       (e) => new Set(e.map((x) => x.clave)).size === e.length,
-      "Hay etapas con la misma clave"
+      "Hay etapas con la misma clave",
     ),
 });
 
@@ -100,7 +98,7 @@ export const esquemaCampo = z
   })
   .refine(
     (c) => c.tipo !== "seleccion" || (c.opciones && c.opciones.length > 0),
-    "Un campo de tipo seleccion necesita opciones"
+    "Un campo de tipo seleccion necesita opciones",
   );
 
 export const esquemaAgente = z.object({
@@ -151,9 +149,9 @@ const esquemaDemo = z.object({
             /** Solo para `out`: lo escribio el agente de IA o una persona. */
             origen: z.enum(["agent", "human"]).optional(),
             body: z.string().min(1).max(1000),
-          })
+          }),
         )
-        .min(1)
+        .min(1),
     )
     .optional(),
   /**
@@ -192,13 +190,14 @@ export const esquemaConfig = z.object({
         .default([])
         .refine(
           (c) => new Set(c.map((x) => x.clave)).size === c.length,
-          "Hay campos con la misma clave"
+          "Hay campos con la misma clave",
         ),
     })
     .default({ campos: [] }),
   agente: esquemaAgente.default({
     nombre: "Asistente",
-    mensajeDerivacion: "Te paso con una persona del equipo que te va a ayudar con esto. Un momento.",
+    mensajeDerivacion:
+      "Te paso con una persona del equipo que te va a ayudar con esto. Un momento.",
   }),
   /** Datos de demostracion del nicho. Sin esto, la demo del nucleo es generica. */
   demo: esquemaDemo.optional(),

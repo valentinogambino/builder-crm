@@ -102,7 +102,6 @@ export interface PipelineColumn extends PipelineStage {
   deals: DealWithContact[];
 }
 
-
 export interface DashboardStats {
   totalContacts: number;
   activeDeals: number;

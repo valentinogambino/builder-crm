@@ -76,10 +76,7 @@ export async function GET(request: NextRequest) {
  * encolados antes de la migracion multicanal solo tienen contacto y caen al wrapper,
  * que resuelve su conversacion mas reciente.
  */
-function runClaim(claim: {
-  contactId: string;
-  conversationId: string | null;
-}) {
+function runClaim(claim: { contactId: string; conversationId: string | null }) {
   return claim.conversationId
     ? runAgentForConversation(claim.conversationId)
     : runAgentForContact(claim.contactId);
@@ -103,10 +100,7 @@ async function processJob(jobId: string): Promise<NextResponse> {
       });
     } else {
       await markJobFailed(jobId, run.reason ?? "unknown");
-      return NextResponse.json(
-        { ok: false, reason: run.reason },
-        { status: 200 }
-      );
+      return NextResponse.json({ ok: false, reason: run.reason }, { status: 200 });
     }
   } catch (err) {
     const msg = err instanceof Error ? err.message : "unknown";

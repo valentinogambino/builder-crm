@@ -54,10 +54,9 @@ export function ChatPanelLive({
 
   const refetch = useCallback(async () => {
     try {
-      const res = await fetch(
-        `/api/conversations/${conversation.conversationId}/messages`,
-        { cache: "no-store" },
-      );
+      const res = await fetch(`/api/conversations/${conversation.conversationId}/messages`, {
+        cache: "no-store",
+      });
       if (!res.ok) return;
       const json = (await res.json()) as { messages: ConversationMessage[] };
       if (!mountedRef.current) return;
@@ -72,9 +71,7 @@ export function ChatPanelLive({
     let timer: ReturnType<typeof setTimeout> | null = null;
 
     const schedule = () => {
-      const delay = document.hidden
-        ? POLL_INTERVAL_HIDDEN_MS
-        : POLL_INTERVAL_MS;
+      const delay = document.hidden ? POLL_INTERVAL_HIDDEN_MS : POLL_INTERVAL_MS;
       timer = setTimeout(async () => {
         await refetch();
         if (mountedRef.current) schedule();

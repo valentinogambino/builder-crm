@@ -214,7 +214,9 @@ try {
   // 4. Informe ---------------------------------------------------------------
   const prefijo = simulacion ? "[auth] (simulacion) " : "[auth] ";
   if (hechos.length === 0) {
-    console.log(`${prefijo}nada que hacer: la base ya tiene los roles, el esquema y las funciones.`);
+    console.log(
+      `${prefijo}nada que hacer: la base ya tiene los roles, el esquema y las funciones.`,
+    );
     console.log("[auth] si esto es Supabase cloud, es lo esperado.");
   } else {
     console.log(`${prefijo}creado: ${hechos.join(", ")}`);

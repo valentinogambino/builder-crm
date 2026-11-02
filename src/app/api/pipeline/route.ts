@@ -11,10 +11,7 @@ export async function GET() {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
 
-  const stages = await db
-    .select()
-    .from(pipelineStages)
-    .orderBy(asc(pipelineStages.order));
+  const stages = await db.select().from(pipelineStages).orderBy(asc(pipelineStages.order));
 
   const allDeals = await db
     .select({
@@ -67,11 +64,7 @@ export async function PUT(request: NextRequest) {
     if (!moved.ok) {
       return NextResponse.json({ error: moved.error }, { status: 400 });
     }
-    const [result] = await db
-      .select()
-      .from(deals)
-      .where(eq(deals.id, body.dealId))
-      .limit(1);
+    const [result] = await db.select().from(deals).where(eq(deals.id, body.dealId)).limit(1);
     return NextResponse.json(result);
   }
 
@@ -85,7 +78,7 @@ export async function PUT(request: NextRequest) {
           error:
             "No se pueden reemplazar etapas cuando hay deals activos. Elimina los deals primero.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -99,15 +92,10 @@ export async function PUT(request: NextRequest) {
     const defaultPipelineId = defaultPipelineRows[0]?.id;
 
     if (!defaultPipelineId) {
-      return NextResponse.json(
-        { error: "No hay pipeline default configurado" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No hay pipeline default configurado" }, { status: 400 });
     }
 
-    await db
-      .delete(pipelineStages)
-      .where(eq(pipelineStages.pipelineId, defaultPipelineId));
+    await db.delete(pipelineStages).where(eq(pipelineStages.pipelineId, defaultPipelineId));
 
     for (const stage of body.stages) {
       await db.insert(pipelineStages).values({
@@ -120,10 +108,7 @@ export async function PUT(request: NextRequest) {
       });
     }
 
-    const updated = await db
-      .select()
-      .from(pipelineStages)
-      .orderBy(asc(pipelineStages.order));
+    const updated = await db.select().from(pipelineStages).orderBy(asc(pipelineStages.order));
 
     return NextResponse.json(updated);
   }

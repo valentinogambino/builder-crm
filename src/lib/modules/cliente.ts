@@ -23,7 +23,7 @@ export function navModulos(): EntradaNavModulo[] {
       ...item,
       modulo: m.nombre,
       href: item.ruta ? `/m/${m.nombre}/${item.ruta.replace(/^\/+/, "")}` : `/m/${m.nombre}`,
-    }))
+    })),
   );
 }
 
@@ -37,7 +37,12 @@ function parsearCampos() {
   for (const m of MANIFIESTOS) {
     const r = z.array(esquemaCampo).safeParse(m.campos ?? []);
     if (r.success) campos.push(...r.data);
-    else errores.push(...r.error.issues.map((i) => `modulo ${m.nombre}, campos.${i.path.join(".")}: ${i.message}`));
+    else
+      errores.push(
+        ...r.error.issues.map(
+          (i) => `modulo ${m.nombre}, campos.${i.path.join(".")}: ${i.message}`,
+        ),
+      );
   }
   camposCache = campos;
   erroresCache = errores;

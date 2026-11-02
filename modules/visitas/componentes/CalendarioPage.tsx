@@ -2,7 +2,18 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
-import { addMonths, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, isToday, startOfMonth, startOfWeek, subMonths } from "date-fns";
+import {
+  addMonths,
+  endOfMonth,
+  endOfWeek,
+  format,
+  isSameDay,
+  isSameMonth,
+  isToday,
+  startOfMonth,
+  startOfWeek,
+  subMonths,
+} from "date-fns";
 import { es } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -68,7 +79,7 @@ export function CalendarioPage() {
 
   const selectedKey = format(selected, "yyyy-MM-dd");
   const selectedVisits = (visitsByDay.get(selectedKey) ?? []).sort(
-    (a, b) => new Date(a.scheduledAt!).getTime() - new Date(b.scheduledAt!).getTime()
+    (a, b) => new Date(a.scheduledAt!).getTime() - new Date(b.scheduledAt!).getTime(),
   );
 
   return (
@@ -80,13 +91,23 @@ export function CalendarioPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={() => setCursor((c) => subMonths(c, 1))} className="cursor-pointer h-8 w-8 p-0">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCursor((c) => subMonths(c, 1))}
+                  className="cursor-pointer h-8 w-8 p-0"
+                >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <h2 className="text-base font-semibold tracking-tight font-heading min-w-[150px] text-center capitalize">
                   {format(cursor, "MMMM yyyy", { locale: es })}
                 </h2>
-                <Button variant="outline" size="sm" onClick={() => setCursor((c) => addMonths(c, 1))} className="cursor-pointer h-8 w-8 p-0">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCursor((c) => addMonths(c, 1))}
+                  className="cursor-pointer h-8 w-8 p-0"
+                >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -127,14 +148,16 @@ export function CalendarioPage() {
                     className={cn(
                       "relative min-h-[72px] rounded-md border p-1.5 text-left transition-colors cursor-pointer",
                       inMonth ? "bg-card" : "bg-muted/20",
-                      isSelected ? "border-primary ring-1 ring-primary/30" : "border-border/60 hover:border-border"
+                      isSelected
+                        ? "border-primary ring-1 ring-primary/30"
+                        : "border-border/60 hover:border-border",
                     )}
                   >
                     <span
                       className={cn(
                         "inline-flex items-center justify-center text-xs font-medium h-5 min-w-5 px-1 rounded-full",
                         today && "bg-primary text-primary-foreground",
-                        !inMonth && !today && "text-muted-foreground/60"
+                        !inMonth && !today && "text-muted-foreground/60",
                       )}
                     >
                       {day.getDate()}
@@ -142,14 +165,26 @@ export function CalendarioPage() {
                     {dayVisits.length > 0 && (
                       <div className="mt-1 space-y-0.5">
                         {dayVisits.slice(0, 2).map((v) => (
-                          <div key={v.id} className="flex items-center gap-1 text-[10.5px] leading-tight">
-                            <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", STATUS_DOT[v.status])} />
+                          <div
+                            key={v.id}
+                            className="flex items-center gap-1 text-[10.5px] leading-tight"
+                          >
+                            <span
+                              className={cn(
+                                "h-1.5 w-1.5 rounded-full shrink-0",
+                                STATUS_DOT[v.status],
+                              )}
+                            />
                             <span className="truncate">
                               {format(new Date(v.scheduledAt!), "HH:mm")} {v.contactName ?? ""}
                             </span>
                           </div>
                         ))}
-                        {dayVisits.length > 2 && <div className="text-[10px] text-muted-foreground">+{dayVisits.length - 2} mas</div>}
+                        {dayVisits.length > 2 && (
+                          <div className="text-[10px] text-muted-foreground">
+                            +{dayVisits.length - 2} mas
+                          </div>
+                        )}
                       </div>
                     )}
                   </button>
@@ -163,7 +198,9 @@ export function CalendarioPage() {
           <CardContent className="p-4 space-y-3">
             <div className="flex items-center gap-2">
               <CalendarDays className="h-4 w-4 text-muted-foreground" />
-              <h3 className="text-sm font-semibold tracking-tight font-heading capitalize">{format(selected, "EEEE d 'de' MMMM", { locale: es })}</h3>
+              <h3 className="text-sm font-semibold tracking-tight font-heading capitalize">
+                {format(selected, "EEEE d 'de' MMMM", { locale: es })}
+              </h3>
             </div>
 
             {loading ? (
@@ -173,25 +210,37 @@ export function CalendarioPage() {
                 ))}
               </div>
             ) : selectedVisits.length === 0 ? (
-              <p className="text-xs text-muted-foreground py-6 text-center">Sin visitas para este dia.</p>
+              <p className="text-xs text-muted-foreground py-6 text-center">
+                Sin visitas para este dia.
+              </p>
             ) : (
               <div className="space-y-2">
                 {selectedVisits.map((v) => (
                   <div key={v.id} className="rounded-lg border border-border/60 bg-card p-3">
                     <div className="flex items-center gap-2 mb-1">
                       <span className={cn("h-2 w-2 rounded-full", STATUS_DOT[v.status])} />
-                      <span className="text-xs font-semibold">{format(new Date(v.scheduledAt!), "HH:mm")}</span>
-                      <span className="text-[10.5px] text-muted-foreground">{ETIQUETA_ESTADO[v.status]}</span>
+                      <span className="text-xs font-semibold">
+                        {format(new Date(v.scheduledAt!), "HH:mm")}
+                      </span>
+                      <span className="text-[10.5px] text-muted-foreground">
+                        {ETIQUETA_ESTADO[v.status]}
+                      </span>
                     </div>
-                    <p className="text-sm font-medium truncate">{v.contactName ?? "Sin contacto"}</p>
-                    {v.propertyAddress && <p className="text-xs text-muted-foreground truncate">{v.propertyAddress}</p>}
+                    <p className="text-sm font-medium truncate">
+                      {v.contactName ?? "Sin contacto"}
+                    </p>
+                    {v.propertyAddress && (
+                      <p className="text-xs text-muted-foreground truncate">{v.propertyAddress}</p>
+                    )}
                   </div>
                 ))}
               </div>
             )}
 
             <div className="border-t border-border/60 pt-3 mt-2 space-y-1.5">
-              <p className="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Estados</p>
+              <p className="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                Estados
+              </p>
               {(Object.keys(ETIQUETA_ESTADO) as EstadoVisita[]).map((s) => (
                 <div key={s} className="flex items-center gap-2 text-xs">
                   <span className={cn("h-2 w-2 rounded-full", STATUS_DOT[s])} />

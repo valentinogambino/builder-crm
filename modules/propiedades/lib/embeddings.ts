@@ -22,7 +22,10 @@ export function hasOpenAIKey(): boolean {
 }
 
 export async function embed(text: string): Promise<number[]> {
-  const res = await getClient().embeddings.create({ model: EMBEDDING_MODEL, input: text.trim() || " " });
+  const res = await getClient().embeddings.create({
+    model: EMBEDDING_MODEL,
+    input: text.trim() || " ",
+  });
   return res.data[0].embedding;
 }
 

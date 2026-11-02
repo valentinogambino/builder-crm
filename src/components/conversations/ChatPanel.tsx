@@ -47,14 +47,10 @@ interface Props {
 
 function StatusIcon({ msg }: { msg: ConversationMessage }) {
   if (msg.direction !== "out") return null;
-  if (msg.status === "failed")
-    return <AlertCircle className="h-3 w-3 text-destructive" />;
-  if (msg.status === "pending")
-    return <Clock className="h-3 w-3 text-muted-foreground" />;
-  if (msg.status === "read")
-    return <CheckCheck className="h-3 w-3 text-sky-600" />;
-  if (msg.status === "delivered")
-    return <CheckCheck className="h-3 w-3 text-muted-foreground" />;
+  if (msg.status === "failed") return <AlertCircle className="h-3 w-3 text-destructive" />;
+  if (msg.status === "pending") return <Clock className="h-3 w-3 text-muted-foreground" />;
+  if (msg.status === "read") return <CheckCheck className="h-3 w-3 text-sky-600" />;
+  if (msg.status === "delivered") return <CheckCheck className="h-3 w-3 text-muted-foreground" />;
   return <Check className="h-3 w-3 text-muted-foreground" />;
 }
 
@@ -79,16 +75,13 @@ export function ChatPanel({
         return messages[i].sentAt ?? messages[i].createdAt ?? null;
       }
     }
-    return conversation.lastInboundAt
-      ? new Date(conversation.lastInboundAt)
-      : null;
+    return conversation.lastInboundAt ? new Date(conversation.lastInboundAt) : null;
   }, [messages, conversation.lastInboundAt]);
 
   useLayoutEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    const isNewConversation =
-      prevContactIdRef.current !== conversation.conversationId;
+    const isNewConversation = prevContactIdRef.current !== conversation.conversationId;
     if (isNewConversation) {
       el.scrollTop = el.scrollHeight;
       prevContactIdRef.current = conversation.conversationId;
@@ -100,8 +93,7 @@ export function ChatPanel({
     const el = scrollRef.current;
     if (!el) return;
     if (messages.length > prevCountRef.current) {
-      const distanceFromBottom =
-        el.scrollHeight - el.scrollTop - el.clientHeight;
+      const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
       const last = messages[messages.length - 1];
       const isOwnMessage = last?.direction === "out";
       if (isOwnMessage || distanceFromBottom < 200) {
@@ -142,41 +134,34 @@ export function ChatPanel({
           </span>
         </div>
         <div className="flex flex-col min-w-0">
-          <span className="text-[14px] font-semibold tracking-tight truncate">
-            {contact.name}
-          </span>
+          <span className="text-[14px] font-semibold tracking-tight truncate">{contact.name}</span>
           <span className="text-[11px] text-muted-foreground truncate flex items-center gap-1.5">
-            <span
-              aria-hidden
-              className="h-1.5 w-1.5 rounded-full bg-emerald-500"
-            />
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
             {conversation.handle ?? CHANNEL_LABELS[conversation.channel]}
           </span>
         </div>
         <div className="ml-auto flex items-center gap-0.5 shrink-0">
-        {onToggleDetails && (
-          <button
-            type="button"
-            onClick={onToggleDetails}
-            aria-label={
-              detailsOpen ? "Ocultar detalles" : "Mostrar detalles"
-            }
-            className="hidden lg:inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer"
-          >
-            {detailsOpen ? (
-              <PanelRightClose className="h-4 w-4" />
-            ) : (
-              <PanelRightOpen className="h-4 w-4" />
-            )}
-          </button>
-        )}
-        {isAdmin && (
-          <ConversationActions
-            conversationId={conversation.conversationId}
-            name={contact.name}
-            messageCount={messages.length}
-          />
-        )}
+          {onToggleDetails && (
+            <button
+              type="button"
+              onClick={onToggleDetails}
+              aria-label={detailsOpen ? "Ocultar detalles" : "Mostrar detalles"}
+              className="hidden lg:inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer"
+            >
+              {detailsOpen ? (
+                <PanelRightClose className="h-4 w-4" />
+              ) : (
+                <PanelRightOpen className="h-4 w-4" />
+              )}
+            </button>
+          )}
+          {isAdmin && (
+            <ConversationActions
+              conversationId={conversation.conversationId}
+              name={contact.name}
+              messageCount={messages.length}
+            />
+          )}
         </div>
       </header>
 
@@ -184,9 +169,7 @@ export function ChatPanel({
       <div ref={scrollRef} className="flex-1 overflow-auto px-4 md:px-8 py-6">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center">
-            <p className="text-sm text-muted-foreground">
-              Sin mensajes todavia.
-            </p>
+            <p className="text-sm text-muted-foreground">Sin mensajes todavia.</p>
             <p className="text-xs text-muted-foreground/70 mt-1">
               Escribi abajo y presiona Enter para enviar el primero.
             </p>
@@ -199,7 +182,8 @@ export function ChatPanel({
               const showTimestamp =
                 !prev ||
                 prev.direction !== m.direction ||
-                (m.sentAt && prev.sentAt &&
+                (m.sentAt &&
+                  prev.sentAt &&
                   m.sentAt.getTime() - prev.sentAt.getTime() > 5 * 60 * 1000);
 
               return (
@@ -208,7 +192,7 @@ export function ChatPanel({
                   className={cn(
                     "flex flex-col gap-1",
                     isOut ? "items-end" : "items-start",
-                    showTimestamp && idx > 0 ? "mt-3" : ""
+                    showTimestamp && idx > 0 ? "mt-3" : "",
                   )}
                 >
                   {showTimestamp && m.sentAt && (
@@ -224,11 +208,7 @@ export function ChatPanel({
                         : "bg-card text-foreground border-border shadow-xs rounded-bl-md",
                     )}
                   >
-                    {m.body || (
-                      <span className="italic text-current/60">
-                        ({m.type})
-                      </span>
-                    )}
+                    {m.body || <span className="italic text-current/60">({m.type})</span>}
                     {m.templateName && (
                       <div className="mt-1 text-[10px] font-mono opacity-70">
                         plantilla: {m.templateName}
@@ -238,13 +218,11 @@ export function ChatPanel({
                   <div
                     className={cn(
                       "flex items-center gap-1 text-[10px] font-mono text-muted-foreground px-1",
-                      isOut ? "flex-row-reverse" : ""
+                      isOut ? "flex-row-reverse" : "",
                     )}
                   >
                     <StatusIcon msg={m} />
-                    {m.sentAt && (
-                      <span>{format(m.sentAt, "HH:mm")}</span>
-                    )}
+                    {m.sentAt && <span>{format(m.sentAt, "HH:mm")}</span>}
                     {m.errorMessage && (
                       <span className="text-destructive">· {parseError(m.errorMessage)}</span>
                     )}

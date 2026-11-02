@@ -37,7 +37,10 @@ export async function PUT(request: NextRequest, { params }: Params) {
 
   const valid = validateAutomation(body);
   if (!valid.ok) {
-    return NextResponse.json({ error: valid.errors.join(". "), errors: valid.errors }, { status: 400 });
+    return NextResponse.json(
+      { error: valid.errors.join(". "), errors: valid.errors },
+      { status: 400 },
+    );
   }
 
   const updated = await updateAutomation(key, valid.data);
@@ -79,7 +82,7 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
   if (result === "seed") {
     return NextResponse.json(
       { error: "Esta regla viene de ejemplo y no se borra. Puedes apagarla." },
-      { status: 400 }
+      { status: 400 },
     );
   }
   return NextResponse.json({ ok: true });

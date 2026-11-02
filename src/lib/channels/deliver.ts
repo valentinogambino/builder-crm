@@ -23,9 +23,7 @@ export interface DeliverResult {
 
 export type DeliverOrigin = "agent" | "human" | "template";
 
-export async function getConversationRow(
-  conversationId: string
-): Promise<ConversationRow | null> {
+export async function getConversationRow(conversationId: string): Promise<ConversationRow | null> {
   const [row] = await db
     .select()
     .from(conversations)
@@ -37,7 +35,7 @@ export async function getConversationRow(
 export async function deliverMessage(
   conversationId: string,
   msg: OutboundMessage,
-  origin: DeliverOrigin = "human"
+  origin: DeliverOrigin = "human",
 ): Promise<DeliverResult> {
   const conversation = await getConversationRow(conversationId);
   if (!conversation) {
@@ -74,8 +72,7 @@ export async function deliverMessage(
       templateName: msg.template?.name ?? null,
       status: "pending",
       tenantId: conversation.tenantId,
-      toPhone:
-        conversation.channel === "whatsapp" ? conversation.participantId : null,
+      toPhone: conversation.channel === "whatsapp" ? conversation.participantId : null,
       sentAt: new Date(),
       createdAt: new Date(),
     })
@@ -84,7 +81,7 @@ export async function deliverMessage(
   const account = await getAccountById(conversation.accountId);
   const outcome = await conector.enviar(
     { conversation, account, channel: conversation.channel as Channel },
-    msg
+    msg,
   );
 
   if (!outcome.success) {
@@ -96,7 +93,7 @@ export async function deliverMessage(
 
     console.error(
       `[deliver] fallo el envio (${origin}, ${conversation.channel}/${conversation.provider}):`,
-      errorText
+      errorText,
     );
     return {
       ok: false,
@@ -133,7 +130,7 @@ export async function deliverMessage(
 export async function persistOutbound(
   conversation: ConversationRow,
   body: string,
-  externalId: string | null
+  externalId: string | null,
 ): Promise<string> {
   const now = new Date();
   const [row] = await db

@@ -9,7 +9,7 @@ import type { ContactCreatedPayload } from "@/lib/automations/triggers";
  */
 export async function emitContactCreated(
   contactId: string,
-  info: { name: string; source: string; channel?: string | null }
+  info: { name: string; source: string; channel?: string | null },
 ): Promise<void> {
   const payload: ContactCreatedPayload = {
     contactName: info.name,

@@ -3,11 +3,7 @@ import { iterateConversations, listMessages } from "@/lib/zernio/inbox";
 import { hasZernioKey } from "@/lib/zernio/client";
 import { normalizePhone } from "@/lib/phone";
 import { getAccountByZernioId } from "./accounts";
-import {
-  findOrCreateContactByIdentity,
-  ingestMessage,
-  upsertConversation,
-} from "./ingest";
+import { findOrCreateContactByIdentity, ingestMessage, upsertConversation } from "./ingest";
 import { isChannel, type Channel } from "./types";
 import type { ZernioConversation, ZernioInboxMessage } from "@/lib/zernio/types";
 
@@ -48,9 +44,7 @@ export interface BackfillResult {
   errors: string[];
 }
 
-export async function backfillFromZernio(
-  options: BackfillOptions = {}
-): Promise<BackfillResult> {
+export async function backfillFromZernio(options: BackfillOptions = {}): Promise<BackfillResult> {
   const {
     channel,
     maxConversations = 200,
@@ -80,10 +74,8 @@ export async function backfillFromZernio(
     };
   }
 
-  for await (const page of iterateConversations(
-    { platform: channel },
-    20,
-    (message) => result.errors.push(message)
+  for await (const page of iterateConversations({ platform: channel }, 20, (message) =>
+    result.errors.push(message),
   )) {
     for (const conv of page) {
       const outOfTime = Date.now() - startedAt > timeBudgetMs;
@@ -94,17 +86,13 @@ export async function backfillFromZernio(
         result.errors.push(
           outOfTime
             ? "Se acabo el tiempo de la funcion: volve a importar para continuar."
-            : `Tope de ${maxConversations} conversaciones alcanzado: volve a importar para continuar.`
+            : `Tope de ${maxConversations} conversaciones alcanzado: volve a importar para continuar.`,
         );
         return result;
       }
 
       try {
-        const imported = await importConversation(
-          conv,
-          messagesPerConversation,
-          startedAt
-        );
+        const imported = await importConversation(conv, messagesPerConversation, startedAt);
         if (imported === null) {
           result.skipped++;
         } else {
@@ -113,7 +101,7 @@ export async function backfillFromZernio(
         }
       } catch (err) {
         result.errors.push(
-          `${conv.id}: ${err instanceof Error ? err.message : "error desconocido"}`
+          `${conv.id}: ${err instanceof Error ? err.message : "error desconocido"}`,
         );
       }
     }
@@ -127,7 +115,7 @@ export async function backfillFromZernio(
 async function importConversation(
   conv: ZernioConversation,
   limit: number,
-  startedAt: number
+  startedAt: number,
 ): Promise<number | null> {
   if (!isChannel(conv.platform)) return null;
   const channel = conv.platform;
@@ -227,9 +215,7 @@ function extractBody(msg: ZernioInboxMessage): string {
             ? "documento"
             : kind;
   const extra =
-    msg.attachments && msg.attachments.length > 1
-      ? ` (+${msg.attachments.length - 1})`
-      : "";
+    msg.attachments && msg.attachments.length > 1 ? ` (+${msg.attachments.length - 1})` : "";
   return `[${label}]${extra}`;
 }
 

@@ -38,8 +38,7 @@ export const zernio: Conector = {
     // HUMAN_AGENT (valida 7 dias); en WhatsApp la unica salida es una plantilla.
     const caps = capabilitiesFor(ctx.channel);
     const needsTag =
-      caps.humanAgentTag &&
-      isOutsideFreeFormWindow(ctx.channel, ctx.conversation.lastInboundAt);
+      caps.humanAgentTag && isOutsideFreeFormWindow(ctx.channel, ctx.conversation.lastInboundAt);
 
     const result = await sendMessage(ctx.conversation.externalId, {
       accountId,
@@ -89,7 +88,9 @@ export const zernio: Conector = {
 
     const notas: string[] = [];
     if (!hasZernioWebhookSecret()) {
-      notas.push("Sin ZERNIO_WEBHOOK_SECRET el webhook rechaza todo (fail-closed): no entran mensajes.");
+      notas.push(
+        "Sin ZERNIO_WEBHOOK_SECRET el webhook rechaza todo (fail-closed): no entran mensajes.",
+      );
     }
     if (!process.env.ZERNIO_PROFILE_ID) {
       notas.push("Sin ZERNIO_PROFILE_ID se usa el perfil Default de la cuenta de Zernio.");
@@ -112,7 +113,14 @@ export const zernio: Conector = {
       }
     }
 
-    return { id: "zernio", nombre: "Zernio", configurado: faltan.length === 0, faltan, cuentas, notas };
+    return {
+      id: "zernio",
+      nombre: "Zernio",
+      configurado: faltan.length === 0,
+      faltan,
+      cuentas,
+      notas,
+    };
   },
 };
 

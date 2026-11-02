@@ -18,10 +18,7 @@ export async function PUT(request: NextRequest) {
   const stageIds: unknown = body.stageIds;
 
   if (!pipelineId || !Array.isArray(stageIds) || stageIds.some((s) => typeof s !== "string")) {
-    return NextResponse.json(
-      { error: "pipelineId y stageIds[] requeridos" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "pipelineId y stageIds[] requeridos" }, { status: 400 });
   }
 
   const ids = stageIds as string[];
@@ -31,10 +28,8 @@ export async function PUT(request: NextRequest) {
       db
         .update(pipelineStages)
         .set({ order: index })
-        .where(
-          and(eq(pipelineStages.id, stageId), eq(pipelineStages.pipelineId, pipelineId))
-        )
-    )
+        .where(and(eq(pipelineStages.id, stageId), eq(pipelineStages.pipelineId, pipelineId))),
+    ),
   );
 
   return NextResponse.json({ ok: true });

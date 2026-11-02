@@ -20,10 +20,19 @@ export async function GET(request: NextRequest) {
   if ("response" in auth) return auth.response;
 
   const { marca, pipeline: pipelineConfig } = getConfig();
-  const [pipeline] = await db.select().from(pipelines).where(eq(pipelines.isDefault, true)).limit(1);
+  const [pipeline] = await db
+    .select()
+    .from(pipelines)
+    .where(eq(pipelines.isDefault, true))
+    .limit(1);
   const etapas = pipeline
     ? await db
-        .select({ clave: pipelineStages.key, nombre: pipelineStages.name, ganada: pipelineStages.isWon, perdida: pipelineStages.isLost })
+        .select({
+          clave: pipelineStages.key,
+          nombre: pipelineStages.name,
+          ganada: pipelineStages.isWon,
+          perdida: pipelineStages.isLost,
+        })
         .from(pipelineStages)
         .where(eq(pipelineStages.pipelineId, pipeline.id))
         .orderBy(asc(pipelineStages.order))

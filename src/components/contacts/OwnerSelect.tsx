@@ -121,7 +121,10 @@ export function OwnerSelect({ contactId, value, onChange, className, compact }: 
       value={current ?? NONE}
       items={[
         { value: NONE, label: "Sin asesor asignado" },
-        ...selectable.map((m) => ({ value: m.id, label: label(m) + (m.active ? "" : " (inactivo)") })),
+        ...selectable.map((m) => ({
+          value: m.id,
+          label: label(m) + (m.active ? "" : " (inactivo)"),
+        })),
       ]}
       onValueChange={(v) => v && change(v === NONE ? null : v)}
       disabled={saving}

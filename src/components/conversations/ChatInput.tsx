@@ -4,11 +4,7 @@ import { useState, useRef, KeyboardEvent, FormEvent } from "react";
 import { Send, Loader2, FileText, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { TemplatePicker } from "./TemplatePicker";
-import {
-  capabilitiesFor,
-  isOutsideFreeFormWindow,
-  type Channel,
-} from "@/lib/channels/types";
+import { capabilitiesFor, isOutsideFreeFormWindow, type Channel } from "@/lib/channels/types";
 
 interface Props {
   conversationId: string;
@@ -116,10 +112,7 @@ export function ChatInput({
           )}
         </div>
       )}
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-2xl mx-auto flex items-end gap-2.5"
-      >
+      <form onSubmit={handleSubmit} className="max-w-2xl mx-auto flex items-end gap-2.5">
         {/* Las plantillas son un concepto exclusivo de WhatsApp. */}
         {caps.templates && (
           <button
@@ -150,11 +143,7 @@ export function ChatInput({
           className="shrink-0 h-10 w-10 inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 cursor-pointer transition-colors shadow-sm shadow-primary/20"
           aria-label="Enviar mensaje"
         >
-          {sending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Send className="h-4 w-4" />
-          )}
+          {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
         </button>
       </form>
 

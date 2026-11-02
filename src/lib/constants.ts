@@ -19,10 +19,7 @@ export const SOURCE_LABELS: Record<LeadSource, string> = {
   otro: "Otro",
 };
 
-export const ACTIVITY_TYPE_CONFIG: Record<
-  ActivityType,
-  { label: string; icon: string }
-> = {
+export const ACTIVITY_TYPE_CONFIG: Record<ActivityType, { label: string; icon: string }> = {
   call: { label: "Llamada", icon: "Phone" },
   email: { label: "Email", icon: "Mail" },
   meeting: { label: "Reunion", icon: "Users" },
@@ -81,7 +78,7 @@ export function formatRelativeDate(date: Date | number): string {
   // navegador.
   const dias = Math.round(
     (Date.parse(`${diaLocal(new Date())}T00:00:00Z`) - Date.parse(`${diaLocal(d)}T00:00:00Z`)) /
-      86_400_000
+      86_400_000,
   );
 
   if (dias <= 0) return "Hoy";

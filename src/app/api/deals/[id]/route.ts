@@ -6,10 +6,7 @@ import { eq } from "drizzle-orm";
 import { canAccessContactId } from "@/lib/team";
 import { requireMember } from "@/lib/api-auth";
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { member } = auth;
@@ -19,19 +16,13 @@ export async function GET(
   const deal = dealRows[0];
 
   if (!deal || !(await canAccessContactId(member, deal.contactId))) {
-    return NextResponse.json(
-      { error: "Deal no encontrado" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Deal no encontrado" }, { status: 404 });
   }
 
   return NextResponse.json(deal);
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { member } = auth;
@@ -48,10 +39,7 @@ export async function PUT(
   const existing = existingRows[0];
 
   if (!existing || !(await canAccessContactId(member, existing.contactId))) {
-    return NextResponse.json(
-      { error: "Deal no encontrado" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Deal no encontrado" }, { status: 404 });
   }
 
   // Only allow updating specific fields
@@ -79,11 +67,7 @@ export async function PUT(
   }
   if (body.notes !== undefined) updateData.notes = body.notes;
 
-  const resultRows = await db
-    .update(deals)
-    .set(updateData)
-    .where(eq(deals.id, id))
-    .returning();
+  const resultRows = await db.update(deals).set(updateData).where(eq(deals.id, id)).returning();
   const result = resultRows[0];
 
   return NextResponse.json(result);
@@ -91,7 +75,7 @@ export async function PUT(
 
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
@@ -102,10 +86,7 @@ export async function DELETE(
   const existing = existingRows[0];
 
   if (!existing || !(await canAccessContactId(member, existing.contactId))) {
-    return NextResponse.json(
-      { error: "Deal no encontrado" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Deal no encontrado" }, { status: 404 });
   }
 
   await db.delete(deals).where(eq(deals.id, id));

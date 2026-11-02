@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const searchCond = or(
       like(contacts.name, `%${search}%`),
       like(contacts.email, `%${search}%`),
-      like(contacts.company, `%${search}%`)
+      like(contacts.company, `%${search}%`),
     );
     if (searchCond) conditions.push(searchCond);
   }
@@ -90,10 +90,7 @@ export async function POST(request: NextRequest) {
   const { name, email, phone, company, source, score, notes, tags, ownerId, customFields } = body;
 
   if (!name) {
-    return NextResponse.json(
-      { error: "El nombre es requerido" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "El nombre es requerido" }, { status: 400 });
   }
 
   const campos = validarCamposPersonalizados(camposContacto(), customFields);
@@ -102,9 +99,7 @@ export async function POST(request: NextRequest) {
   }
 
   const tagsValue = Array.isArray(tags)
-    ? tags
-        .map((t) => (typeof t === "string" ? t.trim() : ""))
-        .filter((t) => t.length > 0)
+    ? tags.map((t) => (typeof t === "string" ? t.trim() : "")).filter((t) => t.length > 0)
     : [];
 
   try {
@@ -148,7 +143,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       { error: `Error al crear contacto: ${error instanceof Error ? error.message : "Unknown"}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

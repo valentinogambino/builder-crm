@@ -70,9 +70,7 @@ export function DealsListView({ deals, stages }: DealsListViewProps) {
                   {d.probability}%
                 </TableCell>
                 <TableCell className="text-xs text-muted-foreground">
-                  {d.createdAt
-                    ? format(new Date(d.createdAt), "d MMM yyyy", { locale: es })
-                    : "—"}
+                  {d.createdAt ? format(new Date(d.createdAt), "d MMM yyyy", { locale: es }) : "—"}
                 </TableCell>
               </TableRow>
             );

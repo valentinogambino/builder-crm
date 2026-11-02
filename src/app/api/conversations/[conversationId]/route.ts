@@ -12,7 +12,7 @@ import { deleteConversation, getConversation } from "@/lib/conversations";
  */
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ conversationId: string }> }
+  { params }: { params: Promise<{ conversationId: string }> },
 ) {
   const auth = await requireAdmin();
   if ("response" in auth) return auth.response;

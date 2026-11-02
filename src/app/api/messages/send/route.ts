@@ -37,16 +37,10 @@ export async function POST(request: NextRequest) {
   }
 
   if (!body.conversationId) {
-    return NextResponse.json(
-      { error: "Campo 'conversationId' requerido" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Campo 'conversationId' requerido" }, { status: 400 });
   }
   if (!body.text?.trim() && !body.template) {
-    return NextResponse.json(
-      { error: "Tenes que enviar 'text' o 'template'" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Tenes que enviar 'text' o 'template'" }, { status: 400 });
   }
 
   // Un asesor solo escribe en hilos de sus contactos (404: no se confirma que exista).
@@ -62,7 +56,7 @@ export async function POST(request: NextRequest) {
   const result = await deliverMessage(
     body.conversationId,
     body.template ? { template: body.template } : { text: body.text },
-    body.template ? "template" : "human"
+    body.template ? "template" : "human",
   );
 
   if (!result.ok) {
@@ -74,7 +68,7 @@ export async function POST(request: NextRequest) {
         hint: result.hint,
         messageId: result.messageId,
       },
-      { status }
+      { status },
     );
   }
 

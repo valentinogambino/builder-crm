@@ -44,7 +44,12 @@ export function CamposPersonalizadosInputs({ valores, onChange, disabled }: Inpu
             {campo.etiqueta}
             {campo.requerido && " *"}
           </Label>
-          <CampoInput campo={campo} valor={valores[campo.clave]} onChange={(v) => set(campo.clave, v)} disabled={disabled} />
+          <CampoInput
+            campo={campo}
+            valor={valores[campo.clave]}
+            onChange={(v) => set(campo.clave, v)}
+            disabled={disabled}
+          />
           {campo.ayuda && <p className="text-xs text-muted-foreground">{campo.ayuda}</p>}
         </div>
       ))}
@@ -154,7 +159,11 @@ export function CamposPersonalizadosLista({ valores, compacto, mostrarVacios }: 
   if (visibles.length === 0) return null;
 
   return (
-    <dl className={compacto ? "space-y-1" : "grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 pt-2 border-t"}>
+    <dl
+      className={
+        compacto ? "space-y-1" : "grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 pt-2 border-t"
+      }
+    >
       {visibles.map((c) => (
         <div key={c.clave} className={compacto ? "flex justify-between gap-2 text-xs" : "text-sm"}>
           <dt className="text-muted-foreground">{c.etiqueta}</dt>

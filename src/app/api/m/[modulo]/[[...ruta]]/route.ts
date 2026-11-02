@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 async function despachar(
   request: NextRequest,
   metodo: MetodoHttp,
-  ctx: { params: Promise<{ modulo: string; ruta?: string[] }> }
+  ctx: { params: Promise<{ modulo: string; ruta?: string[] }> },
 ): Promise<Response> {
   const { modulo: nombre, ruta = [] } = await ctx.params;
   const modulo = obtenerModulo(nombre);
@@ -24,7 +24,7 @@ async function despachar(
   if (!match.handler) {
     return NextResponse.json(
       { error: "Metodo no permitido" },
-      { status: 405, headers: { Allow: match.metodosPermitidos.join(", ") } }
+      { status: 405, headers: { Allow: match.metodosPermitidos.join(", ") } },
     );
   }
 

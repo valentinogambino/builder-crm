@@ -7,7 +7,13 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -45,7 +51,13 @@ function toLocalInputValue(d: Date | string | null | undefined): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
-export function VisitForm({ open, onClose, visit, preselectedContactId, defaultStatus = "coordinating" }: VisitFormProps) {
+export function VisitForm({
+  open,
+  onClose,
+  visit,
+  preselectedContactId,
+  defaultStatus = "coordinating",
+}: VisitFormProps) {
   const [contactsList, setContacts] = useState<Array<{ id: string; name: string }>>([]);
 
   useEffect(() => {
@@ -128,7 +140,10 @@ export function VisitForm({ open, onClose, visit, preselectedContactId, defaultS
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label>Estado</Label>
-            <Select value={status} onValueChange={(v) => v && setValue("status", v as VisitFormData["status"])}>
+            <Select
+              value={status}
+              onValueChange={(v) => v && setValue("status", v as VisitFormData["status"])}
+            >
               <SelectTrigger className="cursor-pointer">
                 <SelectValue />
               </SelectTrigger>
@@ -144,7 +159,10 @@ export function VisitForm({ open, onClose, visit, preselectedContactId, defaultS
           {!preselectedContactId && (
             <div className="space-y-2">
               <Label>Contacto *</Label>
-              <Select value={watch("contactId")} onValueChange={(v) => v && setValue("contactId", v)}>
+              <Select
+                value={watch("contactId")}
+                onValueChange={(v) => v && setValue("contactId", v)}
+              >
                 <SelectTrigger className="cursor-pointer">
                   <SelectValue placeholder="Seleccionar contacto" />
                 </SelectTrigger>
@@ -156,30 +174,50 @@ export function VisitForm({ open, onClose, visit, preselectedContactId, defaultS
                   ))}
                 </SelectContent>
               </Select>
-              {errors.contactId && <p className="text-xs text-destructive">{errors.contactId.message}</p>}
+              {errors.contactId && (
+                <p className="text-xs text-destructive">{errors.contactId.message}</p>
+              )}
             </div>
           )}
 
           <div className="space-y-2">
             <Label htmlFor="visit-address">Direccion / lugar</Label>
-            <Input id="visit-address" {...register("propertyAddress")} placeholder="Ej: Av. Principal 1234, depto 502" />
+            <Input
+              id="visit-address"
+              {...register("propertyAddress")}
+              placeholder="Ej: Av. Principal 1234, depto 502"
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label htmlFor="visit-date">Fecha y hora{status === "scheduled" ? " *" : ""}</Label>
               <Input id="visit-date" type="datetime-local" {...register("scheduledAt")} />
-              {errors.scheduledAt && <p className="text-xs text-destructive">{errors.scheduledAt.message}</p>}
+              {errors.scheduledAt && (
+                <p className="text-xs text-destructive">{errors.scheduledAt.message}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="visit-duration">Duracion (min)</Label>
-              <Input id="visit-duration" type="number" min={15} max={480} step={15} {...register("durationMinutes", { valueAsNumber: true })} />
+              <Input
+                id="visit-duration"
+                type="number"
+                min={15}
+                max={480}
+                step={15}
+                {...register("durationMinutes", { valueAsNumber: true })}
+              />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="visit-notes">Notas</Label>
-            <Textarea id="visit-notes" {...register("notes")} placeholder="Detalles adicionales, preferencias del cliente..." rows={3} />
+            <Textarea
+              id="visit-notes"
+              {...register("notes")}
+              placeholder="Detalles adicionales, preferencias del cliente..."
+              rows={3}
+            />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">

@@ -37,13 +37,7 @@ interface Props {
   onSent: () => void;
 }
 
-export function TemplatePicker({
-  open,
-  onClose,
-  contactId,
-  contactPhone,
-  onSent,
-}: Props) {
+export function TemplatePicker({ open, onClose, contactId, contactPhone, onSent }: Props) {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Template | null>(null);
@@ -58,7 +52,7 @@ export function TemplatePicker({
       });
       const json = await res.json();
       const approved: Template[] = (json.templates || []).filter(
-        (t: Template) => t.status?.toUpperCase() === "APPROVED"
+        (t: Template) => t.status?.toUpperCase() === "APPROVED",
       );
       setTemplates(approved);
     } catch {
@@ -76,14 +70,11 @@ export function TemplatePicker({
     }
   }, [open, load]);
 
-  const bodyText = useMemo(
-    () => (selected ? getBodyText(selected.components) : ""),
-    [selected]
-  );
+  const bodyText = useMemo(() => (selected ? getBodyText(selected.components) : ""), [selected]);
   const vars = useMemo(() => extractVariables(bodyText), [bodyText]);
   const preview = renderTemplateBody(
     bodyText,
-    vars.map((v) => values[v - 1] || `{{${v}}}`)
+    vars.map((v) => values[v - 1] || `{{${v}}}`),
   );
   const allFilled = vars.every((v) => (values[v - 1] || "").trim());
 
@@ -105,7 +96,7 @@ export function TemplatePicker({
     try {
       const components = buildSendComponents(
         bodyText,
-        vars.map((v) => values[v - 1] || "")
+        vars.map((v) => values[v - 1] || ""),
       );
       const res = await fetch("/api/whatsapp/send", {
         method: "POST",
@@ -119,7 +110,7 @@ export function TemplatePicker({
             components,
             previewText: renderTemplateBody(
               bodyText,
-              vars.map((v) => values[v - 1] || "")
+              vars.map((v) => values[v - 1] || ""),
             ),
           },
         }),
@@ -160,9 +151,7 @@ export function TemplatePicker({
             {selected ? "Completar plantilla" : "Enviar plantilla"}
           </DialogTitle>
           {!selected && (
-            <DialogDescription>
-              Solo se listan las plantillas aprobadas por Meta.
-            </DialogDescription>
+            <DialogDescription>Solo se listan las plantillas aprobadas por Meta.</DialogDescription>
           )}
         </DialogHeader>
 
@@ -170,10 +159,7 @@ export function TemplatePicker({
           <div className="space-y-2">
             {loading ? (
               [...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="h-16 bg-muted rounded-lg animate-pulse"
-                />
+                <div key={i} className="h-16 bg-muted rounded-lg animate-pulse" />
               ))
             ) : templates.length === 0 ? (
               <div className="py-8 text-center">
@@ -202,16 +188,12 @@ export function TemplatePicker({
                     className="w-full text-left rounded-lg border border-border/60 bg-card p-3 hover:bg-muted/40 hover:border-primary/40 transition-colors cursor-pointer"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[13px] font-medium font-mono truncate">
-                        {t.name}
-                      </span>
+                      <span className="text-[13px] font-medium font-mono truncate">{t.name}</span>
                       <span className="text-[10px] text-muted-foreground uppercase shrink-0">
                         {t.language}
                       </span>
                     </div>
-                    <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
-                      {preview}
-                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{preview}</p>
                   </button>
                 );
               })
@@ -223,9 +205,7 @@ export function TemplatePicker({
               <div className="space-y-2">
                 {vars.map((v) => (
                   <div key={v} className="space-y-1">
-                    <Label className="text-xs font-mono text-muted-foreground">
-                      {`{{${v}}}`}
-                    </Label>
+                    <Label className="text-xs font-mono text-muted-foreground">{`{{${v}}}`}</Label>
                     <Input
                       value={values[v - 1] || ""}
                       onChange={(e) => setValue(v - 1, e.target.value)}
@@ -243,9 +223,7 @@ export function TemplatePicker({
             )}
 
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">
-                Vista previa
-              </Label>
+              <Label className="text-xs text-muted-foreground">Vista previa</Label>
               <div className="rounded-2xl rounded-bl-md border border-border bg-card px-3.5 py-2 text-[13px] leading-relaxed whitespace-pre-wrap">
                 {preview}
               </div>

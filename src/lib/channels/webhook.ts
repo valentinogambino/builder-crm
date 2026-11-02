@@ -25,7 +25,10 @@ import { autorizadoPorSecreto } from "@/lib/secreto-worker";
 const STALE_AFTER_MS = 2 * 60 * 1000;
 const MAX_ATTEMPTS = 3;
 
-export async function manejarWebhook(conector: Conector, request: NextRequest): Promise<NextResponse> {
+export async function manejarWebhook(
+  conector: Conector,
+  request: NextRequest,
+): Promise<NextResponse> {
   if (!conector.webhook) {
     return NextResponse.json({ error: "Este conector no recibe webhooks" }, { status: 404 });
   }
@@ -72,7 +75,10 @@ export async function manejarWebhook(conector: Conector, request: NextRequest): 
   return NextResponse.json({ received: true });
 }
 
-export async function barrerWebhook(conector: Conector, request: NextRequest): Promise<NextResponse> {
+export async function barrerWebhook(
+  conector: Conector,
+  request: NextRequest,
+): Promise<NextResponse> {
   if (!autorizadoPorSecreto(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -87,8 +93,8 @@ export async function barrerWebhook(conector: Conector, request: NextRequest): P
       and(
         eq(webhookEvents.status, "received"),
         eq(webhookEvents.provider, conector.id),
-        lt(webhookEvents.receivedAt, new Date(Date.now() - STALE_AFTER_MS))
-      )
+        lt(webhookEvents.receivedAt, new Date(Date.now() - STALE_AFTER_MS)),
+      ),
     )
     .orderBy(asc(webhookEvents.receivedAt))
     .limit(20);
@@ -98,7 +104,11 @@ export async function barrerWebhook(conector: Conector, request: NextRequest): P
     if (row.attempts >= MAX_ATTEMPTS) {
       await db
         .update(webhookEvents)
-        .set({ status: "failed", error: `sin procesar tras ${row.attempts} intentos`, processedAt: new Date() })
+        .set({
+          status: "failed",
+          error: `sin procesar tras ${row.attempts} intentos`,
+          processedAt: new Date(),
+        })
         .where(eq(webhookEvents.eventId, row.eventId));
       continue;
     }
@@ -118,7 +128,12 @@ export async function barrerWebhook(conector: Conector, request: NextRequest): P
 // Se re-exporta para no romper a quien ya lo importaba desde aca.
 export { autorizadoPorSecreto };
 
-async function ejecutarEvento(conector: Conector, eventId: string, payload: unknown, headers: Headers): Promise<void> {
+async function ejecutarEvento(
+  conector: Conector,
+  eventId: string,
+  payload: unknown,
+  headers: Headers,
+): Promise<void> {
   try {
     const result = await conector.webhook!.procesar(payload);
 
@@ -145,7 +160,11 @@ async function ejecutarEvento(conector: Conector, eventId: string, payload: unkn
     console.error(`[webhook ${conector.id}] error procesando evento`, eventId, err);
     await db
       .update(webhookEvents)
-      .set({ status: "failed", error: err instanceof Error ? err.message : "error desconocido", processedAt: new Date() })
+      .set({
+        status: "failed",
+        error: err instanceof Error ? err.message : "error desconocido",
+        processedAt: new Date(),
+      })
       .where(eq(webhookEvents.eventId, eventId))
       .catch(() => {});
   }

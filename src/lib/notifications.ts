@@ -72,7 +72,7 @@ export interface NotificationItem {
 
 export async function listNotifications(
   memberId: string,
-  limit = 20
+  limit = 20,
 ): Promise<{ items: NotificationItem[]; unread: number }> {
   const [items, [{ unread }]] = await Promise.all([
     db
@@ -99,10 +99,7 @@ export async function listNotifications(
 }
 
 /** Marca leidas: las indicadas, o todas las del miembro si no se pasan ids. */
-export async function markNotificationsRead(
-  memberId: string,
-  ids?: string[]
-): Promise<number> {
+export async function markNotificationsRead(memberId: string, ids?: string[]): Promise<number> {
   const rows = await db
     .update(notifications)
     .set({ readAt: new Date() })
@@ -110,8 +107,8 @@ export async function markNotificationsRead(
       and(
         eq(notifications.memberId, memberId),
         isNull(notifications.readAt),
-        ids && ids.length > 0 ? inArray(notifications.id, ids) : undefined
-      )
+        ids && ids.length > 0 ? inArray(notifications.id, ids) : undefined,
+      ),
     )
     .returning({ id: notifications.id });
   return rows.length;

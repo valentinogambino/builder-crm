@@ -16,15 +16,9 @@ const SEED_STAGES = [
 export async function GET() {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
-  const allPipelines = await db
-    .select()
-    .from(pipelines)
-    .orderBy(asc(pipelines.order));
+  const allPipelines = await db.select().from(pipelines).orderBy(asc(pipelines.order));
 
-  const allStages = await db
-    .select()
-    .from(pipelineStages)
-    .orderBy(asc(pipelineStages.order));
+  const allStages = await db.select().from(pipelineStages).orderBy(asc(pipelineStages.order));
 
   const result = allPipelines.map((p) => ({
     ...p,
@@ -50,8 +44,7 @@ export async function POST(request: NextRequest) {
   }
 
   const existing = await db.select({ order: pipelines.order }).from(pipelines);
-  const nextOrder =
-    existing.length > 0 ? Math.max(...existing.map((p) => p.order)) + 1 : 0;
+  const nextOrder = existing.length > 0 ? Math.max(...existing.map((p) => p.order)) + 1 : 0;
 
   const insertedRows = await db
     .insert(pipelines)
@@ -67,7 +60,7 @@ export async function POST(request: NextRequest) {
       color: s.color,
       isWon: s.isWon,
       isLost: s.isLost,
-    }))
+    })),
   );
 
   const stages = await db

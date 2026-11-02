@@ -44,7 +44,7 @@ export function isBsuid(value: string | null | undefined): boolean {
  */
 export function resolveRealPhone(
   waId: string | null | undefined,
-  from: string | null | undefined
+  from: string | null | undefined,
 ): string {
   const wa = waId ?? "";
   if (wa && !isBsuid(wa)) return normalizePhone(wa);

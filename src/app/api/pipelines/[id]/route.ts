@@ -4,10 +4,7 @@ import { pipelines, pipelineStages, deals } from "@/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { requireMember } from "@/lib/api-auth";
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { id } = await params;
@@ -38,7 +35,7 @@ export async function PUT(
 
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
@@ -62,16 +59,13 @@ export async function DELETE(
           error: "No se puede borrar un pipeline con deals",
           dealCount: dealRows.length,
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
   }
 
   // Cascade delete on pipeline_id removes stages automatically
-  const deleted = await db
-    .delete(pipelines)
-    .where(eq(pipelines.id, id))
-    .returning();
+  const deleted = await db.delete(pipelines).where(eq(pipelines.id, id)).returning();
 
   if (deleted.length === 0) {
     return NextResponse.json({ error: "Pipeline no encontrado" }, { status: 404 });

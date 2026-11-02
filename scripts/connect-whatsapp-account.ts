@@ -18,25 +18,20 @@ async function main() {
 
   const phoneNumberId = process.argv[2] || process.env.WHATSAPP_PHONE_NUMBER_ID;
   const accessToken = process.argv[3] || process.env.WHATSAPP_ACCESS_TOKEN;
-  const wabaId =
-    process.argv[4] || process.env.WHATSAPP_BUSINESS_ACCOUNT_ID || null;
-  const displayPhone =
-    process.argv[5] || process.env.WHATSAPP_DISPLAY_PHONE || null;
+  const wabaId = process.argv[4] || process.env.WHATSAPP_BUSINESS_ACCOUNT_ID || null;
+  const displayPhone = process.argv[5] || process.env.WHATSAPP_DISPLAY_PHONE || null;
 
   if (!phoneNumberId || !accessToken) {
     throw new Error(
-      "Falta phone_number_id o access_token (pasalos como argumentos o seteá WHATSAPP_PHONE_NUMBER_ID / WHATSAPP_ACCESS_TOKEN en .env.local)"
+      "Falta phone_number_id o access_token (pasalos como argumentos o seteá WHATSAPP_PHONE_NUMBER_ID / WHATSAPP_ACCESS_TOKEN en .env.local)",
     );
   }
 
   const sql = postgres(dbUrl, { prepare: false, max: 1 });
   try {
-    const [tenant] =
-      await sql`select id from tenants where slug = 'default' limit 1`;
+    const [tenant] = await sql`select id from tenants where slug = 'default' limit 1`;
     if (!tenant) {
-      throw new Error(
-        "No existe el tenant 'default'. Aplicá la migración de coexistence primero."
-      );
+      throw new Error("No existe el tenant 'default'. Aplicá la migración de coexistence primero.");
     }
 
     const rows = await sql`

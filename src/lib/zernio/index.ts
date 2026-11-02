@@ -54,10 +54,6 @@ export {
   type ZernioTemplate,
 } from "./whatsapp";
 
-export {
-  verifyZernioSignature,
-  hasZernioWebhookSecret,
-  SUBSCRIBED_EVENTS,
-} from "./webhooks";
+export { verifyZernioSignature, hasZernioWebhookSecret, SUBSCRIBED_EVENTS } from "./webhooks";
 
 export type * from "./types";

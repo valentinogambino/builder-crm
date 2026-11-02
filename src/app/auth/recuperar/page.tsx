@@ -13,9 +13,7 @@ export default function RecuperarPage() {
   return (
     <>
       <div className="space-y-1 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight font-heading">
-          Recuperar el acceso
-        </h1>
+        <h1 className="text-2xl font-semibold tracking-tight font-heading">Recuperar el acceso</h1>
         <p className="text-sm text-muted-foreground">
           {activo
             ? "Te mandamos un enlace para elegir una contrasena nueva"
@@ -28,8 +26,8 @@ export default function RecuperarPage() {
       ) : (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            El acceso lo reparte un administrador desde Ajustes, Equipo: pedile que te
-            genere una contrasena nueva y te la pase.
+            El acceso lo reparte un administrador desde Ajustes, Equipo: pedile que te genere una
+            contrasena nueva y te la pase.
           </p>
           <Button render={<Link href="/login" />} variant="outline" className="w-full h-10">
             Volver al inicio de sesion

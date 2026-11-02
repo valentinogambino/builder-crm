@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
   // Usuario de Auth existente?
   const [existing] = await db.execute<{ id: string }>(
-    sql`select id from auth.users where lower(email) = ${email} limit 1`
+    sql`select id from auth.users where lower(email) = ${email} limit 1`,
   );
 
   let userId = existing?.id ?? null;
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     if ("error" in r) {
       return NextResponse.json(
         { error: `No se pudo enviar la invitacion: ${r.error}` },
-        { status: 502 }
+        { status: 502 },
       );
     }
     userId = r.userId;
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     if (password && password.length < 8) {
       return NextResponse.json(
         { error: "La contrasena temporal debe tener al menos 8 caracteres" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const admin = createAdminClient();
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     if (error || !data.user) {
       return NextResponse.json(
         { error: error?.message ?? "No se pudo crear el usuario" },
-        { status: 502 }
+        { status: 502 },
       );
     }
     userId = data.user.id;
@@ -121,6 +121,6 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json(
     { ...row, reusedAuthUser: Boolean(existing), correoEnviado, avisoCorreo },
-    { status: 201 }
+    { status: 201 },
   );
 }

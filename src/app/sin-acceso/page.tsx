@@ -14,14 +14,11 @@ export default function SinAccesoPage() {
       </div>
       <h1 className="text-lg font-medium">Tu usuario no forma parte del equipo</h1>
       <p className="text-sm text-muted-foreground max-w-sm">
-        Pide a un administrador que te agregue desde Ajustes → Equipo. Si ya te
-        agregaron, cierra sesion y vuelve a entrar.
+        Pide a un administrador que te agregue desde Ajustes → Equipo. Si ya te agregaron, cierra
+        sesion y vuelve a entrar.
       </p>
       <form action={signOut}>
-        <button
-          type="submit"
-          className="text-sm text-primary hover:underline cursor-pointer"
-        >
+        <button type="submit" className="text-sm text-primary hover:underline cursor-pointer">
           Cerrar sesion
         </button>
       </form>

@@ -10,11 +10,7 @@
  * manda vercel.json + .github/workflows/sweepers.yml).
  */
 
-const ENDPOINTS = [
-  "/api/agent/process",
-  "/api/webhooks/zernio",
-  "/api/automations/process",
-];
+const ENDPOINTS = ["/api/agent/process", "/api/webhooks/zernio", "/api/automations/process"];
 
 declare global {
   var __builderBarridos: ReturnType<typeof setInterval> | undefined;

@@ -22,12 +22,16 @@ export function leerModulosActivos(raiz) {
   const validos = [];
   for (const nombre of lista) {
     if (typeof nombre !== "string" || !/^[a-z][a-z0-9_]*$/.test(nombre)) {
-      throw new Error(`config/modulos.json: nombre de modulo invalido "${nombre}" (snake_case, sin guion bajo inicial)`);
+      throw new Error(
+        `config/modulos.json: nombre de modulo invalido "${nombre}" (snake_case, sin guion bajo inicial)`,
+      );
     }
     const carpeta = join(raiz, "modules", nombre);
     for (const req of ["manifiesto", "servidor"]) {
       if (!existsSync(join(carpeta, `${req}.ts`)) && !existsSync(join(carpeta, `${req}.tsx`))) {
-        throw new Error(`config/modulos.json: el modulo "${nombre}" no tiene modules/${nombre}/${req}.ts(x)`);
+        throw new Error(
+          `config/modulos.json: el modulo "${nombre}" no tiene modules/${nombre}/${req}.ts(x)`,
+        );
       }
     }
     if (!validos.includes(nombre)) validos.push(nombre);
@@ -45,7 +49,8 @@ function escribirSiCambio(ruta, contenido) {
 
 export function generarRegistroModulos(raiz) {
   const activos = leerModulosActivos(raiz);
-  const cabecera = "// GENERADO por scripts/generar-registro-modulos.mjs a partir de config/modulos.json.\n// No editar a mano: se reescribe al arrancar y al construir.\n";
+  const cabecera =
+    "// GENERADO por scripts/generar-registro-modulos.mjs a partir de config/modulos.json.\n// No editar a mano: se reescribe al arrancar y al construir.\n";
 
   const servidor =
     cabecera +
@@ -73,5 +78,7 @@ const esPrincipal = process.argv[1] && fileURLToPath(import.meta.url) === proces
 if (esPrincipal) {
   const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
   const r = generarRegistroModulos(raiz);
-  console.log(`[modulos] activos: ${r.activos.length ? r.activos.join(", ") : "(ninguno)"}${r.cambio ? " (registro actualizado)" : ""}`);
+  console.log(
+    `[modulos] activos: ${r.activos.length ? r.activos.join(", ") : "(ninguno)"}${r.cambio ? " (registro actualizado)" : ""}`,
+  );
 }

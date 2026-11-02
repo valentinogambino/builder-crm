@@ -39,7 +39,7 @@ export function KanbanBoard({ initialColumns, filters, sort }: KanbanBoardProps)
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 8 },
-    })
+    }),
   );
 
   const viewColumns = useMemo(
@@ -49,7 +49,7 @@ export function KanbanBoard({ initialColumns, filters, sort }: KanbanBoardProps)
         const sorted = applySort(filtered, sort);
         return { ...col, deals: sorted };
       }),
-    [columns, filters, sort]
+    [columns, filters, sort],
   );
 
   const activeDeal = activeId
@@ -61,7 +61,7 @@ export function KanbanBoard({ initialColumns, filters, sort }: KanbanBoardProps)
       setActiveId(event.active.id as string);
       columnsSnapshot.current = columns;
     },
-    [columns]
+    [columns],
   );
 
   const handleDragOver = useCallback(
@@ -72,15 +72,12 @@ export function KanbanBoard({ initialColumns, filters, sort }: KanbanBoardProps)
       const activeId = active.id as string;
       const overId = over.id as string;
 
-      const activeColumn = columns.find((col) =>
-        col.deals.some((d) => d.id === activeId)
-      );
+      const activeColumn = columns.find((col) => col.deals.some((d) => d.id === activeId));
       const overColumn =
         columns.find((col) => col.id === overId) ||
         columns.find((col) => col.deals.some((d) => d.id === overId));
 
-      if (!activeColumn || !overColumn || activeColumn.id === overColumn.id)
-        return;
+      if (!activeColumn || !overColumn || activeColumn.id === overColumn.id) return;
 
       setColumns((prev) => {
         const activeDeal = activeColumn.deals.find((d) => d.id === activeId);
@@ -103,7 +100,7 @@ export function KanbanBoard({ initialColumns, filters, sort }: KanbanBoardProps)
         });
       });
     },
-    [columns]
+    [columns],
   );
 
   const handleDragEnd = useCallback(
@@ -137,14 +134,14 @@ export function KanbanBoard({ initialColumns, filters, sort }: KanbanBoardProps)
         toast.error("Error al mover el deal. Se revirtio el cambio.");
       }
     },
-    [columns]
+    [columns],
   );
 
   if (viewColumns.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
-        Este pipeline no tiene etapas. Abri{" "}
-        <span className="font-medium">Editar pipeline</span> para crear la primera.
+        Este pipeline no tiene etapas. Abri <span className="font-medium">Editar pipeline</span>{" "}
+        para crear la primera.
       </div>
     );
   }
@@ -159,22 +156,22 @@ export function KanbanBoard({ initialColumns, filters, sort }: KanbanBoardProps)
     >
       <div className="w-full min-w-0 overflow-x-auto pb-4">
         <div className="flex gap-3 w-max">
-        {viewColumns.map((column) => (
-          <KanbanColumn
-            key={column.id}
-            id={column.id}
-            name={column.name}
-            color={column.color}
-            deals={column.deals.map((d) => ({
-              id: d.id,
-              title: d.title,
-              value: d.value,
-              contactName: d.contactName || (d.contact?.name ?? null),
-              probability: d.probability,
-              docCount: d.docCount,
-            }))}
-          />
-        ))}
+          {viewColumns.map((column) => (
+            <KanbanColumn
+              key={column.id}
+              id={column.id}
+              name={column.name}
+              color={column.color}
+              deals={column.deals.map((d) => ({
+                id: d.id,
+                title: d.title,
+                value: d.value,
+                contactName: d.contactName || (d.contact?.name ?? null),
+                probability: d.probability,
+                docCount: d.docCount,
+              }))}
+            />
+          ))}
         </div>
       </div>
 
@@ -184,9 +181,7 @@ export function KanbanBoard({ initialColumns, filters, sort }: KanbanBoardProps)
             id={activeDeal.id}
             title={activeDeal.title}
             value={activeDeal.value}
-            contactName={
-              activeDeal.contactName || (activeDeal.contact?.name ?? null)
-            }
+            contactName={activeDeal.contactName || (activeDeal.contact?.name ?? null)}
             probability={activeDeal.probability}
             docCount={activeDeal.docCount}
           />

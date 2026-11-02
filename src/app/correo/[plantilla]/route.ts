@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ plantilla: string }> }
+  { params }: { params: Promise<{ plantilla: string }> },
 ) {
   const { plantilla } = await params;
   const nombre = plantilla.replace(/\.html$/, "");

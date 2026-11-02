@@ -35,7 +35,11 @@ export async function runAgentForConversation(conversationId: string): Promise<R
   if (!conversation) return { ok: false, reason: "conversation_not_found" };
   if (!conversation.contactId) return { ok: false, reason: "conversation_without_contact" };
 
-  const [contact] = await db.select().from(contacts).where(eq(contacts.id, conversation.contactId)).limit(1);
+  const [contact] = await db
+    .select()
+    .from(contacts)
+    .where(eq(contacts.id, conversation.contactId))
+    .limit(1);
   if (!contact) return { ok: false, reason: "contact_not_found" };
 
   // El contacto es el kill-switch global; la conversacion pausa solo este hilo.
@@ -55,7 +59,9 @@ export async function runAgentForConversation(conversationId: string): Promise<R
   if (collapsed === "already_replied") return { ok: false, reason: "last_message_is_assistant" };
 
   const tools = await getEnabledToolDefinitions(config.enabledTools);
-  const puedeAsignar = tools.some((t) => t.type === "function" && t.function.name === "asignar_asesor");
+  const puedeAsignar = tools.some(
+    (t) => t.type === "function" && t.function.name === "asignar_asesor",
+  );
 
   const [contexto, equipo] = await Promise.all([
     renderContexto(contact.id),
@@ -65,7 +71,12 @@ export async function runAgentForConversation(conversationId: string): Promise<R
   const llmMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
     {
       role: "system",
-      content: renderSystemPrompt(config.systemPrompt, { channel: conversation.provider === "simulador" ? "simulador" : channel }) + contexto + equipo,
+      content:
+        renderSystemPrompt(config.systemPrompt, {
+          channel: conversation.provider === "simulador" ? "simulador" : channel,
+        }) +
+        contexto +
+        equipo,
     },
     ...collapsed,
   ];
@@ -155,7 +166,11 @@ export async function runAgentForContact(contactId: string): Promise<RunAgentRes
   return runAgentForConversation(conv.id);
 }
 
-type CollapsedHistory = Array<{ role: "user" | "assistant"; content: string }> | "empty" | "no_user" | "already_replied";
+type CollapsedHistory =
+  | Array<{ role: "user" | "assistant"; content: string }>
+  | "empty"
+  | "no_user"
+  | "already_replied";
 
 /** Seccion EQUIPO: a quien puede asignar y quien tiene hoy el contacto. */
 async function renderTeamBlock(currentOwnerId: string | null): Promise<string> {
@@ -167,7 +182,9 @@ async function renderTeamBlock(currentOwnerId: string | null): Promise<string> {
   return (
     `\n\n# EQUIPO\n${etiqueta}es a los que podes asignar este contacto con asignar_asesor:\n` +
     lines.join("\n") +
-    (actual ? `\nEste contacto ya esta asignado a ${displayName(actual)}.` : "\nEste contacto todavia no tiene asignacion.")
+    (actual
+      ? `\nEste contacto ya esta asignado a ${displayName(actual)}.`
+      : "\nEste contacto todavia no tiene asignacion.")
   );
 }
 

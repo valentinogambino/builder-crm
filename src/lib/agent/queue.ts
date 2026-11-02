@@ -18,19 +18,16 @@ const DEBOUNCE_MS = 6000;
 export async function enqueueAgentJob(
   contactId: string,
   triggerMessageId: string,
-  conversationId?: string | null
+  conversationId?: string | null,
 ): Promise<{ jobId: string; created: boolean }> {
   const processAfter = new Date(Date.now() + DEBOUNCE_MS);
 
   const pendingFilter = conversationId
-    ? and(
-        eq(agentJobs.conversationId, conversationId),
-        eq(agentJobs.status, "pending")
-      )
+    ? and(eq(agentJobs.conversationId, conversationId), eq(agentJobs.status, "pending"))
     : and(
         eq(agentJobs.contactId, contactId),
         isNull(agentJobs.conversationId),
-        eq(agentJobs.status, "pending")
+        eq(agentJobs.status, "pending"),
       );
 
   const [existing] = await db
@@ -71,15 +68,13 @@ export async function enqueueAgentJob(
  * - Si su processAfter aun es futuro, no hace nada (debounce activo, otro setTimeout vendra).
  * - Si OK, marca processing y devuelve el job + contacto.
  */
-export async function claimAgentJob(jobId: string): Promise<
+export async function claimAgentJob(
+  jobId: string,
+): Promise<
   | { ok: true; contactId: string; conversationId: string | null; attempts: number }
   | { ok: false; reason: string }
 > {
-  const [job] = await db
-    .select()
-    .from(agentJobs)
-    .where(eq(agentJobs.id, jobId))
-    .limit(1);
+  const [job] = await db.select().from(agentJobs).where(eq(agentJobs.id, jobId)).limit(1);
 
   if (!job) return { ok: false, reason: "job_not_found" };
   if (job.status !== "pending") return { ok: false, reason: `status_${job.status}` };
@@ -165,10 +160,7 @@ export async function claimAgentJob(jobId: string): Promise<
   };
 }
 
-export async function markJobDone(
-  jobId: string,
-  reason?: string
-): Promise<void> {
+export async function markJobDone(jobId: string, reason?: string): Promise<void> {
   await db
     .update(agentJobs)
     .set({
@@ -179,10 +171,7 @@ export async function markJobDone(
     .where(eq(agentJobs.id, jobId));
 }
 
-export async function markJobFailed(
-  jobId: string,
-  error: string
-): Promise<void> {
+export async function markJobFailed(jobId: string, error: string): Promise<void> {
   await db
     .update(agentJobs)
     .set({

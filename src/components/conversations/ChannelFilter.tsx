@@ -15,12 +15,7 @@ export function ChannelFilter({ value, onChange, counts }: Props) {
 
   return (
     <div className="flex items-center gap-1 px-3 py-2 border-b border-border/60 bg-card overflow-x-auto">
-      <Pill
-        active={value === "all"}
-        onClick={() => onChange("all")}
-        label="Todos"
-        count={total}
-      />
+      <Pill active={value === "all"} onClick={() => onChange("all")} label="Todos" count={total} />
       {CHANNELS.map((channel) => (
         <Pill
           key={channel}
@@ -61,7 +56,7 @@ function Pill({
         "inline-flex shrink-0 items-center gap-1.5 h-6 px-2 rounded-full text-[11px] font-medium transition-colors cursor-pointer",
         active
           ? "bg-primary text-primary-foreground"
-          : "bg-muted/50 text-muted-foreground hover:bg-muted"
+          : "bg-muted/50 text-muted-foreground hover:bg-muted",
       )}
     >
       {icon}

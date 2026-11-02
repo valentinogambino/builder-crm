@@ -24,9 +24,7 @@ export function EmptyState({
         <Icon className="h-8 w-8 text-muted-foreground" />
       </div>
       <h3 className="text-lg font-semibold mb-1">{title}</h3>
-      <p className="text-sm text-muted-foreground max-w-sm mb-4">
-        {description}
-      </p>
+      <p className="text-sm text-muted-foreground max-w-sm mb-4">{description}</p>
       {actionLabel && onAction && (
         <Button onClick={onAction} className="cursor-pointer">
           {actionLabel}

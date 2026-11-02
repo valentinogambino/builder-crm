@@ -39,10 +39,12 @@ Sos {{agente}}, parte del equipo de {{negocio}}. Atendes a las personas que escr
  * como un WhatsApp. Es el piso comun; el prompt propio de cada canal lo puede pisar.
  */
 const CHANNEL_HINTS: Record<string, string> = {
-  whatsapp: "Manten cada respuesta corta y natural (1-3 parrafos cortos). Podes incluir links si aportan.",
+  whatsapp:
+    "Manten cada respuesta corta y natural (1-3 parrafos cortos). Podes incluir links si aportan.",
   instagram:
     "Estas en un DM de Instagram: responde en 1 o 2 frases, tono informal y directo. Evita pegar URLs largas; si hace falta detalle, ofrece seguir por WhatsApp y pedi el numero.",
-  facebook: "Estas en Messenger: respuestas breves (1 o 2 frases) y tono cercano. Podes incluir un link si aporta.",
+  facebook:
+    "Estas en Messenger: respuestas breves (1 o 2 frases) y tono cercano. Podes incluir un link si aporta.",
 };
 
 const CHANNEL_NAMES: Record<string, string> = {
@@ -63,7 +65,11 @@ export function getDefaultSystemPromptTemplate(): string {
  */
 export async function getSystemPromptTemplate(): Promise<string> {
   try {
-    const [row] = await db.select().from(crmSettings).where(eq(crmSettings.key, SYSTEM_PROMPT_SETTINGS_KEY)).limit(1);
+    const [row] = await db
+      .select()
+      .from(crmSettings)
+      .where(eq(crmSettings.key, SYSTEM_PROMPT_SETTINGS_KEY))
+      .limit(1);
     const stored = row?.value?.trim();
     if (stored) return stored;
   } catch (err) {
@@ -75,7 +81,10 @@ export async function getSystemPromptTemplate(): Promise<string> {
 export const getGlobalSystemPromptTemplate = getSystemPromptTemplate;
 
 /** Reemplaza placeholders y agrega la guia del canal. */
-export function renderSystemPrompt(template: string, opts: { now?: Date; channel?: string } = {}): string {
+export function renderSystemPrompt(
+  template: string,
+  opts: { now?: Date; channel?: string } = {},
+): string {
   const now = opts.now ?? new Date();
   const channel = opts.channel ?? "whatsapp";
   const { marca, agente, idioma, zonaHoraria } = getConfig();
@@ -117,9 +126,16 @@ export async function renderContexto(contactId: string): Promise<string> {
       const v = (contact.customFields as Record<string, unknown> | null)?.[c.clave];
       return v === null || v === undefined || v === "";
     })
-    .map((c) => `- ${c.etiqueta} (${c.clave}${c.opciones ? ": " + c.opciones.join(" | ") : ""}): ${c.agente?.descripcion ?? "preguntar con naturalidad"}`);
+    .map(
+      (c) =>
+        `- ${c.etiqueta} (${c.clave}${c.opciones ? ": " + c.opciones.join(" | ") : ""}): ${c.agente?.descripcion ?? "preguntar con naturalidad"}`,
+    );
 
-  const [pipeline] = await db.select().from(pipelines).where(eq(pipelines.isDefault, true)).limit(1);
+  const [pipeline] = await db
+    .select()
+    .from(pipelines)
+    .where(eq(pipelines.isDefault, true))
+    .limit(1);
   let etapasTxt = "";
   let etapaActual = "sin operacion abierta";
   if (pipeline) {
@@ -128,7 +144,12 @@ export async function renderContexto(contactId: string): Promise<string> {
       .from(pipelineStages)
       .where(eq(pipelineStages.pipelineId, pipeline.id))
       .orderBy(pipelineStages.order);
-    etapasTxt = stages.map((s) => `- ${s.key ?? s.name}: ${s.name}${s.isWon ? " (ganada)" : s.isLost ? " (perdida)" : ""}`).join("\n");
+    etapasTxt = stages
+      .map(
+        (s) =>
+          `- ${s.key ?? s.name}: ${s.name}${s.isWon ? " (ganada)" : s.isLost ? " (perdida)" : ""}`,
+      )
+      .join("\n");
     const [abierta] = await db
       .select({ name: pipelineStages.name })
       .from(deals)

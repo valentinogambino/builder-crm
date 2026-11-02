@@ -43,9 +43,7 @@ export function AgentSettings() {
   const [togglingEnabled, setTogglingEnabled] = useState(false);
 
   const endpoint =
-    scope === "global"
-      ? "/api/settings/agent"
-      : `/api/settings/agent?channel=${scope}`;
+    scope === "global" ? "/api/settings/agent" : `/api/settings/agent?channel=${scope}`;
 
   useEffect(() => {
     let cancelled = false;
@@ -83,7 +81,7 @@ export function AgentSettings() {
       toast.success(
         next
           ? `Agente activado en ${CHANNEL_LABELS[scope]}`
-          : `Agente desactivado en ${CHANNEL_LABELS[scope]}`
+          : `Agente desactivado en ${CHANNEL_LABELS[scope]}`,
       );
     } catch {
       toast.error("No se pudo cambiar el estado del agente");
@@ -92,12 +90,10 @@ export function AgentSettings() {
     }
   };
 
-  const promptDirty =
-    config !== null && systemPrompt.trim() !== config.systemPrompt.trim();
+  const promptDirty = config !== null && systemPrompt.trim() !== config.systemPrompt.trim();
 
   const isUsingDefaultPrompt =
-    config !== null &&
-    systemPrompt.trim() === config.defaults.systemPrompt.trim();
+    config !== null && systemPrompt.trim() === config.defaults.systemPrompt.trim();
 
   const savePrompt = async () => {
     if (!promptDirty) return;
@@ -113,15 +109,11 @@ export function AgentSettings() {
         throw new Error(err.error ?? "save_failed");
       }
       const updated = await res.json();
-      setConfig((prev) =>
-        prev ? { ...prev, systemPrompt: updated.systemPrompt } : prev
-      );
+      setConfig((prev) => (prev ? { ...prev, systemPrompt: updated.systemPrompt } : prev));
       setSystemPrompt(updated.systemPrompt);
       toast.success("System prompt guardado");
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Error guardando el prompt"
-      );
+      toast.error(err instanceof Error ? err.message : "Error guardando el prompt");
     } finally {
       setSavingPrompt(false);
     }
@@ -129,17 +121,11 @@ export function AgentSettings() {
 
   const restoreDefaultPrompt = () => {
     if (!config) return;
-    if (
-      !confirm(
-        "Restaurar el system prompt al default? Vas a perder los cambios guardados."
-      )
-    ) {
+    if (!confirm("Restaurar el system prompt al default? Vas a perder los cambios guardados.")) {
       return;
     }
     setSystemPrompt(config.defaults.systemPrompt);
-    toast.message(
-      "Prompt restaurado al default. Pulsa Guardar para confirmar el cambio."
-    );
+    toast.message("Prompt restaurado al default. Pulsa Guardar para confirmar el cambio.");
   };
 
   const toggleTool = async (toolName: string) => {
@@ -151,7 +137,7 @@ export function AgentSettings() {
     if (next.length === 0) {
       if (
         !confirm(
-          "Vas a dejar al agente sin ninguna herramienta. Solo va a responder con texto. Continuar?"
+          "Vas a dejar al agente sin ninguna herramienta. Solo va a responder con texto. Continuar?",
         )
       ) {
         return;
@@ -174,13 +160,11 @@ export function AgentSettings() {
       toast.success(
         next.includes(toolName)
           ? `Herramienta "${toolName}" activada`
-          : `Herramienta "${toolName}" desactivada`
+          : `Herramienta "${toolName}" desactivada`,
       );
     } catch (err) {
       setEnabledTools(previous);
-      toast.error(
-        err instanceof Error ? err.message : "No se pudo actualizar la tool"
-      );
+      toast.error(err instanceof Error ? err.message : "No se pudo actualizar la tool");
     } finally {
       setSavingTools(false);
     }
@@ -189,7 +173,7 @@ export function AgentSettings() {
   const resetAll = async () => {
     if (
       !confirm(
-        "Borrar TODA la configuracion personalizada del agente y volver a defaults? (Prompt + tools)"
+        "Borrar TODA la configuracion personalizada del agente y volver a defaults? (Prompt + tools)",
       )
     ) {
       return;
@@ -208,7 +192,7 @@ export function AgentSettings() {
               systemPrompt: data.systemPrompt,
               enabledTools: data.enabledTools,
             }
-          : prev
+          : prev,
       );
       toast.success("Configuracion del agente restaurada a defaults");
     } catch {
@@ -239,7 +223,7 @@ export function AgentSettings() {
             "inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full text-[11px] font-medium transition-colors cursor-pointer",
             scope === "global"
               ? "bg-primary text-primary-foreground"
-              : "bg-muted/50 text-muted-foreground hover:bg-muted"
+              : "bg-muted/50 text-muted-foreground hover:bg-muted",
           )}
         >
           <Bot className="h-3 w-3" />
@@ -254,7 +238,7 @@ export function AgentSettings() {
               "inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full text-[11px] font-medium transition-colors cursor-pointer",
               scope === c
                 ? "bg-primary text-primary-foreground"
-                : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                : "bg-muted/50 text-muted-foreground hover:bg-muted",
             )}
           >
             <ChannelIcon
@@ -269,9 +253,7 @@ export function AgentSettings() {
       {scope !== "global" && (
         <div className="flex items-start gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2.5">
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium">
-              Agente en {CHANNEL_LABELS[scope]}
-            </p>
+            <p className="text-xs font-medium">Agente en {CHANNEL_LABELS[scope]}</p>
             <p className="text-[11px] text-muted-foreground mt-0.5">
               {config.inherited?.systemPrompt
                 ? "Este canal hereda el prompt global. Editalo y guarda para darle uno propio."
@@ -284,9 +266,7 @@ export function AgentSettings() {
             onClick={toggleEnabled}
             disabled={togglingEnabled}
           >
-            {togglingEnabled && (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            )}
+            {togglingEnabled && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             {config.enabled ? "Desactivar" : "Activar"}
           </Button>
         </div>
@@ -302,8 +282,8 @@ export function AgentSettings() {
             </Label>
             <p className="text-xs text-muted-foreground mt-0.5">
               Define rol, reglas y estilo del agente. Usa{" "}
-              <code className="bg-muted px-1 rounded">{"{{fecha}}"}</code> para
-              insertar la fecha de hoy en formato es-AR.
+              <code className="bg-muted px-1 rounded">{"{{fecha}}"}</code> para insertar la fecha de
+              hoy en formato es-AR.
             </p>
           </div>
           <span
@@ -311,7 +291,7 @@ export function AgentSettings() {
               "shrink-0 inline-flex items-center h-5 px-2 rounded-sm text-[10px] font-semibold uppercase tracking-wide",
               isUsingDefaultPrompt
                 ? "bg-muted text-muted-foreground"
-                : "bg-primary/10 text-primary border border-primary/20"
+                : "bg-primary/10 text-primary border border-primary/20",
             )}
           >
             {isUsingDefaultPrompt ? "Default" : "Personalizado"}
@@ -377,8 +357,8 @@ export function AgentSettings() {
             Herramientas
           </Label>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Activa o desactiva las herramientas que el agente puede llamar. Las
-            desactivadas no se le exponen al modelo.
+            Activa o desactiva las herramientas que el agente puede llamar. Las desactivadas no se
+            le exponen al modelo.
           </p>
         </div>
 
@@ -386,10 +366,7 @@ export function AgentSettings() {
           {config.allTools.map((tool) => {
             const isOn = enabledTools.includes(tool.name);
             return (
-              <div
-                key={tool.name}
-                className="flex items-start gap-3 p-3 rounded-lg border bg-card"
-              >
+              <div key={tool.name} className="flex items-start gap-3 p-3 rounded-lg border bg-card">
                 <button
                   type="button"
                   role="switch"
@@ -398,30 +375,26 @@ export function AgentSettings() {
                   onClick={() => toggleTool(tool.name)}
                   className={cn(
                     "mt-0.5 shrink-0 inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
-                    isOn ? "bg-primary" : "bg-muted"
+                    isOn ? "bg-primary" : "bg-muted",
                   )}
                 >
                   <span
                     className={cn(
                       "inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform",
-                      isOn ? "translate-x-4" : "translate-x-0.5"
+                      isOn ? "translate-x-4" : "translate-x-0.5",
                     )}
                   />
                 </button>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-mono font-medium">
-                    {tool.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {tool.description}
-                  </p>
+                  <p className="text-[13px] font-mono font-medium">{tool.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{tool.description}</p>
                 </div>
                 <span
                   className={cn(
                     "shrink-0 inline-flex items-center h-5 px-1.5 rounded-sm text-[10px] font-semibold uppercase tracking-wide",
                     isOn
                       ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
-                      : "bg-muted text-muted-foreground"
+                      : "bg-muted text-muted-foreground",
                   )}
                 >
                   {isOn ? "ON" : "OFF"}
@@ -433,9 +406,8 @@ export function AgentSettings() {
 
         {enabledTools.length === 0 && (
           <p className="text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-md px-3 py-2">
-            ⚠ No hay herramientas activas. El agente solo va a poder responder
-            con texto: no va a poder mover etapas, actualizar la ficha ni
-            derivar a una persona.
+            ⚠ No hay herramientas activas. El agente solo va a poder responder con texto: no va a
+            poder mover etapas, actualizar la ficha ni derivar a una persona.
           </p>
         )}
       </div>

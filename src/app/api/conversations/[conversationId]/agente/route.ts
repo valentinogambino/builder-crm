@@ -20,7 +20,10 @@ interface Body {
  *
  * Devuelve el estado combinado (contacto y conversacion), que es lo que muestra el chat.
  */
-export async function PATCH(request: NextRequest, { params }: { params: Promise<{ conversationId: string }> }) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ conversationId: string }> },
+) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { conversationId } = await params;
@@ -32,7 +35,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ error: "JSON invalido" }, { status: 400 });
   }
 
-  const [conv] = await db.select().from(conversations).where(eq(conversations.id, conversationId)).limit(1);
+  const [conv] = await db
+    .select()
+    .from(conversations)
+    .where(eq(conversations.id, conversationId))
+    .limit(1);
   if (!conv || (conv.contactId && !(await canAccessContactId(auth.member, conv.contactId)))) {
     return NextResponse.json({ error: "Conversacion no encontrada" }, { status: 404 });
   }
@@ -54,7 +61,13 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (conv.contactId && body.enabled === true) {
       await db
         .update(contacts)
-        .set({ aiEnabled: true, needsHuman: false, needsHumanReason: null, needsHumanAt: null, updatedAt: now })
+        .set({
+          aiEnabled: true,
+          needsHuman: false,
+          needsHumanReason: null,
+          needsHumanAt: null,
+          updatedAt: now,
+        })
         .where(eq(contacts.id, conv.contactId));
     }
   } else if (body.enabled === false) {
@@ -66,7 +79,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ error: "Nada para actualizar" }, { status: 400 });
   }
 
-  const [c2] = await db.select().from(conversations).where(eq(conversations.id, conversationId)).limit(1);
+  const [c2] = await db
+    .select()
+    .from(conversations)
+    .where(eq(conversations.id, conversationId))
+    .limit(1);
   const [contact] = conv.contactId
     ? await db.select().from(contacts).where(eq(contacts.id, conv.contactId)).limit(1)
     : [null];

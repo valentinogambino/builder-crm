@@ -4,10 +4,7 @@ import { canAccessContact } from "@/lib/team";
 import { confirmUpload, documentContact, getDocument } from "@/lib/documents";
 
 /** Paso 2 de la subida: el navegador termino el PUT; el servidor verifica y publica. */
-export async function POST(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { id } = await params;

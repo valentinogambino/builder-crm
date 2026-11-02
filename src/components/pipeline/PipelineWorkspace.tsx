@@ -28,7 +28,7 @@ export function PipelineWorkspace({ pipelines, deals }: PipelineWorkspaceProps) 
   const storedId = useSyncExternalStore(
     subscribeToStorage,
     () => (typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null),
-    () => null
+    () => null,
   );
   const [overrideId, setOverrideId] = useState<string | null>(null);
   const [view, setView] = useState<"kanban" | "list">("kanban");
@@ -36,10 +36,8 @@ export function PipelineWorkspace({ pipelines, deals }: PipelineWorkspaceProps) 
   const [sort, setSort] = useState<PipelineSort>(DEFAULT_SORT);
   const [editorOpen, setEditorOpen] = useState(false);
 
-  const validStoredId =
-    storedId && pipelines.some((p) => p.id === storedId) ? storedId : null;
-  const selectedPipelineId =
-    overrideId ?? validStoredId ?? pipelines[0]?.id ?? null;
+  const validStoredId = storedId && pipelines.some((p) => p.id === storedId) ? storedId : null;
+  const selectedPipelineId = overrideId ?? validStoredId ?? pipelines[0]?.id ?? null;
 
   const setSelectedPipelineId = (id: string) => {
     setOverrideId(id);
@@ -50,7 +48,7 @@ export function PipelineWorkspace({ pipelines, deals }: PipelineWorkspaceProps) 
 
   const selectedPipeline = useMemo(
     () => pipelines.find((p) => p.id === selectedPipelineId) ?? null,
-    [pipelines, selectedPipelineId]
+    [pipelines, selectedPipelineId],
   );
 
   const columns: PipelineColumn[] = useMemo(() => {
@@ -64,14 +62,11 @@ export function PipelineWorkspace({ pipelines, deals }: PipelineWorkspaceProps) 
       }));
   }, [selectedPipeline, deals]);
 
-  const allPipelineDeals = useMemo(
-    () => columns.flatMap((c) => c.deals),
-    [columns]
-  );
+  const allPipelineDeals = useMemo(() => columns.flatMap((c) => c.deals), [columns]);
 
   const visibleDeals = useMemo(
     () => applySort(applyFilters(allPipelineDeals, filters), sort),
-    [allPipelineDeals, filters, sort]
+    [allPipelineDeals, filters, sort],
   );
 
   if (pipelines.length === 0) {
@@ -113,9 +108,7 @@ export function PipelineWorkspace({ pipelines, deals }: PipelineWorkspaceProps) 
           open={editorOpen}
           onClose={() => setEditorOpen(false)}
           pipeline={selectedPipeline}
-          dealsByStage={Object.fromEntries(
-            columns.map((c) => [c.id, c.deals.length])
-          )}
+          dealsByStage={Object.fromEntries(columns.map((c) => [c.id, c.deals.length]))}
           otherPipelines={pipelines.filter((p) => p.id !== selectedPipeline.id)}
           onPipelineDeleted={() => {
             const next = pipelines.find((p) => p.id !== selectedPipeline.id);

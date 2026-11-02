@@ -16,12 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { OwnerSelect } from "./OwnerSelect";
@@ -56,7 +51,7 @@ export function ContactForm({ open, onClose, initialData }: ContactFormProps) {
   const [tags, setTags] = useState<string[]>(initialData?.tags ?? []);
   const [tagDraft, setTagDraft] = useState("");
   const [camposValores, setCamposValores] = useState<ValoresCampos>(
-    (initialData?.customFields as ValoresCampos | null) ?? {}
+    (initialData?.customFields as ValoresCampos | null) ?? {},
   );
   // Solo se manda si el admin lo toco: un asesor no puede cambiarlo y el servidor
   // rechaza el campo aunque venga con el mismo valor.
@@ -95,9 +90,7 @@ export function ContactForm({ open, onClose, initialData }: ContactFormProps) {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      const url = isEditing
-        ? `/api/contacts/${initialData!.id}`
-        : "/api/contacts";
+      const url = isEditing ? `/api/contacts/${initialData!.id}` : "/api/contacts";
       const method = isEditing ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -116,9 +109,7 @@ export function ContactForm({ open, onClose, initialData }: ContactFormProps) {
         throw new Error(err?.error || "Error al guardar");
       }
 
-      toast.success(
-        isEditing ? "Contacto actualizado" : "Contacto creado"
-      );
+      toast.success(isEditing ? "Contacto actualizado" : "Contacto creado");
       reset();
       setTags([]);
       setTagDraft("");
@@ -134,24 +125,25 @@ export function ContactForm({ open, onClose, initialData }: ContactFormProps) {
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {isEditing ? "Editar Contacto" : "Nuevo Contacto"}
-          </DialogTitle>
+          <DialogTitle>{isEditing ? "Editar Contacto" : "Nuevo Contacto"}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nombre *</Label>
             <Input id="name" {...register("name")} placeholder="Nombre completo" />
-            {errors.name && (
-              <p className="text-xs text-destructive">{errors.name.message}</p>
-            )}
+            {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" {...register("email")} placeholder="correo@ejemplo.com" />
+              <Input
+                id="email"
+                type="email"
+                {...register("email")}
+                placeholder="correo@ejemplo.com"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Telefono</Label>
@@ -166,10 +158,7 @@ export function ContactForm({ open, onClose, initialData }: ContactFormProps) {
 
           <div className="space-y-2">
             <Label>Fuente</Label>
-            <Select
-              value={watch("source")}
-              onValueChange={(v) => v && setValue("source", v)}
-            >
+            <Select value={watch("source")} onValueChange={(v) => v && setValue("source", v)}>
               <SelectTrigger className="cursor-pointer">
                 <SelectValue />
               </SelectTrigger>
@@ -253,7 +242,12 @@ export function ContactForm({ open, onClose, initialData }: ContactFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="notes">Notas</Label>
-            <Textarea id="notes" {...register("notes")} placeholder="Notas sobre el contacto..." rows={3} />
+            <Textarea
+              id="notes"
+              {...register("notes")}
+              placeholder="Notas sobre el contacto..."
+              rows={3}
+            />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">

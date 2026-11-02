@@ -66,31 +66,19 @@ export async function getCurrentMember(): Promise<TeamMember | null> {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const [row] = await db
-    .select()
-    .from(teamMembers)
-    .where(eq(teamMembers.id, user.id))
-    .limit(1);
+  const [row] = await db.select().from(teamMembers).where(eq(teamMembers.id, user.id)).limit(1);
 
   if (!row || !row.active) return null;
   return toMember(row);
 }
 
-export async function listMembers(opts?: {
-  onlyActive?: boolean;
-}): Promise<TeamMember[]> {
+export async function listMembers(opts?: { onlyActive?: boolean }): Promise<TeamMember[]> {
   const rows = await db.select().from(teamMembers).orderBy(asc(teamMembers.createdAt));
-  return rows
-    .filter((r) => !opts?.onlyActive || r.active)
-    .map(toMember);
+  return rows.filter((r) => !opts?.onlyActive || r.active).map(toMember);
 }
 
 export async function getMember(id: string): Promise<TeamMember | null> {
-  const [row] = await db
-    .select()
-    .from(teamMembers)
-    .where(eq(teamMembers.id, id))
-    .limit(1);
+  const [row] = await db.select().from(teamMembers).where(eq(teamMembers.id, id)).limit(1);
   return row ? toMember(row) : null;
 }
 
@@ -112,10 +100,7 @@ export function visibleOwnerId(member: TeamMember): string | undefined {
 }
 
 /** true si el miembro puede ver/tocar este contacto. */
-export function canAccessContact(
-  member: TeamMember,
-  contact: { ownerId: string | null }
-): boolean {
+export function canAccessContact(member: TeamMember, contact: { ownerId: string | null }): boolean {
   return member.role === "admin" || contact.ownerId === member.id;
 }
 
@@ -124,10 +109,7 @@ export function canAccessContact(
  * id (operacion, actividad, hilo) que solo tienen el contact_id a mano. Un contacto
  * inexistente devuelve false, y la ruta responde 404 sin confirmar que exista.
  */
-export async function canAccessContactId(
-  member: TeamMember,
-  contactId: string
-): Promise<boolean> {
+export async function canAccessContactId(member: TeamMember, contactId: string): Promise<boolean> {
   if (member.role === "admin") return true;
   const [row] = await db
     .select({ ownerId: contacts.ownerId })
@@ -152,7 +134,7 @@ export async function hayMiembros(): Promise<boolean> {
  * de adivinar.
  */
 export async function findMemberByName(
-  query: string
+  query: string,
 ): Promise<
   | { status: "found"; member: TeamMember }
   | { status: "ambiguous"; candidates: TeamMember[] }
@@ -162,9 +144,7 @@ export async function findMemberByName(
   const q = normalize(query);
   if (!q) return { status: "not_found", available: members };
 
-  const exact = members.filter(
-    (m) => normalize(m.name ?? "") === q || normalize(m.email) === q
-  );
+  const exact = members.filter((m) => normalize(m.name ?? "") === q || normalize(m.email) === q);
   if (exact.length === 1) return { status: "found", member: exact[0] };
 
   const partial = members.filter((m) => {

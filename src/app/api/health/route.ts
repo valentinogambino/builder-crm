@@ -22,15 +22,21 @@ export async function GET() {
   if (faltan.length > 0) {
     return NextResponse.json(
       { ok: false, version: APP_VERSION, commit: BUILD_COMMIT, error: "env_invalida", faltan },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
   const problemas = erroresConfig();
   if (problemas.length > 0) {
     return NextResponse.json(
-      { ok: false, version: APP_VERSION, commit: BUILD_COMMIT, error: "config_invalida", detalle: problemas },
-      { status: 503 }
+      {
+        ok: false,
+        version: APP_VERSION,
+        commit: BUILD_COMMIT,
+        error: "config_invalida",
+        detalle: problemas,
+      },
+      { status: 503 },
     );
   }
 
@@ -42,7 +48,7 @@ export async function GET() {
     console.error("[health] base no disponible:", message);
     return NextResponse.json(
       { ok: false, version: APP_VERSION, commit: BUILD_COMMIT, error: "db_unavailable" },
-      { status: 503 }
+      { status: 503 },
     );
   }
 

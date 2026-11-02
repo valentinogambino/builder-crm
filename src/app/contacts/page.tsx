@@ -34,12 +34,9 @@ export default function ContactsPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight font-heading">
-            Contactos
-          </h1>
+          <h1 className="text-xl font-semibold tracking-tight font-heading">Contactos</h1>
           <p className="text-xs text-muted-foreground">
-            {contacts.length}{" "}
-            {contacts.length === 1 ? "contacto" : "contactos"}
+            {contacts.length} {contacts.length === 1 ? "contacto" : "contactos"}
           </p>
         </div>
         <Button onClick={() => setShowForm(true)} className="cursor-pointer">
@@ -48,11 +45,7 @@ export default function ContactsPage() {
         </Button>
       </div>
 
-      {loading ? (
-        <TableSkeleton />
-      ) : (
-        <ContactsTable contacts={contacts} onChange={loadContacts} />
-      )}
+      {loading ? <TableSkeleton /> : <ContactsTable contacts={contacts} onChange={loadContacts} />}
 
       <ContactForm open={showForm} onClose={handleCloseForm} />
     </div>

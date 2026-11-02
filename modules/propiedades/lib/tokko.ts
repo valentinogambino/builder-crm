@@ -144,8 +144,7 @@ export function mapTokkoToPropertyRow(p: TokkoProperty): PropertyRow {
   const op = p.operations?.[0];
   const price = op?.prices?.[0];
   const photos = (p.photos ?? []).map((ph) => ph.image).filter(Boolean);
-  const cover =
-    (p.photos ?? []).find((ph) => ph.is_front_cover)?.image ?? photos[0] ?? null;
+  const cover = (p.photos ?? []).find((ph) => ph.is_front_cover)?.image ?? photos[0] ?? null;
   const amenities = (p.tags ?? []).map((t) => t.name).filter(Boolean);
   const description = (p.rich_description || p.description || "").trim() || null;
   const address = (p.real_address || p.address || "").trim() || null;
@@ -168,8 +167,7 @@ export function mapTokkoToPropertyRow(p: TokkoProperty): PropertyRow {
     address,
     geo_lat: toNumber(p.geo_lat),
     geo_lng: toNumber(p.geo_long),
-    credit_eligible:
-      typeof p.credit_eligible === "boolean" ? p.credit_eligible : null,
+    credit_eligible: typeof p.credit_eligible === "boolean" ? p.credit_eligible : null,
     expenses: toNumber(p.expenses),
     amenities,
     cover_photo: cover,

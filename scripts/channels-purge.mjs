@@ -60,11 +60,7 @@ async function dedupeSalientes() {
     where a.external_id is null
     order by a.created_at desc`;
 
-  console.log(
-    APPLY
-      ? "BORRANDO duplicados"
-      : "SIMULACION de duplicados, no se toca nada"
-  );
+  console.log(APPLY ? "BORRANDO duplicados" : "SIMULACION de duplicados, no se toca nada");
   console.log(`Pares duplicados encontrados: ${pares.length}`);
   for (const d of pares) {
     console.log(`  ${d.created_at.toISOString().slice(0, 16)}  ${d.body}`);
@@ -107,15 +103,13 @@ async function main() {
     console.log(
       SOLO_CUENTA
         ? `No encontre ninguna cuenta con ese id.`
-        : "No hay cuentas desconectadas. Nada para limpiar."
+        : "No hay cuentas desconectadas. Nada para limpiar.",
     );
     await sql.end();
     return;
   }
 
-  console.log(
-    APPLY ? "BORRANDO (esto no se puede deshacer)\n" : "SIMULACION — no se toca nada\n"
-  );
+  console.log(APPLY ? "BORRANDO (esto no se puede deshacer)\n" : "SIMULACION — no se toca nada\n");
 
   let totalHilos = 0;
   let totalMensajes = 0;
@@ -129,7 +123,7 @@ async function main() {
 
     console.log(
       `${c.platform.padEnd(10)} ${String(c.username ?? "-").padEnd(24)} ` +
-        `${String(c.status).padEnd(13)} ${String(hilos).padStart(3)} hilos, ${String(msgs).padStart(4)} mensajes`
+        `${String(c.status).padEnd(13)} ${String(hilos).padStart(3)} hilos, ${String(msgs).padStart(4)} mensajes`,
     );
 
     totalHilos += hilos;
@@ -158,7 +152,7 @@ async function main() {
 
   console.log(
     `\n${APPLY ? "Borrados" : "Se borrarian"}: ${totalHilos} hilos y ${totalMensajes} mensajes ` +
-      `de ${cuentas.length} cuenta(s).`
+      `de ${cuentas.length} cuenta(s).`,
   );
 
   if (!APPLY && totalHilos > 0) {
@@ -177,7 +171,7 @@ async function main() {
   if (huerfanos > 0) {
     console.log(
       `\nAviso: quedan ${huerfanos} contactos sin conversaciones, operaciones ni ` +
-        `actividades.\nSe pueden borrar desde Contactos si no los queres.`
+        `actividades.\nSe pueden borrar desde Contactos si no los queres.`,
     );
   }
 

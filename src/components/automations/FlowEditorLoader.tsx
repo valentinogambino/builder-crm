@@ -49,12 +49,8 @@ export function FlowEditorLoader({ ruleKey }: Props) {
         title={ruleKey ? "Editar regla" : "Nueva regla"}
         subtitle="Elige que la dispara, filtra cuando aplica y encadena lo que hace"
       />
-      {state.status === "loading" && (
-        <p className="text-sm text-muted-foreground">Cargando…</p>
-      )}
-      {state.status === "error" && (
-        <p className="text-sm text-destructive">{state.message}</p>
-      )}
+      {state.status === "loading" && <p className="text-sm text-muted-foreground">Cargando…</p>}
+      {state.status === "error" && <p className="text-sm text-destructive">{state.message}</p>}
       {state.status === "ready" && (
         <FlowEditor catalog={state.catalog} initial={state.rule} isAdmin={state.isAdmin} />
       )}

@@ -1,13 +1,7 @@
 import "server-only";
 import { emitContactCreated } from "@/lib/contacts/events";
 import { db } from "@/db";
-import {
-  activities,
-  contactIdentities,
-  contacts,
-  conversations,
-  messages,
-} from "@/db/schema";
+import { activities, contactIdentities, contacts, conversations, messages } from "@/db/schema";
 import { and, desc, eq, gte, isNull, sql } from "drizzle-orm";
 import { normalizePhone } from "@/lib/phone";
 import { enqueueAgentJob } from "@/lib/agent/queue";
@@ -74,17 +68,15 @@ function isPlaceholderName(name: string | null | undefined): boolean {
  * En WhatsApp, ademas de `contact_identities`, se intenta matchear por telefono para
  * no duplicar los contactos que ya existen del flujo de Meta directo.
  */
-export async function findOrCreateContactByIdentity(
-  input: IdentityInput
-): Promise<string> {
+export async function findOrCreateContactByIdentity(input: IdentityInput): Promise<string> {
   const [identity] = await db
     .select({ contactId: contactIdentities.contactId })
     .from(contactIdentities)
     .where(
       and(
         eq(contactIdentities.channel, input.channel),
-        eq(contactIdentities.externalId, input.externalId)
-      )
+        eq(contactIdentities.externalId, input.externalId),
+      ),
     )
     .limit(1);
 
@@ -93,8 +85,7 @@ export async function findOrCreateContactByIdentity(
     return identity.contactId;
   }
 
-  const phone =
-    input.channel === "whatsapp" ? `+${normalizePhone(input.externalId)}` : null;
+  const phone = input.channel === "whatsapp" ? `+${normalizePhone(input.externalId)}` : null;
 
   if (phone) {
     const [byPhone] = await db
@@ -150,7 +141,7 @@ export async function linkExtraIdentity(
   contactId: string,
   channel: Channel,
   externalId: string,
-  handle?: string | null
+  handle?: string | null,
 ): Promise<void> {
   await db
     .insert(contactIdentities)
@@ -171,10 +162,7 @@ async function linkIdentity(contactId: string, input: IdentityInput): Promise<vo
 }
 
 /** Solo pisa nombres placeholder: no sobrescribe uno que puso una persona. */
-async function maybeImproveName(
-  contactId: string,
-  name: string | null | undefined
-): Promise<void> {
+async function maybeImproveName(contactId: string, name: string | null | undefined): Promise<void> {
   const clean = name?.trim();
   if (!clean) return;
 
@@ -212,7 +200,7 @@ export interface UpsertConversationInput {
 }
 
 export async function upsertConversation(
-  input: UpsertConversationInput
+  input: UpsertConversationInput,
 ): Promise<typeof conversations.$inferSelect> {
   const now = new Date();
 
@@ -255,17 +243,12 @@ export async function upsertConversation(
 /** Hilo mas reciente de un contacto en un canal. */
 export async function findConversationForContact(
   contactId: string,
-  channel: Channel
+  channel: Channel,
 ): Promise<typeof conversations.$inferSelect | null> {
   const [row] = await db
     .select()
     .from(conversations)
-    .where(
-      and(
-        eq(conversations.contactId, contactId),
-        eq(conversations.channel, channel)
-      )
-    )
+    .where(and(eq(conversations.contactId, contactId), eq(conversations.channel, channel)))
     .orderBy(desc(conversations.lastMessageAt))
     .limit(1);
   return row ?? null;
@@ -294,9 +277,7 @@ export interface IngestMessageResult {
   jobId: string | null;
 }
 
-export async function ingestMessage(
-  input: IngestMessageInput
-): Promise<IngestMessageResult> {
+export async function ingestMessage(input: IngestMessageInput): Promise<IngestMessageResult> {
   const { conversation: conv } = input;
   const sentAt = input.sentAt ?? new Date();
 
@@ -329,8 +310,8 @@ export async function ingestMessage(
           eq(messages.direction, "out"),
           isNull(messages.externalId),
           eq(messages.body, input.body),
-          gte(messages.createdAt, new Date(Date.now() - ECHO_WINDOW_MS))
-        )
+          gte(messages.createdAt, new Date(Date.now() - ECHO_WINDOW_MS)),
+        ),
       )
       .orderBy(desc(messages.createdAt))
       .limit(1);
@@ -392,18 +373,14 @@ export async function ingestMessage(
     return { duplicate: false, messageId, jobId: null };
   }
 
-  const { jobId } = await enqueueAgentJob(
-    conv.contactId,
-    input.externalId ?? messageId,
-    conv.id
-  );
+  const { jobId } = await enqueueAgentJob(conv.contactId, input.externalId ?? messageId, conv.id);
   return { duplicate: false, messageId, jobId };
 }
 
 /** Mantiene al dia los campos materializados del hilo (lista + ventana de 24h). */
 export async function touchConversation(
   conversationId: string,
-  last: { direction: "in" | "out"; body: string | null; sentAt: Date }
+  last: { direction: "in" | "out"; body: string | null; sentAt: Date },
 ): Promise<void> {
   await db
     .update(conversations)
@@ -429,7 +406,7 @@ export async function touchConversation(
  */
 async function maybeReactivateAfterInactivity(
   conversationId: string,
-  contactId: string | null
+  contactId: string | null,
 ): Promise<void> {
   const [conv] = await db
     .select({
@@ -488,9 +465,7 @@ export interface MessageStatusUpdate {
  * antes que el mensaje: el llamador reintenta en vez de perder el evento en silencio
  * (que es lo que hace hoy el webhook de WhatsApp).
  */
-export async function updateMessageStatus(
-  update: MessageStatusUpdate
-): Promise<boolean> {
+export async function updateMessageStatus(update: MessageStatusUpdate): Promise<boolean> {
   const [target] = await db
     .select({ id: messages.id })
     .from(messages)
@@ -505,9 +480,7 @@ export async function updateMessageStatus(
       ...(update.status ? { status: update.status } : {}),
       ...(update.deliveredAt ? { deliveredAt: update.deliveredAt } : {}),
       ...(update.readAt ? { readAt: update.readAt } : {}),
-      ...(update.errorMessage !== undefined
-        ? { errorMessage: update.errorMessage }
-        : {}),
+      ...(update.errorMessage !== undefined ? { errorMessage: update.errorMessage } : {}),
     })
     .where(eq(messages.id, target.id));
 

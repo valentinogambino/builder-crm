@@ -16,10 +16,7 @@ interface Body {
  * - { enabled: false }                         -> apagar bot manualmente
  * - { clearNeedsHuman: true }                  -> solo limpiar bandera de "necesita humano"
  */
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { member } = auth;
@@ -46,22 +43,15 @@ export async function PATCH(
   }
 
   if (Object.keys(update).length === 1) {
-    return NextResponse.json(
-      { error: "Nada para actualizar" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Nada para actualizar" }, { status: 400 });
   }
 
-  const [updated] = await db
-    .update(contacts)
-    .set(update)
-    .where(eq(contacts.id, id))
-    .returning({
-      id: contacts.id,
-      aiEnabled: contacts.aiEnabled,
-      needsHuman: contacts.needsHuman,
-      needsHumanReason: contacts.needsHumanReason,
-    });
+  const [updated] = await db.update(contacts).set(update).where(eq(contacts.id, id)).returning({
+    id: contacts.id,
+    aiEnabled: contacts.aiEnabled,
+    needsHuman: contacts.needsHuman,
+    needsHumanReason: contacts.needsHumanReason,
+  });
 
   if (!updated) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });

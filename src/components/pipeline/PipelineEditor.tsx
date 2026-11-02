@@ -19,20 +19,10 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -64,7 +54,7 @@ export function PipelineEditor({
   const router = useRouter();
   const [name, setName] = useState(pipeline.name);
   const [stages, setStages] = useState<PipelineStage[]>(() =>
-    [...pipeline.stages].sort((a, b) => a.order - b.order)
+    [...pipeline.stages].sort((a, b) => a.order - b.order),
   );
   const stagesSnapshot = useRef<PipelineStage[]>(stages);
   const [moveDialog, setMoveDialog] = useState<{
@@ -83,7 +73,7 @@ export function PipelineEditor({
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 4 },
-    })
+    }),
   );
 
   const handleRenamePipeline = async () => {
@@ -112,9 +102,7 @@ export function PipelineEditor({
       });
       if (res.status === 409) {
         const body = (await res.json()) as { dealCount?: number };
-        toast.error(
-          `No se puede borrar: tiene ${body.dealCount ?? 0} deals. Movélos primero.`
-        );
+        toast.error(`No se puede borrar: tiene ${body.dealCount ?? 0} deals. Movélos primero.`);
         return;
       }
       if (!res.ok) throw new Error();
@@ -197,8 +185,8 @@ export function PipelineEditor({
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ dealId: d.id, stageId: targetStageId }),
-          })
-        )
+          }),
+        ),
       );
 
       const res = await fetch(`/api/stages/${stage.id}`, { method: "DELETE" });
@@ -277,9 +265,7 @@ export function PipelineEditor({
                 )}
               </div>
               {otherPipelines.length === 0 && (
-                <p className="text-xs text-muted-foreground">
-                  No podés borrar el último pipeline.
-                </p>
+                <p className="text-xs text-muted-foreground">No podés borrar el último pipeline.</p>
               )}
             </div>
 
@@ -322,10 +308,7 @@ export function PipelineEditor({
         </SheetContent>
       </Sheet>
 
-      <Dialog
-        open={moveDialog !== null}
-        onOpenChange={(v) => !v && setMoveDialog(null)}
-      >
+      <Dialog open={moveDialog !== null} onOpenChange={(v) => !v && setMoveDialog(null)}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>Mover deals antes de borrar</DialogTitle>
@@ -333,17 +316,13 @@ export function PipelineEditor({
           {moveDialog && (
             <div className="space-y-3">
               <p className="text-sm text-muted-foreground">
-                La etapa <span className="font-medium">{moveDialog.stage.name}</span>{" "}
-                tiene {dealsByStage[moveDialog.stage.id] ?? 0} deal(s). Elegí
-                a qué etapa moverlos:
+                La etapa <span className="font-medium">{moveDialog.stage.name}</span> tiene{" "}
+                {dealsByStage[moveDialog.stage.id] ?? 0} deal(s). Elegí a qué etapa moverlos:
               </p>
               <Select
                 value={moveDialog.targetStageId}
                 onValueChange={(v) =>
-                  v &&
-                  setMoveDialog((prev) =>
-                    prev ? { ...prev, targetStageId: v } : prev
-                  )
+                  v && setMoveDialog((prev) => (prev ? { ...prev, targetStageId: v } : prev))
                 }
               >
                 <SelectTrigger className="cursor-pointer">
@@ -367,10 +346,7 @@ export function PipelineEditor({
                 >
                   Cancelar
                 </Button>
-                <Button
-                  onClick={confirmMoveAndDelete}
-                  className="cursor-pointer"
-                >
+                <Button onClick={confirmMoveAndDelete} className="cursor-pointer">
                   Mover y borrar
                 </Button>
               </div>
@@ -389,14 +365,10 @@ interface SortableStageRowProps {
   onDelete: () => void;
 }
 
-function SortableStageRow({
-  stage,
-  dealCount,
-  onRename,
-  onDelete,
-}: SortableStageRowProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: stage.id });
+function SortableStageRow({ stage, dealCount, onRename, onDelete }: SortableStageRowProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: stage.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -436,7 +408,7 @@ function SortableStageRow({
       <span
         className={cn(
           "text-[10px] tabular-nums shrink-0",
-          dealCount > 0 ? "text-muted-foreground" : "text-muted-foreground/50"
+          dealCount > 0 ? "text-muted-foreground" : "text-muted-foreground/50",
         )}
       >
         {dealCount}

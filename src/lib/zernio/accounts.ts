@@ -9,23 +9,15 @@ import type {
 
 /** Cuentas sociales conectadas y flujos de conexion (OAuth y headless). */
 
-export async function listAccounts(): Promise<
-  ZernioResult<ZernioListResponse<ZernioAccount>>
-> {
+export async function listAccounts(): Promise<ZernioResult<ZernioListResponse<ZernioAccount>>> {
   return zernioFetch<ZernioListResponse<ZernioAccount>>("/accounts");
 }
 
-export async function getAccount(
-  accountId: string
-): Promise<ZernioResult<ZernioAccount>> {
-  return zernioFetch<ZernioAccount>(
-    `/accounts/${encodeURIComponent(accountId)}`
-  );
+export async function getAccount(accountId: string): Promise<ZernioResult<ZernioAccount>> {
+  return zernioFetch<ZernioAccount>(`/accounts/${encodeURIComponent(accountId)}`);
 }
 
-export async function listProfiles(): Promise<
-  ZernioResult<ZernioListResponse<ZernioProfile>>
-> {
+export async function listProfiles(): Promise<ZernioResult<ZernioListResponse<ZernioProfile>>> {
   return zernioFetch<ZernioListResponse<ZernioProfile>>("/profiles");
 }
 
@@ -58,7 +50,7 @@ export interface ConnectUrlOptions {
 export async function buildConnectUrl(
   platform: ZernioPlatform,
   redirectUrl: string,
-  options: ConnectUrlOptions = {}
+  options: ConnectUrlOptions = {},
 ): Promise<ZernioResult<{ authUrl: string; state?: string }>> {
   return zernioFetch<{ authUrl: string; state?: string }>(
     `/connect/${encodeURIComponent(platform)}`,
@@ -70,14 +62,12 @@ export async function buildConnectUrl(
         // chico: el numero ya vive en la app WhatsApp Business de un celular y tiene
         // que seguir funcionando ahi. `api` deja el numero SOLO en Cloud API y lo saca
         // del telefono, asi que solo sirve si el numero ya estaba en Cloud API.
-        ...(platform === "whatsapp"
-          ? { onboarding: options.onboarding ?? "business_app" }
-          : {}),
+        ...(platform === "whatsapp" ? { onboarding: options.onboarding ?? "business_app" } : {}),
         ...(platform === "instagram"
           ? { loginMethod: options.loginMethod ?? "instagram_login" }
           : {}),
       },
-    }
+    },
   );
 }
 
@@ -98,7 +88,7 @@ export interface ConnectWhatsappCredentials {
  * `whatsapp_business_messaging`.
  */
 export async function connectWhatsappHeadless(
-  creds: ConnectWhatsappCredentials
+  creds: ConnectWhatsappCredentials,
 ): Promise<ZernioResult<{ accountId?: string }>> {
   return zernioFetch<{ accountId?: string }>("/connect/whatsapp/credentials", {
     method: "POST",

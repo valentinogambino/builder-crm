@@ -29,7 +29,7 @@ self.addEventListener("push", (event) => {
       tag: data.tag,
       renotify: Boolean(data.tag),
       data: { url: data.url || "/" },
-    })
+    }),
   );
 });
 
@@ -48,7 +48,7 @@ self.addEventListener("notificationclick", (event) => {
         }
       }
       return self.clients.openWindow(url);
-    })
+    }),
   );
 });
 
@@ -67,8 +67,8 @@ self.addEventListener("pushsubscriptionchange", (event) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ...sub.toJSON(), oldEndpoint: old.endpoint }),
-        })
+        }),
       )
-      .catch(() => {})
+      .catch(() => {}),
   );
 });

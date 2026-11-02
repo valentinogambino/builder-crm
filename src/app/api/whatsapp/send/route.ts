@@ -50,21 +50,20 @@ export async function POST(request: NextRequest) {
   if (!body.to) {
     return NextResponse.json(
       { error: "Campo 'to' requerido (numero E.164, ej +5491134567890)" },
-      { status: 400 }
+      { status: 400 },
     );
   }
   if (!body.text && !body.template) {
     return NextResponse.json(
       { error: "Tenes que enviar 'text' (texto libre) o 'template' (plantilla)" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   const normalizedTo = `+${normalizePhone(body.to)}`;
   const tenantId = await resolveDefaultTenantId();
 
-  const contactId =
-    body.contactId ?? (await findOrCreateContactByPhone(normalizedTo, tenantId));
+  const contactId = body.contactId ?? (await findOrCreateContactByPhone(normalizedTo, tenantId));
 
   const existing = await findConversationForContact(contactId, "whatsapp");
 
@@ -82,13 +81,13 @@ export async function POST(request: NextRequest) {
             },
           }
         : { text: body.text },
-      body.template ? "template" : "human"
+      body.template ? "template" : "human",
     );
 
     if (!result.ok) {
       return NextResponse.json(
         { success: false, error: result.error, hint: result.hint, messageId: result.messageId },
-        { status: 502 }
+        { status: 502 },
       );
     }
 
@@ -107,7 +106,7 @@ export async function POST(request: NextRequest) {
         error:
           "No hay conversacion abierta y WHATSAPP_PROVIDER=meta. Volve a poner el proveedor en zernio para poder iniciar conversaciones.",
       },
-      { status: 409 }
+      { status: 409 },
     );
   }
 
@@ -137,7 +136,7 @@ async function openConversation(args: {
         error: "No hay conversacion abierta con este numero",
         hint: "WhatsApp no permite abrir una conversacion con texto libre. Enviá una plantilla aprobada.",
       },
-      { status: 409 }
+      { status: 409 },
     );
   }
 
@@ -148,7 +147,7 @@ async function openConversation(args: {
         error: "No hay cuenta de WhatsApp conectada en Zernio",
         hint: "Conectala con `npm run zernio:whatsapp` o desde Ajustes > Canales.",
       },
-      { status: 409 }
+      { status: 409 },
     );
   }
 
@@ -172,7 +171,7 @@ async function openConversation(args: {
             ? "La plantilla no fue aceptada. Revisá que esté APPROVED y que la cantidad de variables coincida."
             : undefined,
       },
-      { status: 502 }
+      { status: 502 },
     );
   }
 
@@ -180,7 +179,7 @@ async function openConversation(args: {
   if (!externalId) {
     return NextResponse.json(
       { success: false, error: "Zernio no devolvio conversationId" },
-      { status: 502 }
+      { status: 502 },
     );
   }
 
@@ -196,8 +195,7 @@ async function openConversation(args: {
     participantId: to,
   });
 
-  const preview =
-    body.template.previewText?.trim() || `[plantilla] ${body.template.name}`;
+  const preview = body.template.previewText?.trim() || `[plantilla] ${body.template.name}`;
 
   await ingestMessage({
     conversation,
@@ -219,16 +217,10 @@ async function openConversation(args: {
 }
 
 async function touchContact(contactId: string): Promise<void> {
-  await db
-    .update(contacts)
-    .set({ updatedAt: new Date() })
-    .where(eq(contacts.id, contactId));
+  await db.update(contacts).set({ updatedAt: new Date() }).where(eq(contacts.id, contactId));
 }
 
-async function findOrCreateContactByPhone(
-  phone: string,
-  tenantId: string | null
-): Promise<string> {
+async function findOrCreateContactByPhone(phone: string, tenantId: string | null): Promise<string> {
   const [existing] = await db
     .select({ id: contacts.id })
     .from(contacts)

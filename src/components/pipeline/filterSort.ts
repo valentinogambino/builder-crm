@@ -3,7 +3,7 @@ import type { PipelineFilters, PipelineSort } from "./types";
 
 export function applyFilters<T extends DealWithContact>(
   deals: T[],
-  filters: PipelineFilters | undefined
+  filters: PipelineFilters | undefined,
 ): T[] {
   if (!filters) return deals;
   return deals.filter((d) => {
@@ -15,7 +15,7 @@ export function applyFilters<T extends DealWithContact>(
 
 export function applySort<T extends DealWithContact>(
   deals: T[],
-  sort: PipelineSort | undefined
+  sort: PipelineSort | undefined,
 ): T[] {
   if (!sort) return deals;
   const sign = sort.dir === "asc" ? 1 : -1;

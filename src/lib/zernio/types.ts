@@ -23,9 +23,7 @@ export interface ZernioError {
   raw?: unknown;
 }
 
-export type ZernioResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: ZernioError };
+export type ZernioResult<T> = { success: true; data: T } | { success: false; error: ZernioError };
 
 export interface ZernioPagination {
   hasMore: boolean;
@@ -219,10 +217,7 @@ export const ZERNIO_INBOX_EVENTS = [
   "review.updated",
 ] as const;
 
-export const ZERNIO_ACCOUNT_EVENTS = [
-  "account.connected",
-  "account.disconnected",
-] as const;
+export const ZERNIO_ACCOUNT_EVENTS = ["account.connected", "account.disconnected"] as const;
 
 export type ZernioEventName =
   | (typeof ZERNIO_INBOX_EVENTS)[number]

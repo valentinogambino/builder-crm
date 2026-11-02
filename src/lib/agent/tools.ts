@@ -56,25 +56,42 @@ export interface ToolAgente {
   ejecutar: (args: Record<string, unknown>, ctx: ToolContext) => Promise<ToolResult>;
 }
 
-type Params = NonNullable<OpenAI.Chat.Completions.ChatCompletionFunctionTool["function"]["parameters"]>;
+type Params = NonNullable<
+  OpenAI.Chat.Completions.ChatCompletionFunctionTool["function"]["parameters"]
+>;
 
-function definir(name: string, description: string, parameters: Params): OpenAI.Chat.Completions.ChatCompletionFunctionTool {
+function definir(
+  name: string,
+  description: string,
+  parameters: Params,
+): OpenAI.Chat.Completions.ChatCompletionFunctionTool {
   return { type: "function", function: { name, description, parameters } };
 }
 
 function normalizar(s: string): string {
-  return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+  return s
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .trim();
 }
 
 // ============================================================
 // Tools genericas del nucleo
 // ============================================================
 
-async function moverEtapa(args: { etapa?: string; motivo?: string }, ctx: ToolContext): Promise<ToolResult> {
+async function moverEtapa(
+  args: { etapa?: string; motivo?: string },
+  ctx: ToolContext,
+): Promise<ToolResult> {
   const q = normalizar(String(args.etapa ?? ""));
   if (!q) return { ok: false, error: "etapa vacia" };
 
-  const [pipeline] = await db.select().from(pipelines).where(eq(pipelines.isDefault, true)).limit(1);
+  const [pipeline] = await db
+    .select()
+    .from(pipelines)
+    .where(eq(pipelines.isDefault, true))
+    .limit(1);
   if (!pipeline) return { ok: false, error: "No hay pipeline configurado" };
 
   const stages = await db
@@ -103,15 +120,18 @@ async function moverEtapa(args: { etapa?: string; motivo?: string }, ctx: ToolCo
         eq(deals.contactId, ctx.contactId),
         eq(pipelineStages.pipelineId, pipeline.id),
         eq(pipelineStages.isWon, false),
-        eq(pipelineStages.isLost, false)
-      )
+        eq(pipelineStages.isLost, false),
+      ),
     )
     .orderBy(desc(deals.updatedAt))
     .limit(1);
 
   if (abierta) {
     if (abierta.stageId === stage.id) {
-      return { ok: true, data: { etapa: stage.name, sin_cambio: true, message: `Ya estaba en ${stage.name}.` } };
+      return {
+        ok: true,
+        data: { etapa: stage.name, sin_cambio: true, message: `Ya estaba en ${stage.name}.` },
+      };
     }
     const r = await setDealStage({ dealId: abierta.id, stageId: stage.id });
     if (!r.ok) return { ok: false, error: r.error ?? "No se pudo mover la etapa" };
@@ -123,7 +143,11 @@ async function moverEtapa(args: { etapa?: string; motivo?: string }, ctx: ToolCo
     return { ok: true, data: { etapa: stage.name, operacion: abierta.id, creada: false } };
   }
 
-  const [contact] = await db.select({ name: contacts.name }).from(contacts).where(eq(contacts.id, ctx.contactId)).limit(1);
+  const [contact] = await db
+    .select({ name: contacts.name })
+    .from(contacts)
+    .where(eq(contacts.id, ctx.contactId))
+    .limit(1);
   const [nueva] = await db
     .insert(deals)
     .values({ title: contact?.name ?? "Operacion", stageId: stage.id, contactId: ctx.contactId })
@@ -138,8 +162,14 @@ async function moverEtapa(args: { etapa?: string; motivo?: string }, ctx: ToolCo
 }
 
 async function actualizarContacto(
-  args: { nombre?: string; email?: string; telefono?: string; notas?: string; campos?: Record<string, unknown> },
-  ctx: ToolContext
+  args: {
+    nombre?: string;
+    email?: string;
+    telefono?: string;
+    notas?: string;
+    campos?: Record<string, unknown>;
+  },
+  ctx: ToolContext,
 ): Promise<ToolResult> {
   const [actual] = await db.select().from(contacts).where(eq(contacts.id, ctx.contactId)).limit(1);
   if (!actual) return { ok: false, error: "contacto no encontrado" };
@@ -167,7 +197,10 @@ async function actualizarContacto(
   if (args.campos && typeof args.campos === "object") {
     const v = validarCamposPersonalizados(camposContacto(), args.campos, { parcial: true });
     if (!v.ok) return { ok: false, error: v.error };
-    set.customFields = { ...((actual.customFields as Record<string, unknown> | null) ?? {}), ...v.valores };
+    set.customFields = {
+      ...((actual.customFields as Record<string, unknown> | null) ?? {}),
+      ...v.valores,
+    };
     cambios.push(...Object.keys(v.valores));
   }
 
@@ -187,7 +220,7 @@ const TIPOS_ACTIVIDAD: Record<string, string> = {
 
 async function registrarActividad(
   args: { tipo?: string; descripcion?: string; fecha?: string },
-  ctx: ToolContext
+  ctx: ToolContext,
 ): Promise<ToolResult> {
   const descripcion = String(args.descripcion ?? "").trim();
   if (!descripcion) return { ok: false, error: "descripcion vacia" };
@@ -199,14 +232,22 @@ async function registrarActividad(
   }
   const [row] = await db
     .insert(activities)
-    .values({ type: tipo, description: `[IA] ${descripcion}`, contactId: ctx.contactId, scheduledAt })
+    .values({
+      type: tipo,
+      description: `[IA] ${descripcion}`,
+      contactId: ctx.contactId,
+      scheduledAt,
+    })
     .returning({ id: activities.id });
-  return { ok: true, data: { actividad: row.id, tipo, programada: scheduledAt?.toISOString() ?? null } };
+  return {
+    ok: true,
+    data: { actividad: row.id, tipo, programada: scheduledAt?.toISOString() ?? null },
+  };
 }
 
 async function resumenLead(
   args: { resumen?: string; campos?: Record<string, unknown> },
-  ctx: ToolContext
+  ctx: ToolContext,
 ): Promise<ToolResult> {
   const resumen = String(args.resumen ?? "").trim();
   if (!resumen) return { ok: false, error: "resumen vacio" };
@@ -219,7 +260,11 @@ async function resumenLead(
   if (args.campos && typeof args.campos === "object") {
     const v = validarCamposPersonalizados(camposContacto(), args.campos, { parcial: true });
     if (!v.ok) return { ok: false, error: v.error };
-    const [actual] = await db.select({ cf: contacts.customFields }).from(contacts).where(eq(contacts.id, ctx.contactId)).limit(1);
+    const [actual] = await db
+      .select({ cf: contacts.customFields })
+      .from(contacts)
+      .where(eq(contacts.id, ctx.contactId))
+      .limit(1);
     set.customFields = { ...((actual?.cf as Record<string, unknown> | null) ?? {}), ...v.valores };
   }
   await db.update(contacts).set(set).where(eq(contacts.id, ctx.contactId));
@@ -241,12 +286,24 @@ async function derivarAsesor(args: { motivo?: string }, ctx: ToolContext): Promi
   if (ctx.conversationId) {
     await db
       .update(conversations)
-      .set({ aiEnabled: false, needsHuman: true, needsHumanReason: motivo, needsHumanAt: now, updatedAt: now })
+      .set({
+        aiEnabled: false,
+        needsHuman: true,
+        needsHumanReason: motivo,
+        needsHumanAt: now,
+        updatedAt: now,
+      })
       .where(eq(conversations.id, ctx.conversationId));
   } else {
     await db
       .update(contacts)
-      .set({ aiEnabled: false, needsHuman: true, needsHumanReason: motivo, needsHumanAt: now, updatedAt: now })
+      .set({
+        aiEnabled: false,
+        needsHuman: true,
+        needsHumanReason: motivo,
+        needsHumanAt: now,
+        updatedAt: now,
+      })
       .where(eq(contacts.id, ctx.contactId));
   }
 
@@ -259,11 +316,18 @@ async function derivarAsesor(args: { motivo?: string }, ctx: ToolContext): Promi
   return {
     ok: true,
     stop: true,
-    data: { derivado: true, motivo, message: "Agente pausado en esta conversacion. Una persona del equipo sigue." },
+    data: {
+      derivado: true,
+      motivo,
+      message: "Agente pausado en esta conversacion. Una persona del equipo sigue.",
+    },
   };
 }
 
-async function asignarAsesor(args: { asesor?: string; motivo?: string }, ctx: ToolContext): Promise<ToolResult> {
+async function asignarAsesor(
+  args: { asesor?: string; motivo?: string },
+  ctx: ToolContext,
+): Promise<ToolResult> {
   const found = await findMemberByName(String(args.asesor ?? ""));
 
   if (found.status === "ambiguous") {
@@ -278,7 +342,9 @@ async function asignarAsesor(args: { asesor?: string; motivo?: string }, ctx: To
   if (found.status === "not_found") {
     return {
       ok: false,
-      error: `No existe "${args.asesor}". Disponibles: ` + (found.available.map(displayName).join(", ") || "ninguno"),
+      error:
+        `No existe "${args.asesor}". Disponibles: ` +
+        (found.available.map(displayName).join(", ") || "ninguno"),
     };
   }
 
@@ -322,14 +388,18 @@ function toolsGenericas(): ToolAgente[] {
         {
           type: "object",
           properties: {
-            etapa: { type: "string", description: "Clave o nombre de la etapa, como figura en PIPELINE." },
+            etapa: {
+              type: "string",
+              description: "Clave o nombre de la etapa, como figura en PIPELINE.",
+            },
             motivo: { type: "string", description: "Por que se mueve, en pocas palabras." },
           },
           required: ["etapa"],
           additionalProperties: false,
-        }
+        },
       ),
-      descripcionUI: "Mueve (o crea) la operacion del contacto en el pipeline. Que etapa usar en cada momento lo decide el prompt.",
+      descripcionUI:
+        "Mueve (o crea) la operacion del contacto en el pipeline. Que etapa usar en cada momento lo decide el prompt.",
       ejecutar: (a, ctx) => moverEtapa(a as { etapa?: string; motivo?: string }, ctx),
     },
     {
@@ -351,9 +421,10 @@ function toolsGenericas(): ToolAgente[] {
             },
           },
           additionalProperties: false,
-        }
+        },
       ),
-      descripcionUI: "Actualiza la ficha del contacto (datos basicos y campos personalizados de config/cliente.ts).",
+      descripcionUI:
+        "Actualiza la ficha del contacto (datos basicos y campos personalizados de config/cliente.ts).",
       ejecutar: (a, ctx) => actualizarContacto(a as Parameters<typeof actualizarContacto>[0], ctx),
     },
     {
@@ -365,11 +436,14 @@ function toolsGenericas(): ToolAgente[] {
           properties: {
             tipo: { type: "string", enum: ["nota", "tarea", "llamada", "reunion", "email"] },
             descripcion: { type: "string" },
-            fecha: { type: "string", description: "ISO 8601 si es una tarea con fecha (opcional)." },
+            fecha: {
+              type: "string",
+              description: "ISO 8601 si es una tarea con fecha (opcional).",
+            },
           },
           required: ["descripcion"],
           additionalProperties: false,
-        }
+        },
       ),
       descripcionUI: "Registra notas y tareas con fecha en la ficha del contacto.",
       ejecutar: (a, ctx) => registrarActividad(a as Parameters<typeof registrarActividad>[0], ctx),
@@ -383,11 +457,15 @@ function toolsGenericas(): ToolAgente[] {
           type: "object",
           properties: {
             resumen: { type: "string" },
-            campos: { type: "object", description: "Campos personalizados confirmados. " + descripcionCampos, additionalProperties: true },
+            campos: {
+              type: "object",
+              description: "Campos personalizados confirmados. " + descripcionCampos,
+              additionalProperties: true,
+            },
           },
           required: ["resumen"],
           additionalProperties: false,
-        }
+        },
       ),
       descripcionUI: "Escribe el resumen del lead en la ficha (visible en contactos y en el chat).",
       ejecutar: (a, ctx) => resumenLead(a as Parameters<typeof resumenLead>[0], ctx),
@@ -402,9 +480,10 @@ function toolsGenericas(): ToolAgente[] {
           properties: { motivo: { type: "string", description: "Razon corta de la derivacion." } },
           required: ["motivo"],
           additionalProperties: false,
-        }
+        },
       ),
-      descripcionUI: "Permite al agente derivar a un humano (pausa el agente solo en esa conversacion). Recomendado dejar activa.",
+      descripcionUI:
+        "Permite al agente derivar a un humano (pausa el agente solo en esa conversacion). Recomendado dejar activa.",
       ejecutar: (a, ctx) => derivarAsesor(a as { motivo?: string }, ctx),
     },
     {
@@ -420,7 +499,7 @@ function toolsGenericas(): ToolAgente[] {
           },
           required: ["asesor"],
           additionalProperties: false,
-        }
+        },
       ),
       descripcionUI: `Permite al agente asignar el contacto a un ${etiquetaAsesor} por nombre. Dispara la automatizacion de aviso.`,
       ejecutar: (a, ctx) => asignarAsesor(a as { asesor?: string; motivo?: string }, ctx),
@@ -442,17 +521,27 @@ export function nombresDeTools(): string[] {
 }
 
 export function descripcionesUI(): Array<{ name: string; description: string }> {
-  return listarTools().map((t) => ({ name: t.definicion.function.name, description: t.descripcionUI }));
+  return listarTools().map((t) => ({
+    name: t.definicion.function.name,
+    description: t.descripcionUI,
+  }));
 }
 
 export function esNombreDeTool(name: string): boolean {
   return nombresDeTools().includes(name);
 }
 
-export async function executeTool(name: string, args: unknown, ctx: ToolContext): Promise<ToolResult> {
+export async function executeTool(
+  name: string,
+  args: unknown,
+  ctx: ToolContext,
+): Promise<ToolResult> {
   const tool = listarTools().find((t) => t.definicion.function.name === name);
   if (!tool) return { ok: false, error: `Tool desconocida: ${name}` };
-  const argumentos = args && typeof args === "object" && !Array.isArray(args) ? (args as Record<string, unknown>) : {};
+  const argumentos =
+    args && typeof args === "object" && !Array.isArray(args)
+      ? (args as Record<string, unknown>)
+      : {};
   try {
     return await tool.ejecutar(argumentos, ctx);
   } catch (err) {
@@ -467,7 +556,11 @@ export async function executeTool(name: string, args: unknown, ctx: ToolContext)
 export async function getEnabledToolNames(): Promise<string[]> {
   const todas = nombresDeTools();
   try {
-    const [row] = await db.select().from(crmSettings).where(eq(crmSettings.key, ENABLED_TOOLS_SETTINGS_KEY)).limit(1);
+    const [row] = await db
+      .select()
+      .from(crmSettings)
+      .where(eq(crmSettings.key, ENABLED_TOOLS_SETTINGS_KEY))
+      .limit(1);
     if (!row) return todas;
     const parsed: unknown = JSON.parse(row.value);
     if (!Array.isArray(parsed)) return todas;
@@ -480,7 +573,9 @@ export async function getEnabledToolNames(): Promise<string[]> {
 }
 
 /** Definiciones para el LLM, filtradas a las habilitadas. */
-export async function getEnabledToolDefinitions(names?: string[]): Promise<OpenAI.Chat.Completions.ChatCompletionTool[]> {
+export async function getEnabledToolDefinitions(
+  names?: string[],
+): Promise<OpenAI.Chat.Completions.ChatCompletionTool[]> {
   const enabled = new Set(names ?? (await getEnabledToolNames()));
   return listarTools()
     .filter((t) => enabled.has(t.definicion.function.name))

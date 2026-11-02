@@ -30,8 +30,14 @@ export async function scrapeUrl(url: string): Promise<ScrapeResult> {
       data?: { markdown?: string; metadata?: { title?: string; sourceURL?: string } };
       error?: string;
     };
-    if (!json.success || !json.data) return { ok: false, error: json.error ?? "Firecrawl sin data" };
-    return { ok: true, markdown: json.data.markdown, title: json.data.metadata?.title, url: json.data.metadata?.sourceURL ?? url };
+    if (!json.success || !json.data)
+      return { ok: false, error: json.error ?? "Firecrawl sin data" };
+    return {
+      ok: true,
+      markdown: json.data.markdown,
+      title: json.data.metadata?.title,
+      url: json.data.metadata?.sourceURL ?? url,
+    };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Error de red" };
   }

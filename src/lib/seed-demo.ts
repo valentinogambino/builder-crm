@@ -35,18 +35,90 @@ import type { ValoresCampos } from "@/lib/config/campos";
  */
 
 const PERSONAS = [
-  { name: "Valentina Rojas", email: "valentina.rojas@ejemplo.com", phone: "+56 9 7000 0001", company: null, source: "whatsapp" },
-  { name: "Matias Fuentes", email: "matias.fuentes@ejemplo.com", phone: "+56 9 7000 0002", company: "Fuentes y Cia", source: "instagram" },
-  { name: "Camila Herrera", email: "camila.herrera@ejemplo.com", phone: "+56 9 7000 0003", company: null, source: "website" },
-  { name: "Joaquin Paredes", email: "joaquin.paredes@ejemplo.com", phone: "+56 9 7000 0004", company: "Paredes Hnos", source: "referido" },
-  { name: "Antonia Vidal", email: "antonia.vidal@ejemplo.com", phone: "+56 9 7000 0005", company: null, source: "facebook" },
-  { name: "Benjamin Soto", email: "benjamin.soto@ejemplo.com", phone: "+56 9 7000 0006", company: "Soto Inversiones", source: "whatsapp" },
-  { name: "Isidora Munoz", email: "isidora.munoz@ejemplo.com", phone: "+56 9 7000 0007", company: null, source: "formulario" },
-  { name: "Tomas Carvajal", email: "tomas.carvajal@ejemplo.com", phone: "+56 9 7000 0008", company: null, source: "whatsapp" },
-  { name: "Florencia Araya", email: "florencia.araya@ejemplo.com", phone: "+56 9 7000 0009", company: "Araya Consultores", source: "instagram" },
-  { name: "Lucas Pizarro", email: "lucas.pizarro@ejemplo.com", phone: "+56 9 7000 0010", company: null, source: "evento" },
-  { name: "Martina Salazar", email: "martina.salazar@ejemplo.com", phone: "+56 9 7000 0011", company: null, source: "website" },
-  { name: "Diego Contreras", email: "diego.contreras@ejemplo.com", phone: "+56 9 7000 0012", company: "Contreras SpA", source: "whatsapp" },
+  {
+    name: "Valentina Rojas",
+    email: "valentina.rojas@ejemplo.com",
+    phone: "+56 9 7000 0001",
+    company: null,
+    source: "whatsapp",
+  },
+  {
+    name: "Matias Fuentes",
+    email: "matias.fuentes@ejemplo.com",
+    phone: "+56 9 7000 0002",
+    company: "Fuentes y Cia",
+    source: "instagram",
+  },
+  {
+    name: "Camila Herrera",
+    email: "camila.herrera@ejemplo.com",
+    phone: "+56 9 7000 0003",
+    company: null,
+    source: "website",
+  },
+  {
+    name: "Joaquin Paredes",
+    email: "joaquin.paredes@ejemplo.com",
+    phone: "+56 9 7000 0004",
+    company: "Paredes Hnos",
+    source: "referido",
+  },
+  {
+    name: "Antonia Vidal",
+    email: "antonia.vidal@ejemplo.com",
+    phone: "+56 9 7000 0005",
+    company: null,
+    source: "facebook",
+  },
+  {
+    name: "Benjamin Soto",
+    email: "benjamin.soto@ejemplo.com",
+    phone: "+56 9 7000 0006",
+    company: "Soto Inversiones",
+    source: "whatsapp",
+  },
+  {
+    name: "Isidora Munoz",
+    email: "isidora.munoz@ejemplo.com",
+    phone: "+56 9 7000 0007",
+    company: null,
+    source: "formulario",
+  },
+  {
+    name: "Tomas Carvajal",
+    email: "tomas.carvajal@ejemplo.com",
+    phone: "+56 9 7000 0008",
+    company: null,
+    source: "whatsapp",
+  },
+  {
+    name: "Florencia Araya",
+    email: "florencia.araya@ejemplo.com",
+    phone: "+56 9 7000 0009",
+    company: "Araya Consultores",
+    source: "instagram",
+  },
+  {
+    name: "Lucas Pizarro",
+    email: "lucas.pizarro@ejemplo.com",
+    phone: "+56 9 7000 0010",
+    company: null,
+    source: "evento",
+  },
+  {
+    name: "Martina Salazar",
+    email: "martina.salazar@ejemplo.com",
+    phone: "+56 9 7000 0011",
+    company: null,
+    source: "website",
+  },
+  {
+    name: "Diego Contreras",
+    email: "diego.contreras@ejemplo.com",
+    phone: "+56 9 7000 0012",
+    company: "Contreras SpA",
+    source: "whatsapp",
+  },
 ];
 
 /**
@@ -56,7 +128,16 @@ const PERSONAS = [
  * Santiago escritas a mano, asi que adaptar el CRM a otro rubro obligaba a editar el
  * nucleo.
  */
-const VALORES_TEXTO_GENERICOS = ["Centro", "Norte", "Sur", "Oriente", "Poniente", "Zona 1", "Zona 2", "Zona 3"];
+const VALORES_TEXTO_GENERICOS = [
+  "Centro",
+  "Norte",
+  "Sur",
+  "Oriente",
+  "Poniente",
+  "Zona 1",
+  "Zona 2",
+  "Zona 3",
+];
 
 function valoresTexto(): string[] {
   const deLaConfig = getConfig().demo?.valoresTexto;
@@ -93,16 +174,32 @@ function valorDemo(campo: CampoConfig, i: number): ValoresCampos[string] {
 const GUIONES_GENERICOS: GuionDemo[] = [
   [
     { dir: "in", body: "Hola! Vi una publicacion de ustedes y quiero mas informacion." },
-    { dir: "out", origen: "agent", body: "Hola! Con gusto. Para orientarte mejor, que estas necesitando?" },
+    {
+      dir: "out",
+      origen: "agent",
+      body: "Hola! Con gusto. Para orientarte mejor, que estas necesitando?",
+    },
     { dir: "in", body: "Queria saber que ofrecen y cuanto sale." },
-    { dir: "out", origen: "agent", body: "Te paso las opciones y los valores. Si alguna te sirve, coordinamos." },
+    {
+      dir: "out",
+      origen: "agent",
+      body: "Te paso las opciones y los valores. Si alguna te sirve, coordinamos.",
+    },
     { dir: "in", body: "Dale, mandame." },
   ],
   [
     { dir: "in", body: "Buenas, cuanto cuesta lo que publicaron?" },
-    { dir: "out", origen: "agent", body: "Hola! Depende de lo que necesites. Me contas un poco mas y te paso el valor exacto?" },
+    {
+      dir: "out",
+      origen: "agent",
+      body: "Hola! Depende de lo que necesites. Me contas un poco mas y te paso el valor exacto?",
+    },
     { dir: "in", body: "Si, y me gustaria coordinar esta semana." },
-    { dir: "out", origen: "human", body: "Hola, soy del equipo. Te propongo jueves 11:00 o viernes 16:00, cual te acomoda?" },
+    {
+      dir: "out",
+      origen: "human",
+      body: "Hola, soy del equipo. Te propongo jueves 11:00 o viernes 16:00, cual te acomoda?",
+    },
   ],
   [
     { dir: "in", body: "Hola, me recomendaron ustedes y queria consultar." },
@@ -111,18 +208,38 @@ const GUIONES_GENERICOS: GuionDemo[] = [
   ],
   [
     { dir: "in", body: "Me interesa, pero antes quiero saber como funciona." },
-    { dir: "out", origen: "agent", body: "Te explico en dos lineas y si te hace sentido seguimos. Te sirve?" },
+    {
+      dir: "out",
+      origen: "agent",
+      body: "Te explico en dos lineas y si te hace sentido seguimos. Te sirve?",
+    },
     { dir: "in", body: "Si por favor." },
-    { dir: "out", origen: "agent", body: "Listo, te dejo el detalle y cualquier duda me escribis." },
+    {
+      dir: "out",
+      origen: "agent",
+      body: "Listo, te dejo el detalle y cualquier duda me escribis.",
+    },
   ],
   [
     { dir: "in", body: "Hola, necesito hablar con una persona, tengo dudas." },
-    { dir: "out", origen: "agent", body: "Te paso con una persona del equipo que te va a ayudar con esto. En un momento te escribe." },
-    { dir: "out", origen: "human", body: "Hola, soy Ana del equipo. Cuentame que dudas tienes y lo vemos juntos." },
+    {
+      dir: "out",
+      origen: "agent",
+      body: "Te paso con una persona del equipo que te va a ayudar con esto. En un momento te escribe.",
+    },
+    {
+      dir: "out",
+      origen: "human",
+      body: "Hola, soy Ana del equipo. Cuentame que dudas tienes y lo vemos juntos.",
+    },
   ],
   [
     { dir: "in", body: "Quiero avanzar, que necesitan de mi parte?" },
-    { dir: "out", origen: "agent", body: "Perfecto. Con un par de datos lo dejamos coordinado. Que dia te queda comodo?" },
+    {
+      dir: "out",
+      origen: "agent",
+      body: "Perfecto. Con un par de datos lo dejamos coordinado. Que dia te queda comodo?",
+    },
     { dir: "in", body: "El sabado en la manana puedo." },
   ],
 ];
@@ -143,7 +260,14 @@ export interface ResultadoSeed {
 }
 
 export async function cargarDatosDemo(): Promise<ResultadoSeed> {
-  const resultado: ResultadoSeed = { yaExistia: false, contactos: 0, operaciones: 0, conversaciones: 0, mensajes: 0, modulos: [] };
+  const resultado: ResultadoSeed = {
+    yaExistia: false,
+    contactos: 0,
+    operaciones: 0,
+    conversaciones: 0,
+    mensajes: 0,
+    modulos: [],
+  };
 
   const [existente] = await db
     .select({ id: contacts.id })
@@ -168,7 +292,11 @@ export async function cargarDatosDemo(): Promise<ResultadoSeed> {
 
 async function sembrarNucleo(r: ResultadoSeed) {
   const tenantId = await resolveDefaultTenantId();
-  const [admin] = await db.select({ id: teamMembers.id }).from(teamMembers).orderBy(asc(teamMembers.createdAt)).limit(1);
+  const [admin] = await db
+    .select({ id: teamMembers.id })
+    .from(teamMembers)
+    .orderBy(asc(teamMembers.createdAt))
+    .limit(1);
   const campos = camposContacto();
   const ahora = Date.now();
   const dia = 86_400_000;
@@ -203,9 +331,17 @@ async function sembrarNucleo(r: ResultadoSeed) {
   r.contactos = creados.length;
 
   // Operaciones repartidas por etapa del pipeline por defecto.
-  const [pipeline] = await db.select().from(pipelines).where(eq(pipelines.isDefault, true)).limit(1);
+  const [pipeline] = await db
+    .select()
+    .from(pipelines)
+    .where(eq(pipelines.isDefault, true))
+    .limit(1);
   if (pipeline) {
-    const stages = await db.select().from(pipelineStages).where(eq(pipelineStages.pipelineId, pipeline.id)).orderBy(asc(pipelineStages.order));
+    const stages = await db
+      .select()
+      .from(pipelineStages)
+      .where(eq(pipelineStages.pipelineId, pipeline.id))
+      .orderBy(asc(pipelineStages.order));
     if (stages.length > 0) {
       const valores = [95000, 165000, 120000, 320000, 78000, 240000, 150000, 180000, 90000];
       for (let i = 0; i < Math.min(9, creados.length); i++) {
@@ -218,7 +354,7 @@ async function sembrarNucleo(r: ResultadoSeed) {
             stageId: stage.id,
             contactId: creados[i].id,
             probability: stage.isWon ? 100 : stage.isLost ? 0 : 20 + ((i * 13) % 60),
-            createdAt: new Date(ahora - (i * 3) * dia),
+            createdAt: new Date(ahora - i * 3 * dia),
             updatedAt: new Date(ahora - i * dia),
           })
           .returning({ id: deals.id });
@@ -247,7 +383,14 @@ async function sembrarNucleo(r: ResultadoSeed) {
   }
 
   // Conversaciones por el simulador: se pueden responder y el agente contesta.
-  const canales = ["whatsapp", "instagram", "whatsapp", "facebook", "whatsapp", "instagram"] as const;
+  const canales = [
+    "whatsapp",
+    "instagram",
+    "whatsapp",
+    "facebook",
+    "whatsapp",
+    "instagram",
+  ] as const;
   // La lista de canales se recorre en ciclo: un nicho puede traer mas o menos
   // conversaciones que las seis genericas y `canales[i]` quedaria indefinido.
   const listaGuiones = guiones();
@@ -265,7 +408,8 @@ async function sembrarNucleo(r: ResultadoSeed) {
       externalId,
       participantId: externalId,
       participantName: contacto.name,
-      participantHandle: canal === "instagram" ? contacto.name.toLowerCase().replace(/\s+/g, ".") : null,
+      participantHandle:
+        canal === "instagram" ? contacto.name.toLowerCase().replace(/\s+/g, ".") : null,
       participantPicture: null,
     });
     r.conversaciones++;
@@ -276,7 +420,14 @@ async function sembrarNucleo(r: ResultadoSeed) {
       const m = guion[k];
       const sentAt = new Date(base + k * 7 * 60_000);
       if (m.dir === "in") {
-        await ingestMessage({ conversation: conv, direction: "in", externalId: `demo:${contacto.id}:${k}`, body: m.body, sentAt, enqueueAgent: false });
+        await ingestMessage({
+          conversation: conv,
+          direction: "in",
+          externalId: `demo:${contacto.id}:${k}`,
+          body: m.body,
+          sentAt,
+          enqueueAgent: false,
+        });
       } else {
         await db.insert(messages).values({
           contactId: contacto.id,
@@ -298,10 +449,7 @@ async function sembrarNucleo(r: ResultadoSeed) {
     }
     const ultimo = guion[guion.length - 1];
     const ultimoAt = new Date(base + (guion.length - 1) * 7 * 60_000);
-    await db
-      .update(contacts)
-      .set({ updatedAt: ultimoAt })
-      .where(eq(contacts.id, contacto.id));
+    await db.update(contacts).set({ updatedAt: ultimoAt }).where(eq(contacts.id, contacto.id));
     // Con el constructor, no con db.execute(sql``): en SQL crudo el driver no
     // serializa objetos Date y la consulta falla antes de salir.
     const idxUltimoEntrante = guion

@@ -134,17 +134,11 @@ export function TeamSettings() {
 
       <div className="rounded-lg border divide-y">
         {members.map((m) => (
-          <div
-            key={m.id}
-            className={cn(
-              "flex items-center gap-3 p-3",
-              !m.active && "opacity-50"
-            )}
-          >
+          <div key={m.id} className={cn("flex items-center gap-3 p-3", !m.active && "opacity-50")}>
             <div
               className={cn(
                 "h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-[11px] font-semibold",
-                avatarBg(label(m))
+                avatarBg(label(m)),
               )}
             >
               {getInitials(label(m))}
@@ -163,7 +157,9 @@ export function TeamSettings() {
               <Select
                 value={m.role}
                 items={ROLE_ITEMS}
-                onValueChange={(v) => v && v !== m.role && update(m.id, { role: v as Member["role"] })}
+                onValueChange={(v) =>
+                  v && v !== m.role && update(m.id, { role: v as Member["role"] })
+                }
               >
                 <SelectTrigger className="h-8 w-[120px] text-xs cursor-pointer">
                   <SelectValue />
@@ -296,7 +292,7 @@ function AddMemberDialog({
         toast.success(
           body.reusedAuthUser
             ? "Agregado. Ya tenia usuario: entra con su contrasena de siempre."
-            : "Agregado. Pasale el email y la contrasena temporal."
+            : "Agregado. Pasale el email y la contrasena temporal.",
         );
       }
       setName("");
@@ -346,7 +342,11 @@ function AddMemberDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label>Rol</Label>
-              <Select value={role} items={ROLE_ITEMS} onValueChange={(v) => v && setRole(v as Member["role"])}>
+              <Select
+                value={role}
+                items={ROLE_ITEMS}
+                onValueChange={(v) => v && setRole(v as Member["role"])}
+              >
                 <SelectTrigger className="cursor-pointer">
                   <SelectValue />
                 </SelectTrigger>
@@ -394,8 +394,8 @@ function AddMemberDialog({
 
           {!invitar && (
             <p className="text-xs text-muted-foreground">
-              Se crea el usuario con esa contrasena. Si el email ya tenia cuenta, se
-              reutiliza y la contrasena se ignora.
+              Se crea el usuario con esa contrasena. Si el email ya tenia cuenta, se reutiliza y la
+              contrasena se ignora.
             </p>
           )}
           <div className="flex justify-end gap-2 pt-1">

@@ -9,9 +9,7 @@
 export type WhatsappProvider = "zernio" | "meta";
 
 export function whatsappProvider(): WhatsappProvider {
-  return (process.env.WHATSAPP_PROVIDER || "zernio").toLowerCase() === "meta"
-    ? "meta"
-    : "zernio";
+  return (process.env.WHATSAPP_PROVIDER || "zernio").toLowerCase() === "meta" ? "meta" : "zernio";
 }
 
 /** true si el webhook de Meta todavia tiene que procesar mensajes de WhatsApp. */

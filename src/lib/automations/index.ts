@@ -54,7 +54,7 @@ export async function emitAutomationEvent(event: AutomationEvent): Promise<strin
     .where(and(eq(automations.trigger, event.trigger), eq(automations.enabled, true)));
 
   const matched = candidates.filter((r) =>
-    evaluateFilters(r.filters as AutomationFilter[], event.payload)
+    evaluateFilters(r.filters as AutomationFilter[], event.payload),
   );
   if (matched.length === 0) return [];
 
@@ -66,7 +66,7 @@ export async function emitAutomationEvent(event: AutomationEvent): Promise<strin
         trigger: event.trigger,
         contactId: event.contactId,
         payload: { ...event.payload, __depth: depth },
-      }))
+      })),
     )
     .returning({ id: automationRuns.id });
 
@@ -82,9 +82,7 @@ function scheduleProcessing(ids: string[]): void {
       await processRuns(ids);
     });
   } catch {
-    void processRuns(ids).catch((err) =>
-      console.error("[automations] error procesando runs", err)
-    );
+    void processRuns(ids).catch((err) => console.error("[automations] error procesando runs", err));
   }
 }
 
@@ -177,7 +175,7 @@ export async function processRuns(ids: string[]): Promise<void> {
       id,
       anyDone ? "done" : "skipped",
       results,
-      anyDone ? null : results.map((r) => r.detail).join(" · ") || "Sin acciones"
+      anyDone ? null : results.map((r) => r.detail).join(" · ") || "Sin acciones",
     );
   }
 }
@@ -186,7 +184,7 @@ async function finish(
   id: string,
   status: "done" | "skipped" | "failed",
   result: ActionResult[] | null,
-  error: string | null
+  error: string | null,
 ): Promise<void> {
   await db
     .update(automationRuns)
@@ -202,8 +200,8 @@ export async function processStaleRuns(limit = 20): Promise<number> {
     .where(
       and(
         eq(automationRuns.status, "pending"),
-        lt(automationRuns.processAfter, new Date(Date.now() - STALE_AFTER_MS))
-      )
+        lt(automationRuns.processAfter, new Date(Date.now() - STALE_AFTER_MS)),
+      ),
     )
     .orderBy(automationRuns.createdAt)
     .limit(limit);
@@ -227,9 +225,9 @@ export async function getCatalog() {
           key: f.key,
           label: f.label,
           options: await f.options(),
-        }))
+        })),
       ),
-    }))
+    })),
   );
   const actions = await Promise.all(
     ACTIONS.map(async (a) => ({
@@ -245,9 +243,9 @@ export async function getCatalog() {
           placeholder: p.placeholder ?? null,
           templated: p.templated ?? false,
           options: p.options ? await p.options() : null,
-        }))
+        })),
       ),
-    }))
+    })),
   );
   return { triggers, actions };
 }
@@ -304,7 +302,7 @@ export interface AutomationData {
 
 /** Valida contra el catalogo. Devuelve los datos limpios o la lista de errores. */
 export function validateAutomation(
-  input: AutomationInput
+  input: AutomationInput,
 ): { ok: true; data: AutomationData } | { ok: false; errors: string[] } {
   const errors: string[] = [];
   const name = (input.name ?? "").trim();
@@ -342,7 +340,7 @@ export async function createAutomation(data: AutomationData): Promise<Automation
 
 export async function updateAutomation(
   key: string,
-  data: AutomationData
+  data: AutomationData,
 ): Promise<AutomationRecord | null> {
   const [row] = await db
     .update(automations)
@@ -406,7 +404,7 @@ async function labelFor(field: string, value: string): Promise<string> {
   if (field === "stageId" || field === "previousStageId") return stageLabel(value);
   if (field === "pipelineId") {
     const [p] = await db.execute<{ name: string }>(
-      sql`select name from pipelines where id = ${value} limit 1`
+      sql`select name from pipelines where id = ${value} limit 1`,
     );
     return p?.name ?? value;
   }
@@ -452,7 +450,7 @@ export async function listAutomations(): Promise<AutomationListItem[]> {
         },
         stats,
       };
-    })
+    }),
   );
 }
 
@@ -471,7 +469,10 @@ export interface AutomationRunItem {
   processedAt: Date | null;
 }
 
-export async function listRuns(opts?: { limit?: number; key?: string }): Promise<AutomationRunItem[]> {
+export async function listRuns(opts?: {
+  limit?: number;
+  key?: string;
+}): Promise<AutomationRunItem[]> {
   const base = db
     .select({
       id: automationRuns.id,

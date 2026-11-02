@@ -7,10 +7,7 @@ import { documentContact, documentDownloadUrl, getDocument } from "@/lib/documen
  * Redirige a una URL firmada de un minuto. El link que se comparte es este (estable y
  * con sesion), nunca el del bucket. `?dl=1` fuerza descarga; sin eso abre en pestana.
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;
   const { id } = await params;

@@ -37,15 +37,13 @@ interface Texto {
 const TEXTOS: Record<TipoPlantilla, Texto> = {
   invitacion: {
     titulo: (m) => `Te sumaron a ${m}`,
-    entrada:
-      "Ya tenes tu lugar en el equipo. Solo falta que elijas una contrasena para entrar.",
+    entrada: "Ya tenes tu lugar en el equipo. Solo falta que elijas una contrasena para entrar.",
     boton: "Elegir mi contrasena",
     nota: "Si no esperabas esta invitacion, podes ignorar este correo: sin definir la contrasena, la cuenta no se usa.",
   },
   recuperacion: {
     titulo: (m) => `Volver a entrar a ${m}`,
-    entrada:
-      "Pediste recuperar el acceso. Este enlace te deja elegir una contrasena nueva.",
+    entrada: "Pediste recuperar el acceso. Este enlace te deja elegir una contrasena nueva.",
     boton: "Elegir una contrasena nueva",
     nota: "Si no pediste esto, ignora el correo: tu contrasena actual sigue funcionando y nadie entro.",
   },

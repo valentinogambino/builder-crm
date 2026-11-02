@@ -56,10 +56,16 @@ const crear: HandlerModulo = async (req, { member }) => {
   }
   const status = (typeof body.status === "string" ? body.status : "coordinating") as EstadoVisita;
   if (!ESTADOS_VISITA.includes(status)) {
-    return NextResponse.json({ error: `Estado invalido. Usa: ${ESTADOS_VISITA.join(", ")}` }, { status: 400 });
+    return NextResponse.json(
+      { error: `Estado invalido. Usa: ${ESTADOS_VISITA.join(", ")}` },
+      { status: 400 },
+    );
   }
   if (status === "scheduled" && !body.scheduledAt) {
-    return NextResponse.json({ error: "Una visita coordinada requiere fecha y hora" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Una visita coordinada requiere fecha y hora" },
+      { status: 400 },
+    );
   }
   const [row] = await db
     .insert(visitas)
@@ -77,7 +83,11 @@ const crear: HandlerModulo = async (req, { member }) => {
 };
 
 async function visitaAccesible(member: Parameters<HandlerModulo>[1]["member"], id: string) {
-  const [v] = await db.select({ contactId: visitas.contactId }).from(visitas).where(eq(visitas.id, id)).limit(1);
+  const [v] = await db
+    .select({ contactId: visitas.contactId })
+    .from(visitas)
+    .where(eq(visitas.id, id))
+    .limit(1);
   if (!v) return false;
   return canAccessContactId(member, v.contactId);
 }
@@ -89,10 +99,14 @@ const actualizar: HandlerModulo = async (req, { member, params }) => {
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return NextResponse.json({ error: "JSON invalido" }, { status: 400 });
   const updates: Partial<typeof visitas.$inferInsert> = { updatedAt: new Date() };
-  if (typeof body.status === "string" && ESTADOS_VISITA.includes(body.status as EstadoVisita)) updates.status = body.status;
-  if (body.scheduledAt !== undefined) updates.scheduledAt = body.scheduledAt ? new Date(String(body.scheduledAt)) : null;
-  if (body.propertyAddress !== undefined) updates.propertyAddress = body.propertyAddress ? String(body.propertyAddress) : null;
-  if (body.durationMinutes !== undefined) updates.durationMinutes = Number(body.durationMinutes) || 60;
+  if (typeof body.status === "string" && ESTADOS_VISITA.includes(body.status as EstadoVisita))
+    updates.status = body.status;
+  if (body.scheduledAt !== undefined)
+    updates.scheduledAt = body.scheduledAt ? new Date(String(body.scheduledAt)) : null;
+  if (body.propertyAddress !== undefined)
+    updates.propertyAddress = body.propertyAddress ? String(body.propertyAddress) : null;
+  if (body.durationMinutes !== undefined)
+    updates.durationMinutes = Number(body.durationMinutes) || 60;
   if (body.notes !== undefined) updates.notes = body.notes ? String(body.notes) : null;
   if (body.dealId !== undefined) updates.dealId = body.dealId ? String(body.dealId) : null;
   const [row] = await db.update(visitas).set(updates).where(eq(visitas.id, params.id)).returning();
@@ -131,8 +145,14 @@ const modulo: ModuloServidor = {
           parameters: {
             type: "object",
             properties: {
-              lugar: { type: "string", description: "Direccion o nombre de la propiedad o lugar a visitar." },
-              notas: { type: "string", description: "Preferencia de horario u otros comentarios del cliente." },
+              lugar: {
+                type: "string",
+                description: "Direccion o nombre de la propiedad o lugar a visitar.",
+              },
+              notas: {
+                type: "string",
+                description: "Preferencia de horario u otros comentarios del cliente.",
+              },
             },
             required: ["lugar"],
             additionalProperties: false,
@@ -145,7 +165,12 @@ const modulo: ModuloServidor = {
         if (!lugar) return { ok: false, error: "lugar vacio" };
         const [created] = await db
           .insert(visitas)
-          .values({ contactId: ctx.contactId, propertyAddress: lugar, status: "coordinating", notes: args.notas ? String(args.notas) : null })
+          .values({
+            contactId: ctx.contactId,
+            propertyAddress: lugar,
+            status: "coordinating",
+            notes: args.notas ? String(args.notas) : null,
+          })
           .returning({ id: visitas.id });
         await db.insert(activities).values({
           type: "note",
@@ -154,28 +179,42 @@ const modulo: ModuloServidor = {
         });
         return {
           ok: true,
-          data: { visitaId: created.id, status: "coordinating", message: "Visita registrada en coordinacion; una persona confirma fecha y hora." },
+          data: {
+            visitaId: created.id,
+            status: "coordinating",
+            message: "Visita registrada en coordinacion; una persona confirma fecha y hora.",
+          },
         };
       },
     },
   ],
 
   async seed() {
-    const [{ n }] = (await db.execute(sql`select count(*)::int as n from visitas`)) as unknown as [{ n: number }];
+    const [{ n }] = (await db.execute(sql`select count(*)::int as n from visitas`)) as unknown as [
+      { n: number },
+    ];
     if (n > 0) return;
-    const algunos = await db.select({ id: contacts.id, name: contacts.name }).from(contacts).limit(4);
+    const algunos = await db
+      .select({ id: contacts.id, name: contacts.name })
+      .from(contacts)
+      .limit(4);
     if (algunos.length === 0) return;
     const ahora = Date.now();
     const dia = 86_400_000;
     await db.insert(visitas).values(
       algunos.map((c, i) => ({
         contactId: c.id,
-        propertyAddress: ["Av. Principal 1234, depto 5B", "Calle Los Olivos 88", "Pasaje Las Flores 12", "Edificio Mirador, oficina 302"][i % 4],
+        propertyAddress: [
+          "Av. Principal 1234, depto 5B",
+          "Calle Los Olivos 88",
+          "Pasaje Las Flores 12",
+          "Edificio Mirador, oficina 302",
+        ][i % 4],
         status: (["scheduled", "coordinating", "completed", "scheduled"] as const)[i % 4],
         scheduledAt: i % 4 === 1 ? null : new Date(ahora + (i - 1) * dia + 15 * 3_600_000),
         durationMinutes: 60,
         notes: i === 0 ? "Prefiere por la tarde." : null,
-      }))
+      })),
     );
   },
 };

@@ -2,7 +2,14 @@ import { Building2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface Fila {
   id: string;
@@ -57,13 +64,20 @@ export function ListaPropiedades({ filas }: { filas: Fila[] }) {
                 {filas.map((f) => (
                   <TableRow key={f.id}>
                     <TableCell>
-                      <p className="font-medium leading-tight">{f.titulo ?? f.direccion ?? "Sin titulo"}</p>
+                      <p className="font-medium leading-tight">
+                        {f.titulo ?? f.direccion ?? "Sin titulo"}
+                      </p>
                       <p className="text-xs text-muted-foreground">
                         {[f.direccion, f.barrio].filter(Boolean).join(" · ")}
                         {f.link && (
                           <>
                             {" · "}
-                            <a href={f.link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                            <a
+                              href={f.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
                               ver publicacion
                             </a>
                           </>
@@ -71,12 +85,16 @@ export function ListaPropiedades({ filas }: { filas: Fila[] }) {
                       </p>
                     </TableCell>
                     <TableCell className="hidden md:table-cell text-sm">{f.tipo ?? "—"}</TableCell>
-                    <TableCell className="hidden sm:table-cell text-sm">{f.operacion ?? "—"}</TableCell>
+                    <TableCell className="hidden sm:table-cell text-sm">
+                      {f.operacion ?? "—"}
+                    </TableCell>
                     <TableCell className="text-sm tabular-nums">{precio(f)}</TableCell>
                     <TableCell className="hidden lg:table-cell text-sm tabular-nums">
                       {f.ambientes ?? "—"} / {f.dormitorios ?? "—"}
                     </TableCell>
-                    <TableCell className="hidden lg:table-cell text-sm tabular-nums">{f.m2 ?? "—"}</TableCell>
+                    <TableCell className="hidden lg:table-cell text-sm tabular-nums">
+                      {f.m2 ?? "—"}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

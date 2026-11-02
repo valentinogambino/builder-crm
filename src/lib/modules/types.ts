@@ -47,7 +47,9 @@ export interface PropsPaginaModulo {
   member: TeamMember;
 }
 
-export type PaginaModulo = ComponentType<PropsPaginaModulo> | ((props: PropsPaginaModulo) => ReactNode | Promise<ReactNode>);
+export type PaginaModulo =
+  | ComponentType<PropsPaginaModulo>
+  | ((props: PropsPaginaModulo) => ReactNode | Promise<ReactNode>);
 
 export type MetodoHttp = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -56,7 +58,10 @@ export interface ContextoApiModulo {
   member: TeamMember;
 }
 
-export type HandlerModulo = (request: NextRequest, ctx: ContextoApiModulo) => Promise<Response> | Response;
+export type HandlerModulo = (
+  request: NextRequest,
+  ctx: ContextoApiModulo,
+) => Promise<Response> | Response;
 
 export interface ToolModulo {
   /** Definicion para el modelo (OpenAI tool calling). El nombre debe ser unico. */

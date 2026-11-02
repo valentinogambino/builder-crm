@@ -9,7 +9,8 @@ import type { ManifiestoModulo } from "@/lib/modules/types";
 const manifiesto: ManifiestoModulo = {
   nombre: "visitas",
   titulo: "Visitas",
-  descripcion: "Visitas coordinadas y en proceso, con calendario mensual y tool para que el agente las agende.",
+  descripcion:
+    "Visitas coordinadas y en proceso, con calendario mensual y tool para que el agente las agende.",
   version: "1.0.0",
   nav: [
     { etiqueta: "Visitas", icono: MapPin, seccion: "Operaciones" },

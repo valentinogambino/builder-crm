@@ -29,7 +29,9 @@ const crear: HandlerModulo = async (req, { member }) => {
   const body = (await req.json().catch(() => null)) as { titulo?: string } | null;
   const titulo = body?.titulo?.trim();
   if (!titulo) return NextResponse.json({ error: "titulo requerido" }, { status: 400 });
-  await db.execute(sql`insert into ejemplo_tareas (titulo, member_id) values (${titulo}, ${member.id})`);
+  await db.execute(
+    sql`insert into ejemplo_tareas (titulo, member_id) values (${titulo}, ${member.id})`,
+  );
   return NextResponse.json(await listar(member.id), { status: 201 });
 };
 
@@ -42,7 +44,9 @@ const alternar: HandlerModulo = async (_req, { member, params }) => {
 };
 
 const borrar: HandlerModulo = async (_req, { member, params }) => {
-  await db.execute(sql`delete from ejemplo_tareas where id = ${params.id}::uuid and member_id = ${member.id}`);
+  await db.execute(
+    sql`delete from ejemplo_tareas where id = ${params.id}::uuid and member_id = ${member.id}`,
+  );
   return NextResponse.json(await listar(member.id));
 };
 
@@ -71,23 +75,30 @@ const modulo: ModuloServidor = {
             "Anota una tarea pendiente para el equipo a partir de lo que pide el cliente (ej. 'enviar presupuesto el lunes').",
           parameters: {
             type: "object",
-            properties: { titulo: { type: "string", description: "Que hay que hacer, en una frase" } },
+            properties: {
+              titulo: { type: "string", description: "Que hay que hacer, en una frase" },
+            },
             required: ["titulo"],
           },
         },
       },
-      descripcionUI: "Permite al agente anotar tareas pendientes para el equipo (modulo de ejemplo).",
+      descripcionUI:
+        "Permite al agente anotar tareas pendientes para el equipo (modulo de ejemplo).",
       async ejecutar(args) {
         const titulo = String(args.titulo ?? "").trim();
         if (!titulo) return { ok: false, error: "titulo vacio" };
-        await db.execute(sql`insert into ejemplo_tareas (titulo, member_id) values (${"(agente) " + titulo}, null)`);
+        await db.execute(
+          sql`insert into ejemplo_tareas (titulo, member_id) values (${"(agente) " + titulo}, null)`,
+        );
         return { ok: true, data: { anotada: titulo } };
       },
     },
   ],
 
   async seed() {
-    const [{ n }] = (await db.execute(sql`select count(*)::int as n from ejemplo_tareas`)) as unknown as [{ n: number }];
+    const [{ n }] = (await db.execute(
+      sql`select count(*)::int as n from ejemplo_tareas`,
+    )) as unknown as [{ n: number }];
     if (n > 0) return;
     await db.execute(sql`
       insert into ejemplo_tareas (titulo, member_id)

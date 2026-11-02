@@ -45,7 +45,7 @@ function mapRow(row: Row): ChannelAccount {
 
 /** Routing entrante: resuelve la cuenta del CRM por el accountId que manda Zernio. */
 export async function getAccountByZernioId(
-  zernioAccountId: string | null | undefined
+  zernioAccountId: string | null | undefined,
 ): Promise<ChannelAccount | null> {
   if (!zernioAccountId) return null;
   const [row] = await db
@@ -57,14 +57,10 @@ export async function getAccountByZernioId(
 }
 
 export async function getAccountById(
-  id: string | null | undefined
+  id: string | null | undefined,
 ): Promise<ChannelAccount | null> {
   if (!id) return null;
-  const [row] = await db
-    .select()
-    .from(channelAccounts)
-    .where(eq(channelAccounts.id, id))
-    .limit(1);
+  const [row] = await db.select().from(channelAccounts).where(eq(channelAccounts.id, id)).limit(1);
   return row ? mapRow(row) : null;
 }
 
@@ -77,7 +73,7 @@ export async function getAccountById(
  */
 export async function getAccountForChannel(
   tenantId: string | null | undefined,
-  platform: Channel
+  platform: Channel,
 ): Promise<ChannelAccount | null> {
   if (!tenantId) return null;
   const rows = await db
@@ -87,19 +83,16 @@ export async function getAccountForChannel(
       and(
         eq(channelAccounts.tenantId, tenantId),
         eq(channelAccounts.platform, platform),
-        eq(channelAccounts.status, "active")
-      )
+        eq(channelAccounts.status, "active"),
+      ),
     )
     .orderBy(asc(channelAccounts.createdAt));
 
-  const preferred =
-    rows.find((r) => r.provider === "zernio" && r.zernioAccountId) ?? rows[0];
+  const preferred = rows.find((r) => r.provider === "zernio" && r.zernioAccountId) ?? rows[0];
   return preferred ? mapRow(preferred) : null;
 }
 
-export async function listAccounts(
-  tenantId?: string | null
-): Promise<ChannelAccount[]> {
+export async function listAccounts(tenantId?: string | null): Promise<ChannelAccount[]> {
   const rows = tenantId
     ? await db
         .select()
@@ -131,7 +124,7 @@ export interface UpsertChannelAccountInput {
  * OAuth como el webhook `account.connected`, que pueden llegar en cualquier orden.
  */
 export async function upsertZernioAccount(
-  input: UpsertChannelAccountInput
+  input: UpsertChannelAccountInput,
 ): Promise<ChannelAccount | null> {
   if (!input.zernioAccountId) return null;
 
@@ -168,10 +161,7 @@ export async function upsertZernioAccount(
   return row ? mapRow(row) : null;
 }
 
-export async function markAccountStatus(
-  zernioAccountId: string,
-  status: string
-): Promise<void> {
+export async function markAccountStatus(zernioAccountId: string, status: string): Promise<void> {
   await db
     .update(channelAccounts)
     .set({ status, updatedAt: new Date() })

@@ -90,7 +90,9 @@ export function TriggerCard({
       </div>
 
       <div className="px-4 py-4 space-y-4">
-        {def && <p className="text-[13px] text-muted-foreground leading-relaxed">{def.description}</p>}
+        {def && (
+          <p className="text-[13px] text-muted-foreground leading-relaxed">{def.description}</p>
+        )}
 
         {fields.length > 0 && (
           <div className="rounded-xl border border-dashed border-border bg-muted/30 p-3 space-y-2">
@@ -175,7 +177,7 @@ export function TriggerCard({
                     aria-label="Quitar filtro"
                     className={cn(
                       "h-8 w-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer justify-self-end",
-                      readOnly && "hidden"
+                      readOnly && "hidden",
                     )}
                   >
                     <Trash2 className="h-3.5 w-3.5" />

@@ -93,8 +93,7 @@ async function main() {
       else updated++;
     }
 
-    const [{ count }] =
-      await sql`select count(*)::int as count from propiedades`;
+    const [{ count }] = await sql`select count(*)::int as count from propiedades`;
     const [{ with_emb }] =
       await sql`select count(*)::int as with_emb from propiedades where embedding is not null`;
     console.log(`[sync] OK · insertadas: ${inserted} · actualizadas: ${updated}`);

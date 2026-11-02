@@ -10,13 +10,15 @@ import { correoDeAccesoActivo, enviarEnlaceDeAcceso } from "@/lib/auth-correo";
  * de frecuencia lo pone el servidor de autenticacion, que es el que manda el correo.
  */
 export async function pedirEnlaceDeAcceso(
-  formData: FormData
+  formData: FormData,
 ): Promise<{ ok?: true; error?: string }> {
   if (!correoDeAccesoActivo()) {
     return { error: "Esta instancia no manda correos: pedile el acceso a un administrador." };
   }
 
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase();
   if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
     return { error: "Escribi un email valido." };
   }

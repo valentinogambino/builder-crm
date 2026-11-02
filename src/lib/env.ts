@@ -13,13 +13,13 @@ import { modoLocal } from "@/lib/modo-local";
  * avisa que esa parte esta apagada.
  */
 
-const vacioComoAusente = (v: unknown) =>
-  typeof v === "string" && v.trim() === "" ? undefined : v;
+const vacioComoAusente = (v: unknown) => (typeof v === "string" && v.trim() === "" ? undefined : v);
 
 const opcional = z.preprocess(vacioComoAusente, z.string().optional());
 const booleano = z.preprocess(
-  (v) => (typeof v === "string" ? ["true", "1", "si", "sí", "yes", "on"].includes(v.toLowerCase()) : v),
-  z.boolean().optional()
+  (v) =>
+    typeof v === "string" ? ["true", "1", "si", "sí", "yes", "on"].includes(v.toLowerCase()) : v,
+  z.boolean().optional(),
 );
 
 export const esquemaEnv = z.object({
@@ -44,7 +44,9 @@ export const esquemaEnv = z.object({
   // abiertas a internet y sin ningun sintoma. Ahora falla cerrada, asi que sin la
   // variable el agente no corre; es preferible que /api/health se queje a que quede
   // abierta en silencio. Generar con: openssl rand -hex 32
-  AGENT_WORKER_SECRET: z.string().min(16, "AGENT_WORKER_SECRET es obligatoria (openssl rand -hex 32)"),
+  AGENT_WORKER_SECRET: z
+    .string()
+    .min(16, "AGENT_WORKER_SECRET es obligatoria (openssl rand -hex 32)"),
   LEADS_WEBHOOK_SECRET: opcional,
   SWEEP_INTERVAL_MIN: z.preprocess(vacioComoAusente, z.coerce.number().int().min(1).optional()),
 
@@ -92,7 +94,9 @@ export function getEnv(): Env {
     const detalle = resultado.error.issues
       .map((i) => `  - ${i.path.join(".")}: ${i.message}`)
       .join("\n");
-    throw new Error(`Variables de entorno invalidas o faltantes:\n${detalle}\nRevisa .env.example.`);
+    throw new Error(
+      `Variables de entorno invalidas o faltantes:\n${detalle}\nRevisa .env.example.`,
+    );
   }
   cache = resultado.data;
   return cache;
@@ -128,6 +132,8 @@ export function capacidades() {
     zernio: Boolean(e.ZERNIO_API_KEY),
     metaDirecto: Boolean(e.WHATSAPP_ACCESS_TOKEN && e.WHATSAPP_PHONE_NUMBER_ID),
     push: Boolean(e.NEXT_PUBLIC_VAPID_PUBLIC_KEY && e.VAPID_PRIVATE_KEY),
-    documentos: Boolean(e.S3_ENDPOINT && e.S3_BUCKET && e.S3_ACCESS_KEY_ID && e.S3_SECRET_ACCESS_KEY),
+    documentos: Boolean(
+      e.S3_ENDPOINT && e.S3_BUCKET && e.S3_ACCESS_KEY_ID && e.S3_SECRET_ACCESS_KEY,
+    ),
   };
 }

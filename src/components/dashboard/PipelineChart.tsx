@@ -28,13 +28,7 @@ interface TooltipPayloadItem {
   payload: StageData;
 }
 
-function CustomTooltip({
-  active,
-  payload,
-}: {
-  active?: boolean;
-  payload?: TooltipPayloadItem[];
-}) {
+function CustomTooltip({ active, payload }: { active?: boolean; payload?: TooltipPayloadItem[] }) {
   if (!active || !payload || !payload.length) return null;
   const datum = payload[0].payload;
   return (
@@ -44,10 +38,7 @@ function CustomTooltip({
       </p>
       <div className="space-y-0.5 text-muted-foreground">
         <p>
-          <span className="tabular-nums font-semibold text-foreground">
-            {datum.count}
-          </span>{" "}
-          deals
+          <span className="tabular-nums font-semibold text-foreground">{datum.count}</span> deals
         </p>
         <p>
           <span className="tabular-nums font-semibold text-foreground">
@@ -67,9 +58,7 @@ export function PipelineChart({ data }: PipelineChartProps) {
         <CardTitle className="text-base font-semibold tracking-tight font-heading">
           Pipeline de Ventas
         </CardTitle>
-        <p className="text-xs text-muted-foreground">
-          Distribucion de deals por etapa
-        </p>
+        <p className="text-xs text-muted-foreground">Distribucion de deals por etapa</p>
       </CardHeader>
       <CardContent>
         {data.length === 0 ? (

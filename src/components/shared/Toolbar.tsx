@@ -67,22 +67,14 @@ export function Toolbar({
         </Button>
       )}
 
-      {view !== undefined && onViewChange && (
-        <ViewToggle view={view} onChange={onViewChange} />
-      )}
+      {view !== undefined && onViewChange && <ViewToggle view={view} onChange={onViewChange} />}
 
       {primaryAction && <div className="ml-auto">{primaryAction}</div>}
     </div>
   );
 }
 
-function ViewToggle({
-  view,
-  onChange,
-}: {
-  view: ViewMode;
-  onChange: (view: ViewMode) => void;
-}) {
+function ViewToggle({ view, onChange }: { view: ViewMode; onChange: (view: ViewMode) => void }) {
   return (
     <div className="inline-flex items-center rounded-md border border-border bg-background p-0.5 h-9">
       <ToggleButton active={view === "kanban"} onClick={() => onChange("kanban")}>

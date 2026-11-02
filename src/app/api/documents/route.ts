@@ -44,11 +44,17 @@ export async function POST(request: NextRequest) {
   if (!storageConfigured()) {
     return NextResponse.json(
       { error: "El almacenamiento de archivos no esta configurado (variables S3_*)." },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
-  let body: { contactId?: string; name?: string; mime?: string; size?: number; dealId?: string | null };
+  let body: {
+    contactId?: string;
+    name?: string;
+    mime?: string;
+    size?: number;
+    dealId?: string | null;
+  };
   try {
     body = await request.json();
   } catch {

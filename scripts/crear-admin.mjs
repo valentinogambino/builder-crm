@@ -37,7 +37,9 @@ const password = valor("--password");
 const nombre = valor("--nombre") ?? null;
 
 if (!email || !password) {
-  console.error("Uso: node scripts/crear-admin.mjs --email <email> --password <contrasena> [--nombre <nombre>]");
+  console.error(
+    "Uso: node scripts/crear-admin.mjs --email <email> --password <contrasena> [--nombre <nombre>]",
+  );
   process.exit(1);
 }
 if (password.length < 8) {
@@ -49,7 +51,9 @@ const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRole = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const dbUrl = process.env.DIRECT_URL || process.env.DATABASE_URL;
 if (!url || !serviceRole || !dbUrl) {
-  console.error("Faltan NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY o DATABASE_URL (ver .env.example).");
+  console.error(
+    "Faltan NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY o DATABASE_URL (ver .env.example).",
+  );
   process.exit(1);
 }
 

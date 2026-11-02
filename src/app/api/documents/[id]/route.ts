@@ -5,7 +5,7 @@ import { deleteDocument, documentContact, getDocument } from "@/lib/documents";
 
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const auth = await requireMember();
   if ("response" in auth) return auth.response;

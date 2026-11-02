@@ -89,7 +89,7 @@ try {
   await sql`alter table public._migraciones enable row level security`;
 
   const aplicadas = new Set(
-    (await sql`select nombre from public._migraciones`).map((r) => r.nombre)
+    (await sql`select nombre from public._migraciones`).map((r) => r.nombre),
   );
   const pendientes = archivos.filter((a) => !aplicadas.has(a.nombre));
 
@@ -129,7 +129,9 @@ try {
   if (/schema "auth" does not exist/i.test(mensaje)) {
     console.error("[migrar] La base no tiene el esquema auth.");
     console.error("[migrar] Si es Supabase cloud, la URL no apunta a ese proyecto.");
-    console.error("[migrar] Si es tu propio Postgres: npm run auth:preparar (docs/SUPABASE-EN-VPS.md).");
+    console.error(
+      "[migrar] Si es tu propio Postgres: npm run auth:preparar (docs/SUPABASE-EN-VPS.md).",
+    );
   } else if (/relation "auth\.users" does not exist/i.test(mensaje)) {
     console.error("[migrar] El esquema auth existe pero todavia no hay auth.users.");
     console.error("[migrar] Eso lo crea GoTrue la primera vez que arranca: levanta el");

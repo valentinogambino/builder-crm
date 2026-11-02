@@ -47,9 +47,9 @@ export function AutomationsList() {
   const loadRuns = useCallback(
     () =>
       fetch("/api/automations/runs?limit=40").then((r) =>
-        r.ok ? (r.json() as Promise<RunItem[]>) : []
+        r.ok ? (r.json() as Promise<RunItem[]>) : [],
       ),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -96,7 +96,8 @@ export function AutomationsList() {
     <div className="space-y-5">
       <div className="flex items-start justify-between gap-3">
         <p className="text-sm text-muted-foreground max-w-xl">
-          Cada regla es <strong className="text-foreground">cuando pasa algo → hacer una o varias cosas</strong>.
+          Cada regla es{" "}
+          <strong className="text-foreground">cuando pasa algo → hacer una o varias cosas</strong>.
           Se arman aca y corren solas.
         </p>
         {isAdmin && (
@@ -133,7 +134,7 @@ export function AutomationsList() {
               key={a.key}
               className={cn(
                 "group rounded-2xl border border-border bg-card p-4 flex gap-4 transition-shadow hover:shadow-[0_8px_24px_-12px_rgba(10,22,40,0.18)]",
-                !a.enabled && "bg-muted/20"
+                !a.enabled && "bg-muted/20",
               )}
             >
               <div
@@ -141,7 +142,7 @@ export function AutomationsList() {
                   "h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ring-1",
                   a.enabled
                     ? "bg-[#0A1628] text-white ring-black/10"
-                    : "bg-muted text-muted-foreground ring-border"
+                    : "bg-muted text-muted-foreground ring-border",
                 )}
               >
                 <Zap className="h-4 w-4" />
@@ -160,10 +161,15 @@ export function AutomationsList() {
                       "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10.5px] font-semibold tracking-wide",
                       a.enabled
                         ? "bg-emerald-500/10 text-emerald-700"
-                        : "bg-muted text-muted-foreground"
+                        : "bg-muted text-muted-foreground",
                     )}
                   >
-                    <span className={cn("h-1.5 w-1.5 rounded-full", a.enabled ? "bg-emerald-500" : "bg-muted-foreground/50")} />
+                    <span
+                      className={cn(
+                        "h-1.5 w-1.5 rounded-full",
+                        a.enabled ? "bg-emerald-500" : "bg-muted-foreground/50",
+                      )}
+                    />
                     {a.enabled ? "PUBLICADA" : "BORRADOR"}
                   </span>
                 </div>
@@ -184,7 +190,12 @@ export function AutomationsList() {
                       return (
                         <span
                           key={i}
-                          className={cn("inline-flex items-center gap-1.5 rounded-lg px-2 py-1 ring-1", style.bg, style.fg, style.ring)}
+                          className={cn(
+                            "inline-flex items-center gap-1.5 rounded-lg px-2 py-1 ring-1",
+                            style.bg,
+                            style.fg,
+                            style.ring,
+                          )}
                         >
                           <Icon className="h-3 w-3" />
                           <span className="font-medium">{label}</span>
@@ -200,12 +211,19 @@ export function AutomationsList() {
                     "sin ejecuciones"
                   ) : (
                     <>
-                      <span className="text-emerald-700 font-medium">{a.stats.done} ejecutada{a.stats.done === 1 ? "" : "s"}</span>
-                      {a.stats.skipped > 0 && ` · ${a.stats.skipped} omitida${a.stats.skipped === 1 ? "" : "s"}`}
+                      <span className="text-emerald-700 font-medium">
+                        {a.stats.done} ejecutada{a.stats.done === 1 ? "" : "s"}
+                      </span>
+                      {a.stats.skipped > 0 &&
+                        ` · ${a.stats.skipped} omitida${a.stats.skipped === 1 ? "" : "s"}`}
                       {a.stats.failed > 0 && (
-                        <span className="text-destructive font-medium"> · {a.stats.failed} con error</span>
+                        <span className="text-destructive font-medium">
+                          {" "}
+                          · {a.stats.failed} con error
+                        </span>
                       )}
-                      {a.stats.pending > 0 && ` · ${a.stats.pending} pendiente${a.stats.pending === 1 ? "" : "s"}`}
+                      {a.stats.pending > 0 &&
+                        ` · ${a.stats.pending} pendiente${a.stats.pending === 1 ? "" : "s"}`}
                     </>
                   )}
                 </p>
@@ -218,16 +236,22 @@ export function AutomationsList() {
                   aria-checked={a.enabled}
                   disabled={!isAdmin}
                   onClick={() => toggle(a)}
-                  title={isAdmin ? (a.enabled ? "Apagar" : "Publicar") : "Solo un administrador puede cambiarlo"}
+                  title={
+                    isAdmin
+                      ? a.enabled
+                        ? "Apagar"
+                        : "Publicar"
+                      : "Solo un administrador puede cambiarlo"
+                  }
                   className={cn(
                     "relative h-6 w-11 rounded-full transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60",
-                    a.enabled ? "bg-emerald-500" : "bg-muted-foreground/30"
+                    a.enabled ? "bg-emerald-500" : "bg-muted-foreground/30",
                   )}
                 >
                   <span
                     className={cn(
                       "absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform",
-                      a.enabled ? "translate-x-5" : "translate-x-0"
+                      a.enabled ? "translate-x-5" : "translate-x-0",
                     )}
                   />
                 </button>
@@ -258,7 +282,9 @@ export function AutomationsList() {
         {showHistory && (
           <div className="mt-2 rounded-2xl border divide-y max-h-96 overflow-y-auto bg-card">
             {runs.length === 0 && (
-              <p className="text-xs text-muted-foreground px-4 py-6 text-center">Todavia no hay ejecuciones.</p>
+              <p className="text-xs text-muted-foreground px-4 py-6 text-center">
+                Todavia no hay ejecuciones.
+              </p>
             )}
             {runs.map((r) => (
               <div key={r.id} className="flex items-start gap-3 px-4 py-3 text-xs">

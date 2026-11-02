@@ -40,9 +40,7 @@ const ignored = (reason: string): ProcessResult => ({
   jobIds: [],
 });
 
-export async function processZernioEvent(
-  payload: ZernioWebhookPayload
-): Promise<ProcessResult> {
+export async function processZernioEvent(payload: ZernioWebhookPayload): Promise<ProcessResult> {
   switch (payload.event) {
     case "account.connected":
       return handleAccountConnected(payload);
@@ -66,17 +64,13 @@ export async function processZernioEvent(
 // Cuentas
 // ============================================================
 
-async function handleAccountConnected(
-  payload: ZernioWebhookPayload
-): Promise<ProcessResult> {
+async function handleAccountConnected(payload: ZernioWebhookPayload): Promise<ProcessResult> {
   const info = payload.account;
   const accountId = info?.accountId ?? info?.id;
   const platform = info?.platform;
 
   if (!accountId || !isChannel(platform)) {
-    return ignored(
-      `account.connected sin accountId o con plataforma no usada: ${platform}`
-    );
+    return ignored(`account.connected sin accountId o con plataforma no usada: ${platform}`);
   }
 
   const tenantId = await resolveDefaultTenantId();
@@ -94,9 +88,7 @@ async function handleAccountConnected(
   return { status: "processed", jobIds: [] };
 }
 
-async function handleAccountDisconnected(
-  payload: ZernioWebhookPayload
-): Promise<ProcessResult> {
+async function handleAccountDisconnected(payload: ZernioWebhookPayload): Promise<ProcessResult> {
   const accountId = payload.account?.accountId ?? payload.account?.id;
   if (!accountId) return ignored("account.disconnected sin accountId");
   await markAccountStatus(accountId, "disconnected");
@@ -107,9 +99,7 @@ async function handleAccountDisconnected(
 // Mensajes
 // ============================================================
 
-async function handleMessageEvent(
-  payload: ZernioWebhookPayload
-): Promise<ProcessResult> {
+async function handleMessageEvent(payload: ZernioWebhookPayload): Promise<ProcessResult> {
   const msg = payload.message;
   const conv = payload.conversation;
 
@@ -188,9 +178,7 @@ async function handleMessageEvent(
   };
 }
 
-async function handleStatusEvent(
-  payload: ZernioWebhookPayload
-): Promise<ProcessResult> {
+async function handleStatusEvent(payload: ZernioWebhookPayload): Promise<ProcessResult> {
   const msg = payload.message;
   const externalId = msg?.platformMessageId ?? msg?.id;
   if (!externalId) return ignored("evento de estado sin id de mensaje");
@@ -206,7 +194,7 @@ async function handleStatusEvent(
           ? {
               status: "failed",
               errorMessage: JSON.stringify(
-                msg?.deliveryError ?? { message: "envio fallido" }
+                msg?.deliveryError ?? { message: "envio fallido" },
               ).slice(0, 1000),
             }
           : { status: "deleted" };
@@ -242,7 +230,7 @@ function resolveParticipant(
   channel: Channel,
   conv: ZernioWebhookConversation | undefined,
   msg: ZernioMessage | undefined,
-  direction: "in" | "out"
+  direction: "in" | "out",
 ): ResolvedParticipant {
   const sender = direction === "in" ? msg?.sender : undefined;
   const bsuid = sender?.businessScopedUserId ?? null;
@@ -252,8 +240,7 @@ function resolveParticipant(
     (channel === "whatsapp" ? (sender?.phone ?? sender?.id) : sender?.id) ??
     null;
 
-  const externalId =
-    channel === "whatsapp" && raw ? `+${normalizePhone(raw)}` : raw;
+  const externalId = channel === "whatsapp" && raw ? `+${normalizePhone(raw)}` : raw;
 
   return {
     externalId,
@@ -282,9 +269,7 @@ function extractBody(msg: ZernioMessage): string {
               ? "documento"
               : kind;
     const extra =
-      msg.attachments && msg.attachments.length > 1
-        ? ` (+${msg.attachments.length - 1})`
-        : "";
+      msg.attachments && msg.attachments.length > 1 ? ` (+${msg.attachments.length - 1})` : "";
     return `[${label}]${extra}`;
   }
 

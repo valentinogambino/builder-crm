@@ -49,7 +49,7 @@ export function ConversationView({
   const detailsOpen = useSyncExternalStore(
     subscribeStorage,
     () => window.localStorage.getItem(STORAGE_KEY) !== "0",
-    () => true
+    () => true,
   );
 
   const toggle = () => {

@@ -8,11 +8,7 @@ import { displayName, getMember, listMembers } from "@/lib/team";
 import { assignContact } from "@/lib/contacts/assign";
 import { SOURCE_LABELS } from "@/lib/constants";
 import type { LeadSource } from "@/types";
-import type {
-  AutomationEvent,
-  ContactAssignedPayload,
-  SelectOption,
-} from "./triggers";
+import type { AutomationEvent, ContactAssignedPayload, SelectOption } from "./triggers";
 
 /**
  * Catalogo de acciones: QUE puede hacer una regla. Cada accion declara sus parametros
@@ -168,8 +164,22 @@ const push: ActionDef = {
   description: "Push al telefono de un asesor, de los administradores o del asesor asignado.",
   params: [
     { key: "to", label: "Para", type: "select", required: true, options: recipientOptions },
-    { key: "title", label: "Titulo", type: "text", required: true, templated: true, placeholder: "Nuevo lead en {{etapa}}" },
-    { key: "body", label: "Texto", type: "textarea", required: true, templated: true, placeholder: "{{contacto}} entro a {{etapa}}" },
+    {
+      key: "title",
+      label: "Titulo",
+      type: "text",
+      required: true,
+      templated: true,
+      placeholder: "Nuevo lead en {{etapa}}",
+    },
+    {
+      key: "body",
+      label: "Texto",
+      type: "textarea",
+      required: true,
+      templated: true,
+      placeholder: "{{contacto}} entro a {{etapa}}",
+    },
   ],
   async run(ctx, params) {
     const recipients: string[] = [];
@@ -195,9 +205,7 @@ const push: ActionDef = {
     // Al tocar el aviso se abre la conversacion (el hilo mas reciente del contacto):
     // el aviso es para atender al cliente. Sin hilo todavia, la ficha.
     const conversationId = await resolveConversationId(ctx.contactId);
-    const url = conversationId
-      ? `/conversations/${conversationId}`
-      : `/contacts/${ctx.contactId}`;
+    const url = conversationId ? `/conversations/${conversationId}` : `/contacts/${ctx.contactId}`;
 
     // Siempre queda la notificacion interna (campanita); el push llega si el asesor
     // activo un dispositivo. El detalle dice exactamente que paso con cada uno.
@@ -215,9 +223,14 @@ const push: ActionDef = {
         tag: `auto-${ctx.contactId}`,
       });
       delivered++;
-      if ("error" in out.push) parts.push(`${displayName(m)}: en el CRM (push fallo: ${out.push.error})`);
-      else if (out.push.noDevices) parts.push(`${displayName(m)}: en el CRM (sin push: no activo ningun dispositivo)`);
-      else parts.push(`${displayName(m)}: en el CRM + push a ${out.push.sent} dispositivo${out.push.sent === 1 ? "" : "s"}`);
+      if ("error" in out.push)
+        parts.push(`${displayName(m)}: en el CRM (push fallo: ${out.push.error})`);
+      else if (out.push.noDevices)
+        parts.push(`${displayName(m)}: en el CRM (sin push: no activo ningun dispositivo)`);
+      else
+        parts.push(
+          `${displayName(m)}: en el CRM + push a ${out.push.sent} dispositivo${out.push.sent === 1 ? "" : "s"}`,
+        );
     }
     return delivered > 0
       ? { status: "done", detail: parts.join(" · ") }
@@ -273,8 +286,10 @@ const removeTag: ActionDef = {
 const assignOwner: ActionDef = {
   key: "assign_owner",
   label: "Asignar asesor",
-  description: "Pone a un asesor a cargo del contacto. Dispara a su vez \"Contacto asignado\".",
-  params: [{ key: "memberId", label: "Asesor", type: "select", required: true, options: memberOptions }],
+  description: 'Pone a un asesor a cargo del contacto. Dispara a su vez "Contacto asignado".',
+  params: [
+    { key: "memberId", label: "Asesor", type: "select", required: true, options: memberOptions },
+  ],
   async run(ctx, params) {
     if (!params.memberId) return { status: "skipped", detail: "Sin asesor elegido" };
     const r = await assignContact({
@@ -297,7 +312,14 @@ const createActivity: ActionDef = {
   description: "Deja una nota o un seguimiento en el historial del contacto.",
   params: [
     { key: "type", label: "Tipo", type: "select", required: true, options: activityTypeOptions },
-    { key: "description", label: "Descripcion", type: "textarea", required: true, templated: true, placeholder: "Llamar a {{contacto}} por {{etapa}}" },
+    {
+      key: "description",
+      label: "Descripcion",
+      type: "textarea",
+      required: true,
+      templated: true,
+      placeholder: "Llamar a {{contacto}} por {{etapa}}",
+    },
   ],
   async run(ctx, params) {
     const description = (await ctx.render(params.description ?? "")).trim();

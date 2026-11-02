@@ -42,7 +42,7 @@ export const metaCloud: Conector = {
           to,
           msg.template.name,
           msg.template.language ?? "es",
-          msg.template.components ?? []
+          msg.template.components ?? [],
         )
       : await sendTextMessage(account, to, msg.text ?? "");
 

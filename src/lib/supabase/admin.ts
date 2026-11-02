@@ -11,7 +11,7 @@ export function createAdminClient() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) {
     throw new Error(
-      "Falta SUPABASE_SERVICE_ROLE_KEY (Supabase -> Settings -> API -> service_role)."
+      "Falta SUPABASE_SERVICE_ROLE_KEY (Supabase -> Settings -> API -> service_role).",
     );
   }
   return createSupabaseClient(url, key, {

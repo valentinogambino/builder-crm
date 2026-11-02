@@ -49,7 +49,7 @@ export function FlowEditor({ catalog, initial, isAdmin }: Props) {
           actions: initial.actions,
           enabled: initial.enabled,
         }
-      : emptyDraft(catalog)
+      : emptyDraft(catalog),
   );
   const [saving, setSaving] = useState(false);
 
@@ -187,9 +187,7 @@ export function FlowEditor({ catalog, initial, isAdmin }: Props) {
                 onRemove={() => setActions(draft.actions.filter((_, idx) => idx !== i))}
               />
               <Connector>
-                {!readOnly && (
-                  <AddButton catalog={catalog} onPick={(t) => addAction(t, i + 1)} />
-                )}
+                {!readOnly && <AddButton catalog={catalog} onPick={(t) => addAction(t, i + 1)} />}
               </Connector>
             </div>
           ))}
@@ -246,19 +244,19 @@ function StatusToggle({
         "inline-flex items-center gap-2 rounded-full border pl-1.5 pr-3 h-9 text-xs font-medium cursor-pointer transition-colors select-none",
         enabled
           ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700"
-          : "border-border bg-muted/50 text-muted-foreground"
+          : "border-border bg-muted/50 text-muted-foreground",
       )}
     >
       <span
         className={cn(
           "relative h-5 w-9 rounded-full transition-colors",
-          enabled ? "bg-emerald-500" : "bg-muted-foreground/30"
+          enabled ? "bg-emerald-500" : "bg-muted-foreground/30",
         )}
       >
         <span
           className={cn(
             "absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform",
-            enabled ? "translate-x-4" : "translate-x-0"
+            enabled ? "translate-x-4" : "translate-x-0",
           )}
         />
       </span>
@@ -306,12 +304,20 @@ function AddButton({ catalog, onPick }: { catalog: Catalog; onPick: (type: strin
               onClick={() => onPick(a.key)}
               className="items-start gap-2.5 rounded-lg px-2 py-2 cursor-pointer"
             >
-              <span className={cn("mt-0.5 h-7 w-7 rounded-lg flex items-center justify-center shrink-0", style.bg, style.fg)}>
+              <span
+                className={cn(
+                  "mt-0.5 h-7 w-7 rounded-lg flex items-center justify-center shrink-0",
+                  style.bg,
+                  style.fg,
+                )}
+              >
                 <Icon className="h-3.5 w-3.5" />
               </span>
               <span className="min-w-0">
                 <span className="block text-sm font-medium">{a.label}</span>
-                <span className="block text-xs text-muted-foreground leading-snug">{a.description}</span>
+                <span className="block text-xs text-muted-foreground leading-snug">
+                  {a.description}
+                </span>
               </span>
             </DropdownMenuItem>
           );

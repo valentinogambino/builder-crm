@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -62,65 +62,65 @@
 */
 
 :root {
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-heading: 'DM Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-heading: "DM Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Surfaces */
-  --background: #EEF1F6;
-  --foreground: #0A1628;
-  --card: #FFFFFF;
-  --card-foreground: #0A1628;
-  --popover: #FFFFFF;
-  --popover-foreground: #0A1628;
+  --background: #eef1f6;
+  --foreground: #0a1628;
+  --card: #ffffff;
+  --card-foreground: #0a1628;
+  --popover: #ffffff;
+  --popover-foreground: #0a1628;
 
   /* Primary = verde teal base (CTAs por defecto en shadcn) */
-  --primary: #2E4A47;
-  --primary-foreground: #FFFFFF;
+  --primary: #2e4a47;
+  --primary-foreground: #ffffff;
 
   /* Secondary = zinc claro */
-  --secondary: #F4F4F5;
-  --secondary-foreground: #0A1628;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #0a1628;
 
   /* Muted = zinc claro (un toque mas fresco para diferenciar columnas) */
-  --muted: #E8EBF1;
-  --muted-foreground: #52525B;
+  --muted: #e8ebf1;
+  --muted-foreground: #52525b;
 
   /* Accent = teal suave */
-  --accent: #ECF3F2;
-  --accent-foreground: #1A332F;
+  --accent: #ecf3f2;
+  --accent-foreground: #1a332f;
 
-  --destructive: #DC2626;
-  --destructive-foreground: #FFFFFF;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
 
-  --border: #D7DBE3;
-  --input: #D7DBE3;
-  --ring: #2E4A47;
+  --border: #d7dbe3;
+  --input: #d7dbe3;
+  --ring: #2e4a47;
 
   /* Charts: brand-aligned */
-  --chart-1: #2E4A47;
-  --chart-2: #0A1628;
-  --chart-3: #6FA29D;
-  --chart-4: #1F9B73;
-  --chart-5: #1E3A5F;
+  --chart-1: #2e4a47;
+  --chart-2: #0a1628;
+  --chart-3: #6fa29d;
+  --chart-4: #1f9b73;
+  --chart-5: #1e3a5f;
 
   --radius: 0.75rem;
 
   /* Sidebar = negro neutro permanente (estilo Attio/SHARP) */
-  --sidebar: #0F1419;
-  --sidebar-foreground: #E8EDF5;
+  --sidebar: #0f1419;
+  --sidebar-foreground: #e8edf5;
   --sidebar-foreground-muted: rgba(232, 237, 245, 0.55);
-  --sidebar-primary: #6FA29D;
-  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-primary: #6fa29d;
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: rgba(111, 162, 157, 0.14);
-  --sidebar-accent-foreground: #ECF3F2;
+  --sidebar-accent-foreground: #ecf3f2;
   --sidebar-border: rgba(255, 255, 255, 0.06);
-  --sidebar-ring: #6FA29D;
+  --sidebar-ring: #6fa29d;
 
-  --success: #1F9B73;
-  --success-foreground: #FFFFFF;
-  --warning: #D97706;
-  --warning-foreground: #FFFFFF;
+  --success: #1f9b73;
+  --success-foreground: #ffffff;
+  --warning: #d97706;
+  --warning-foreground: #ffffff;
 
   /* Elevation scale (navy-tinted) */
   --shadow-xs: 0 1px 2px rgba(10, 22, 40, 0.04);
@@ -140,17 +140,22 @@
   html {
     @apply font-sans;
   }
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-heading);
     letter-spacing: -0.01em;
   }
   *:focus-visible {
-    outline: 2px solid #2E4A47;
+    outline: 2px solid #2e4a47;
     outline-offset: 2px;
   }
   ::selection {
-    background: rgba(46, 74, 71, 0.30);
-    color: #0A1628;
+    background: rgba(46, 74, 71, 0.3);
+    color: #0a1628;
   }
   /* Scrollbar fina estilo Silicon Valley */
   ::-webkit-scrollbar {

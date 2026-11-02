@@ -36,8 +36,7 @@ export async function registroAbierto(): Promise<boolean> {
 export async function signUp(formData: FormData) {
   if (!(await registroAbierto())) {
     return {
-      error:
-        "El registro esta cerrado. Pide a un administrador que te agregue al equipo.",
+      error: "El registro esta cerrado. Pide a un administrador que te agregue al equipo.",
     };
   }
 
@@ -67,8 +66,7 @@ export async function signUp(formData: FormData) {
 
   if (!data.session) {
     return {
-      error:
-        "Cuenta creada. Revisa tu email para confirmar antes de iniciar sesion.",
+      error: "Cuenta creada. Revisa tu email para confirmar antes de iniciar sesion.",
     };
   }
 

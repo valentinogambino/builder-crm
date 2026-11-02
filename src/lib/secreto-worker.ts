@@ -48,7 +48,7 @@ export function autorizadoPorSecreto(request: NextRequest): boolean {
   if (!secreto) {
     console.error(
       "[seguridad] AGENT_WORKER_SECRET no esta configurada: se rechaza la llamada interna. " +
-        "Generala con `openssl rand -hex 32` y cargala en la instancia."
+        "Generala con `openssl rand -hex 32` y cargala en la instancia.",
     );
     return false;
   }

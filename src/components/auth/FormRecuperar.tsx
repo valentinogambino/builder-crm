@@ -29,8 +29,8 @@ export function FormRecuperar() {
         <div className="flex items-start gap-2.5 rounded-md border bg-muted/40 px-3 py-2.5 text-sm">
           <MailCheck className="h-4 w-4 mt-0.5 text-emerald-500 shrink-0" />
           <p className="text-muted-foreground">
-            Si ese correo tiene cuenta, ya salio el enlace. Revisa tambien el correo no
-            deseado: vence en 24 horas.
+            Si ese correo tiene cuenta, ya salio el enlace. Revisa tambien el correo no deseado:
+            vence en 24 horas.
           </p>
         </div>
         <Button render={<Link href="/login" />} variant="outline" className="w-full h-10">

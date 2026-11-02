@@ -6,10 +6,7 @@ import { desc, eq, and } from "drizzle-orm";
 import { verifyWebhookSignature } from "@/lib/meta-whatsapp";
 import { enqueueAgentJob, queueConfig } from "@/lib/agent/queue";
 import { resolveRealPhone, normalizePhone } from "@/lib/phone";
-import {
-  getAccountByPhoneNumberId,
-  type WhatsappAccount,
-} from "@/lib/whatsapp-accounts";
+import { getAccountByPhoneNumberId, type WhatsappAccount } from "@/lib/whatsapp-accounts";
 import { touchConversation, upsertConversation } from "@/lib/channels/ingest";
 import { metaWebhookActive } from "@/lib/channels/provider";
 
@@ -36,7 +33,10 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  console.warn("[whatsapp-webhook] handshake fallido", { mode, tokenMatches: token === VERIFY_TOKEN });
+  console.warn("[whatsapp-webhook] handshake fallido", {
+    mode,
+    tokenMatches: token === VERIFY_TOKEN,
+  });
   return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 }
 
@@ -95,9 +95,7 @@ function extractMessageBody(msg: MetaInboundMessage): string {
     case "video":
       return msg.video?.caption ? `[video] ${msg.video.caption}` : "[video]";
     case "document":
-      return msg.document?.filename
-        ? `[documento] ${msg.document.filename}`
-        : "[documento]";
+      return msg.document?.filename ? `[documento] ${msg.document.filename}` : "[documento]";
     case "location":
       return `[ubicacion] ${msg.location?.name ?? `${msg.location?.latitude},${msg.location?.longitude}`}`;
     default:
@@ -113,7 +111,7 @@ function isPlaceholderName(name: string | null | undefined): boolean {
 async function findOrCreateContact(
   phone: string,
   tenantId: string,
-  profileName?: string
+  profileName?: string,
 ): Promise<string> {
   const formatted = phone.startsWith("+") ? phone : `+${phone}`;
   const cleanProfileName = profileName?.trim() || undefined;
@@ -136,8 +134,7 @@ async function findOrCreateContact(
   }
 
   const now = new Date();
-  const placeholderName =
-    cleanProfileName || `WhatsApp ${formatted.slice(-4)}`;
+  const placeholderName = cleanProfileName || `WhatsApp ${formatted.slice(-4)}`;
 
   const createdRows = await db
     .insert(contacts)
@@ -224,7 +221,7 @@ async function handleInboundMessage(
   msg: MetaInboundMessage,
   metadata: { display_phone_number: string; phone_number_id: string } | undefined,
   profile: MetaContactProfile | undefined,
-  account: WhatsappAccount
+  account: WhatsappAccount,
 ): Promise<{ contactId: string; jobId: string } | null> {
   // Gotcha A: en Coexistence wa_id puede ser un BSUID; usar siempre el numero real
   // de messages[0].from. Gotcha B: normalizar troncal para no duplicar contactos.
@@ -242,11 +239,7 @@ async function handleInboundMessage(
     .limit(1);
   if (existingRows[0]) return null;
 
-  const contactId = await findOrCreateContact(
-    fromPhone,
-    account.tenantId,
-    profile?.profile?.name
-  );
+  const contactId = await findOrCreateContact(fromPhone, account.tenantId, profile?.profile?.name);
 
   // Si el bot esta apagado pero ya pasaron 7 dias desde el ultimo mensaje,
   // reactivarlo antes de insertar el mensaje nuevo (asi el agente lo procesa).
@@ -292,10 +285,7 @@ async function handleInboundMessage(
   await touchConversation(conversation.id, { direction: "in", body, sentAt });
 
   // Touch contact updatedAt para que ordene primero en la lista
-  await db
-    .update(contacts)
-    .set({ updatedAt: new Date() })
-    .where(eq(contacts.id, contactId));
+  await db.update(contacts).set({ updatedAt: new Date() }).where(eq(contacts.id, contactId));
 
   // Encolar job para el agente IA (debounce + skip si ai_enabled=false)
   const enqueued = await enqueueAgentJob(contactId, msg.id, conversation.id);
@@ -323,10 +313,7 @@ async function handleStatusUpdate(status: MetaStatus) {
     updates.errorMessage = JSON.stringify(status.errors ?? []);
   }
 
-  await db
-    .update(messages)
-    .set(updates)
-    .where(eq(messages.id, target.id));
+  await db.update(messages).set(updates).where(eq(messages.id, target.id));
 }
 
 export async function POST(request: NextRequest) {
@@ -368,13 +355,11 @@ export async function POST(request: NextRequest) {
       // Routing por phone_number_id: SOLO procesamos numeros de nuestra tabla.
       // Cualquier otro numero que comparta la Meta App se ignora con
       // 200 para no robarle/duplicarle mensajes ni crear contactos basura.
-      const account = await getAccountByPhoneNumberId(
-        value.metadata?.phone_number_id
-      );
+      const account = await getAccountByPhoneNumberId(value.metadata?.phone_number_id);
       if (!account) {
         console.warn(
           "[whatsapp-webhook] phone_number_id no registrado, ignorando:",
-          value.metadata?.phone_number_id
+          value.metadata?.phone_number_id,
         );
         continue;
       }
@@ -383,12 +368,7 @@ export async function POST(request: NextRequest) {
 
       for (const msg of value.messages ?? []) {
         try {
-          const result = await handleInboundMessage(
-            msg,
-            value.metadata,
-            profile,
-            account
-          );
+          const result = await handleInboundMessage(msg, value.metadata, profile, account);
           if (result) enqueuedJobs.push(result);
         } catch (err) {
           console.error("[whatsapp-webhook] error mensaje entrante", err);
@@ -411,15 +391,13 @@ export async function POST(request: NextRequest) {
   // debounce_still_active y se sale; el siguiente setTimeout va a procesar.
   if (enqueuedJobs.length > 0) {
     after(async () => {
-      const uniqueJobIds = Array.from(
-        new Set(enqueuedJobs.map((j) => j.jobId))
-      );
+      const uniqueJobIds = Array.from(new Set(enqueuedJobs.map((j) => j.jobId)));
       const baseUrl = getWorkerBaseUrl(request);
       // Vacio = falta APP_BASE_URL en produccion. No se dispara: mandar el secreto a un
       // host sacado de la cabecera seria entregarselo a quien la puso. Lo levanta el barrido.
       if (!baseUrl) {
         console.error(
-          `[meta-webhook] sin APP_BASE_URL no se dispara el worker; quedan ${uniqueJobIds.length} en cola`
+          `[meta-webhook] sin APP_BASE_URL no se dispara el worker; quedan ${uniqueJobIds.length} en cola`,
         );
         return;
       }
@@ -441,13 +419,13 @@ export async function POST(request: NextRequest) {
               console.warn(
                 "[whatsapp-webhook] agent worker no-200",
                 res.status,
-                await res.text().catch(() => "")
+                await res.text().catch(() => ""),
               );
             }
           } catch (err) {
             console.error("[whatsapp-webhook] error disparando worker", err);
           }
-        })
+        }),
       );
     });
   }
@@ -476,7 +454,7 @@ function getWorkerBaseUrl(_request?: NextRequest): string {
   if (process.env.NODE_ENV === "production") {
     console.error(
       "[seguridad] falta APP_BASE_URL: no se llama al worker del agente. " +
-        "Derivar la URL del host de la peticion filtraria AGENT_WORKER_SECRET."
+        "Derivar la URL del host de la peticion filtraria AGENT_WORKER_SECRET.",
     );
     return "";
   }

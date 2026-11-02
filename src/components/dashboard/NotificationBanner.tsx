@@ -37,11 +37,10 @@ export function NotificationBanner() {
             <AlertCircle className="h-5 w-5 text-red-600 shrink-0" />
             <div className="flex-1">
               <p className="text-sm font-medium text-red-800">
-                {overdueCount} seguimiento{overdueCount > 1 ? "s" : ""} vencido{overdueCount > 1 ? "s" : ""}
+                {overdueCount} seguimiento{overdueCount > 1 ? "s" : ""} vencido
+                {overdueCount > 1 ? "s" : ""}
               </p>
-              <p className="text-xs text-red-600">
-                Requieren atencion inmediata
-              </p>
+              <p className="text-xs text-red-600">Requieren atencion inmediata</p>
             </div>
             <ArrowRight className="h-4 w-4 text-red-400" />
           </div>

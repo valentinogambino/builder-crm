@@ -125,7 +125,7 @@ export async function listConversations(filter?: {
   const soloConectadas = or(
     isNull(conversations.accountId),
     isNull(channelAccounts.id),
-    ne(channelAccounts.status, "disconnected")
+    ne(channelAccounts.status, "disconnected"),
   );
 
   const rows = await base
@@ -135,8 +135,8 @@ export async function listConversations(filter?: {
         filter?.channel ? eq(conversations.channel, filter.channel) : undefined,
         // Un asesor ve solo los hilos de sus contactos. Los hilos sin contacto
         // (raros: llegaron antes de crear el contacto) los ve solo el admin.
-        filter?.ownerId ? eq(contacts.ownerId, filter.ownerId) : undefined
-      )
+        filter?.ownerId ? eq(contacts.ownerId, filter.ownerId) : undefined,
+      ),
     )
     .orderBy(desc(conversations.lastMessageAt));
 
@@ -173,11 +173,7 @@ export async function getConversation(conversationId: string): Promise<{
   if (!conv) return { conversation: null, contact: null, messages: [] };
 
   const [contact] = conv.contactId
-    ? await db
-        .select()
-        .from(contacts)
-        .where(eq(contacts.id, conv.contactId))
-        .limit(1)
+    ? await db.select().from(contacts).where(eq(contacts.id, conv.contactId)).limit(1)
     : [];
 
   const rows = await db
@@ -227,9 +223,7 @@ export async function getConversation(conversationId: string): Promise<{
   };
 }
 
-export async function markConversationAsRead(
-  conversationId: string
-): Promise<void> {
+export async function markConversationAsRead(conversationId: string): Promise<void> {
   await db
     .update(messages)
     .set({ status: "read", readAt: new Date() })
@@ -237,8 +231,8 @@ export async function markConversationAsRead(
       and(
         eq(messages.conversationId, conversationId),
         eq(messages.direction, "in"),
-        eq(messages.status, "received")
-      )
+        eq(messages.status, "received"),
+      ),
     );
 
   await db
@@ -249,7 +243,7 @@ export async function markConversationAsRead(
 
 /** Todos los hilos de un contacto, para el panel de detalle. */
 export async function listConversationsForContact(
-  contactId: string
+  contactId: string,
 ): Promise<Array<{ conversationId: string; channel: Channel; lastAt: Date | null }>> {
   const rows = await db
     .select({
@@ -268,9 +262,7 @@ export async function listConversationsForContact(
  * Retrocompatibilidad de links viejos: `/conversations/<contactId>` sigue funcionando.
  * Devuelve el id de conversacion si el parametro era un contacto.
  */
-export async function resolveConversationId(
-  id: string
-): Promise<string | null> {
+export async function resolveConversationId(id: string): Promise<string | null> {
   const [asConversation] = await db
     .select({ id: conversations.id })
     .from(conversations)

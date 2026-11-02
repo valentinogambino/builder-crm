@@ -15,12 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
@@ -48,8 +43,12 @@ export function DealForm({ open, onClose }: DealFormProps) {
 
   useEffect(() => {
     if (open) {
-      fetch("/api/contacts").then((r) => r.json()).then(setContacts);
-      fetch("/api/pipeline").then((r) => r.json()).then(setStages);
+      fetch("/api/contacts")
+        .then((r) => r.json())
+        .then(setContacts);
+      fetch("/api/pipeline")
+        .then((r) => r.json())
+        .then(setStages);
     }
   }, [open]);
 
@@ -106,10 +105,12 @@ export function DealForm({ open, onClose }: DealFormProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="deal-title">Titulo *</Label>
-            <Input id="deal-title" {...register("title")} placeholder="Ej: Servicio Premium - Empresa X" />
-            {errors.title && (
-              <p className="text-xs text-destructive">{errors.title.message}</p>
-            )}
+            <Input
+              id="deal-title"
+              {...register("title")}
+              placeholder="Ej: Servicio Premium - Empresa X"
+            />
+            {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -125,21 +126,13 @@ export function DealForm({ open, onClose }: DealFormProps) {
             </div>
             <div className="space-y-2">
               <Label>Probabilidad (%)</Label>
-              <Input
-                type="number"
-                min="0"
-                max="100"
-                {...register("probability")}
-              />
+              <Input type="number" min="0" max="100" {...register("probability")} />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label>Contacto *</Label>
-            <Select
-              value={watch("contactId")}
-              onValueChange={(v) => v && setValue("contactId", v)}
-            >
+            <Select value={watch("contactId")} onValueChange={(v) => v && setValue("contactId", v)}>
               <SelectTrigger className="cursor-pointer">
                 <SelectValue placeholder="Seleccionar contacto" />
               </SelectTrigger>
@@ -159,10 +152,7 @@ export function DealForm({ open, onClose }: DealFormProps) {
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label>Etapa</Label>
-              <Select
-                value={watch("stageId")}
-                onValueChange={(v) => v && setValue("stageId", v)}
-              >
+              <Select value={watch("stageId")} onValueChange={(v) => v && setValue("stageId", v)}>
                 <SelectTrigger className="cursor-pointer">
                   <SelectValue placeholder="Primera etapa" />
                 </SelectTrigger>

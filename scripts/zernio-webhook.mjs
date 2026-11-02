@@ -94,10 +94,14 @@ async function main() {
       const flag = w.name === WEBHOOK_NAME ? "  <- el del CRM" : "";
       console.log(`  ${w._id}  ${w.isActive ? "activo " : "APAGADO"}  ${w.name}${flag}`);
       console.log(`      ${w.url}`);
-      console.log(`      ${w.events?.length ?? 0} eventos | fallos seguidos: ${w.failureCount ?? 0}`);
+      console.log(
+        `      ${w.events?.length ?? 0} eventos | fallos seguidos: ${w.failureCount ?? 0}`,
+      );
       if (w.lastFiredAt) console.log(`      ultimo disparo: ${w.lastFiredAt}`);
     }
-    console.log("\nPara crear/actualizar:  node scripts/zernio-webhook.mjs --url https://tu-app.vercel.app");
+    console.log(
+      "\nPara crear/actualizar:  node scripts/zernio-webhook.mjs --url https://tu-app.vercel.app",
+    );
     return;
   }
 
@@ -115,7 +119,7 @@ async function main() {
     console.error(
       "ZERNIO_WEBHOOK_SECRET no seteada. Sin secreto el endpoint del CRM es fail-closed\n" +
         "y rechaza todo con 401. Genera uno y cargalo en .env.local y en Vercel:\n" +
-        "  node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\""
+        "  node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"",
     );
     process.exit(1);
   }
@@ -155,7 +159,7 @@ async function main() {
       console.log(`  ${JSON.stringify(res)}`);
       console.log(
         "  El CRM responde 200 e ignora el evento (no es de mensajeria): con eso alcanza\n" +
-          "  para confirmar que la firma valida y la URL es alcanzable."
+          "  para confirmar que la firma valida y la URL es alcanzable.",
       );
     } catch (err) {
       console.error(`  fallo: ${err.message}`);

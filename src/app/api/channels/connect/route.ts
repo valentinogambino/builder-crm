@@ -18,14 +18,12 @@ export async function GET(request: NextRequest) {
   if (!isChannel(platform)) {
     return NextResponse.json(
       { error: "platform invalido (whatsapp | instagram | facebook)" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   const origin =
-    process.env.APP_BASE_URL ||
-    process.env.NEXT_PUBLIC_APP_URL ||
-    request.nextUrl.origin;
+    process.env.APP_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
   const redirectUrl = `${origin.replace(/\/$/, "")}/api/channels/callback`;
 
   const onboarding = params.get("onboarding");
@@ -44,7 +42,7 @@ export async function GET(request: NextRequest) {
   if (!result.success) {
     return NextResponse.json(
       { error: result.error.message },
-      { status: result.error.status || 502 }
+      { status: result.error.status || 502 },
     );
   }
 

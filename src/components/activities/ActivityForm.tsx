@@ -15,12 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
@@ -113,9 +108,7 @@ export function ActivityForm({
             <Label>Tipo</Label>
             <Select
               value={watch("type")}
-              onValueChange={(v) =>
-                v && setValue("type", v as ActivityFormData["type"])
-              }
+              onValueChange={(v) => v && setValue("type", v as ActivityFormData["type"])}
             >
               <SelectTrigger className="cursor-pointer">
                 <SelectValue />
@@ -139,9 +132,7 @@ export function ActivityForm({
               rows={3}
             />
             {errors.description && (
-              <p className="text-xs text-destructive">
-                {errors.description.message}
-              </p>
+              <p className="text-xs text-destructive">{errors.description.message}</p>
             )}
           </div>
 
@@ -164,9 +155,7 @@ export function ActivityForm({
                 </SelectContent>
               </Select>
               {errors.contactId && (
-                <p className="text-xs text-destructive">
-                  {errors.contactId.message}
-                </p>
+                <p className="text-xs text-destructive">{errors.contactId.message}</p>
               )}
             </div>
           )}
@@ -179,19 +168,10 @@ export function ActivityForm({
           )}
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              className="cursor-pointer"
-            >
+            <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer">
               Cancelar
             </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="cursor-pointer"
-            >
+            <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
               {isSubmitting ? "Guardando..." : "Registrar"}
             </Button>
           </div>

@@ -186,9 +186,7 @@ export function ContactDetailPanel({
   return (
     <aside className="hidden lg:flex w-80 shrink-0 border-l border-border h-full flex-col bg-card">
       <div className="h-14 px-4 flex items-center border-b border-border shrink-0">
-        <h2 className="text-sm font-semibold tracking-tight font-heading">
-          Detalles del contacto
-        </h2>
+        <h2 className="text-sm font-semibold tracking-tight font-heading">Detalles del contacto</h2>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -234,15 +232,12 @@ export function ContactDetailPanel({
                       "inline-flex items-center gap-1 h-6 px-2 rounded-full text-[10px] font-medium transition-colors",
                       isActive
                         ? "bg-primary text-primary-foreground"
-                        : "bg-muted/60 text-muted-foreground hover:bg-muted"
+                        : "bg-muted/60 text-muted-foreground hover:bg-muted",
                     )}
                   >
                     <ChannelIcon
                       channel={t.channel}
-                      className={cn(
-                        "h-2.5 w-2.5",
-                        isActive ? "" : CHANNEL_COLORS[t.channel]
-                      )}
+                      className={cn("h-2.5 w-2.5", isActive ? "" : CHANNEL_COLORS[t.channel])}
                     />
                     {CHANNEL_LABELS[t.channel]}
                   </Link>
@@ -260,9 +255,7 @@ export function ContactDetailPanel({
                 <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                   Vino de un anuncio
                 </p>
-                <p className="text-xs font-medium mt-0.5 break-words">
-                  {attribution.title}
-                </p>
+                <p className="text-xs font-medium mt-0.5 break-words">{attribution.title}</p>
                 {attribution.url && (
                   <a
                     href={attribution.url}
@@ -305,13 +298,9 @@ export function ContactDetailPanel({
             <div className="rounded-md border border-amber-300 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-800 px-2.5 py-2 text-[11px] flex items-start gap-1.5">
               <AlertCircle className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
               <div>
-                <p className="font-medium text-amber-900 dark:text-amber-200">
-                  Necesita humano
-                </p>
+                <p className="font-medium text-amber-900 dark:text-amber-200">Necesita humano</p>
                 {needsHumanReason && (
-                  <p className="text-amber-800 dark:text-amber-300/80 mt-0.5">
-                    {needsHumanReason}
-                  </p>
+                  <p className="text-amber-800 dark:text-amber-300/80 mt-0.5">{needsHumanReason}</p>
                 )}
               </div>
             </div>
@@ -323,9 +312,7 @@ export function ContactDetailPanel({
                 type="button"
                 size="sm"
                 disabled={aiBusy}
-                onClick={() =>
-                  updateAi({ enabled: true, clearNeedsHuman: true })
-                }
+                onClick={() => updateAi({ enabled: true, clearNeedsHuman: true })}
                 className="cursor-pointer h-8 text-xs flex-1"
               >
                 Reactivar agente
@@ -444,9 +431,7 @@ export function ContactDetailPanel({
                   Guardado
                 </>
               )}
-              {notesState === "error" && (
-                <span className="text-destructive">Error</span>
-              )}
+              {notesState === "error" && <span className="text-destructive">Error</span>}
             </span>
           </div>
           <Textarea

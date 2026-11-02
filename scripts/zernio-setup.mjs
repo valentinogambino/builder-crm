@@ -60,7 +60,9 @@ async function main() {
     console.log(`  ${id}  ${p.name ?? ""}${isEnv}`);
   }
   if (!PROFILE_ID) {
-    console.log("\n  ZERNIO_PROFILE_ID no esta seteada. Copia el id del profile Default de arriba.");
+    console.log(
+      "\n  ZERNIO_PROFILE_ID no esta seteada. Copia el id del profile Default de arriba.",
+    );
   }
 
   const accounts = await api("/accounts");
@@ -70,11 +72,13 @@ async function main() {
     const id = a.id ?? a._id;
     const soportado = CHANNELS.has(a.platform) ? "" : "  (plataforma no usada por el CRM)";
     console.log(
-      `  [${a.platform}] ${a.username ?? a.name ?? a.displayName ?? "sin nombre"}  id=${id}${soportado}`
+      `  [${a.platform}] ${a.username ?? a.name ?? a.displayName ?? "sin nombre"}  id=${id}${soportado}`,
     );
   }
   if (accountList.length === 0) {
-    console.log("  (ninguna) Conecta Instagram y tu Pagina de Facebook desde el dashboard de Zernio.");
+    console.log(
+      "  (ninguna) Conecta Instagram y tu Pagina de Facebook desde el dashboard de Zernio.",
+    );
   }
 
   const convs = await api("/inbox/conversations", {
@@ -85,7 +89,7 @@ async function main() {
   console.log(`\nULTIMAS CONVERSACIONES (${convList.length} de muestra)`);
   for (const c of convList) {
     console.log(
-      `  [${c.platform}] ${c.participantName ?? c.participantId} - "${(c.lastMessage ?? "").slice(0, 50)}"`
+      `  [${c.platform}] ${c.participantName ?? c.participantId} - "${(c.lastMessage ?? "").slice(0, 50)}"`,
     );
   }
   if (convs?.meta?.failedAccounts?.length) {

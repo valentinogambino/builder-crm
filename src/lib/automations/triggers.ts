@@ -177,7 +177,7 @@ export function triggerFor(key: string): TriggerDef | undefined {
  */
 export function evaluateFilters(
   filters: AutomationFilter[] | null | undefined,
-  payload: Record<string, unknown>
+  payload: Record<string, unknown>,
 ): boolean {
   if (!filters || filters.length === 0) return true;
 

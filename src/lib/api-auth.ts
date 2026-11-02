@@ -19,7 +19,7 @@ export async function requireMember(): Promise<Guard> {
     return {
       response: NextResponse.json(
         { error: "No tienes acceso. Pide a un administrador que te agregue al equipo." },
-        { status: 403 }
+        { status: 403 },
       ),
     };
   }
@@ -33,7 +33,7 @@ export async function requireAdmin(): Promise<Guard> {
     return {
       response: NextResponse.json(
         { error: "Solo un administrador puede hacer esto." },
-        { status: 403 }
+        { status: 403 },
       ),
     };
   }

@@ -21,11 +21,7 @@ import { getConfig } from "@/lib/config";
 export async function sincronizarPipeline(opts?: { borrarSobrantes?: boolean }) {
   const { pipeline } = getConfig();
 
-  let [principal] = await db
-    .select()
-    .from(pipelines)
-    .where(eq(pipelines.isDefault, true))
-    .limit(1);
+  let [principal] = await db.select().from(pipelines).where(eq(pipelines.isDefault, true)).limit(1);
 
   if (!principal) {
     [principal] = await db
@@ -56,7 +52,7 @@ export async function sincronizarPipeline(opts?: { borrarSobrantes?: boolean }) 
     let fila = porClave.get(etapa.clave);
     if (!fila) {
       const idx = sinClave.findIndex(
-        (e) => e.name.trim().toLowerCase() === etapa.nombre.trim().toLowerCase()
+        (e) => e.name.trim().toLowerCase() === etapa.nombre.trim().toLowerCase(),
       );
       if (idx >= 0) fila = sinClave.splice(idx, 1)[0];
     }
@@ -117,7 +113,9 @@ export async function sincronizarPipeline(opts?: { borrarSobrantes?: boolean }) 
       .update(pipelines)
       .set({ isDefault: false })
       .where(and(eq(pipelines.isDefault, true), inArray(pipelines.id, [principal.id])))
-      .then(() => db.update(pipelines).set({ isDefault: true }).where(eq(pipelines.id, principal.id)));
+      .then(() =>
+        db.update(pipelines).set({ isDefault: true }).where(eq(pipelines.id, principal.id)),
+      );
   }
 
   return { pipelineId: principal.id, creadas, actualizadas, conservadas, borradas };

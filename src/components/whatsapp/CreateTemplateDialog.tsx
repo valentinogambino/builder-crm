@@ -80,7 +80,7 @@ export function CreateTemplateDialog({ open, onClose, onCreated }: Props) {
 
   const preview = renderTemplateBody(
     bodyText,
-    vars.map((v) => examples[v - 1] || `ejemplo ${v}`)
+    vars.map((v) => examples[v - 1] || `ejemplo ${v}`),
   );
 
   async function submit() {
@@ -138,8 +138,7 @@ export function CreateTemplateDialog({ open, onClose, onCreated }: Props) {
         <DialogHeader>
           <DialogTitle>Nueva plantilla</DialogTitle>
           <DialogDescription>
-            Meta la revisa antes de aprobarla. Solo se pueden enviar las
-            plantillas APROBADAS.
+            Meta la revisa antes de aprobarla. Solo se pueden enviar las plantillas APROBADAS.
           </DialogDescription>
         </DialogHeader>
 
@@ -149,9 +148,7 @@ export function CreateTemplateDialog({ open, onClose, onCreated }: Props) {
             <Input
               id="tpl-name"
               value={name}
-              onChange={(e) =>
-                setName(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "_"))
-              }
+              onChange={(e) => setName(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "_"))}
               placeholder="recordatorio_visita"
             />
             <p className="text-[11px] text-muted-foreground">
@@ -167,12 +164,8 @@ export function CreateTemplateDialog({ open, onClose, onCreated }: Props) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="UTILITY">
-                    Utilidad (seguimiento, recordatorio)
-                  </SelectItem>
-                  <SelectItem value="MARKETING">
-                    Marketing (promocion, novedad)
-                  </SelectItem>
+                  <SelectItem value="UTILITY">Utilidad (seguimiento, recordatorio)</SelectItem>
+                  <SelectItem value="MARKETING">Marketing (promocion, novedad)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -215,8 +208,7 @@ export function CreateTemplateDialog({ open, onClose, onCreated }: Props) {
               rows={4}
             />
             <p className="text-[11px] text-muted-foreground">
-              Usa {"{{1}}"}, {"{{2}}"}... para los datos que cambian en cada
-              envio.
+              Usa {"{{1}}"}, {"{{2}}"}... para los datos que cambian en cada envio.
             </p>
             {!sequential && (
               <p className="text-[11px] text-destructive">
@@ -251,9 +243,7 @@ export function CreateTemplateDialog({ open, onClose, onCreated }: Props) {
 
           {bodyText.trim() && (
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">
-                Vista previa
-              </Label>
+              <Label className="text-xs text-muted-foreground">Vista previa</Label>
               <div className="rounded-2xl rounded-bl-md border border-border bg-card px-3.5 py-2 text-[13px] leading-relaxed whitespace-pre-wrap">
                 {preview}
               </div>
@@ -270,12 +260,7 @@ export function CreateTemplateDialog({ open, onClose, onCreated }: Props) {
             >
               Cancelar
             </Button>
-            <Button
-              type="button"
-              onClick={submit}
-              disabled={submitting}
-              className="cursor-pointer"
-            >
+            <Button type="button" onClick={submit} disabled={submitting} className="cursor-pointer">
               {submitting ? "Enviando..." : "Crear y enviar a revision"}
             </Button>
           </div>

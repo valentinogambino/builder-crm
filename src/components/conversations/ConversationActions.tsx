@@ -51,7 +51,7 @@ export function ConversationActions({ conversationId, name, messageCount }: Prop
       toast.success(
         body.messages === 1
           ? "Conversacion eliminada (1 mensaje)"
-          : `Conversacion eliminada (${body.messages ?? 0} mensajes)`
+          : `Conversacion eliminada (${body.messages ?? 0} mensajes)`,
       );
       setOpen(false);
       router.push("/conversations");
@@ -92,14 +92,14 @@ export function ConversationActions({ conversationId, name, messageCount }: Prop
           <DialogHeader>
             <DialogTitle>Eliminar la conversacion con {name}?</DialogTitle>
             <DialogDescription>
-              Se borran {messageCount === 1 ? "1 mensaje" : `${messageCount} mensajes`} de
-              este hilo. No se puede deshacer.
+              Se borran {messageCount === 1 ? "1 mensaje" : `${messageCount} mensajes`} de este
+              hilo. No se puede deshacer.
             </DialogDescription>
           </DialogHeader>
 
           <p className="text-sm text-muted-foreground">
-            El contacto, sus operaciones y sus documentos <strong>no</strong> se tocan. Si
-            vuelve a escribir, se abre un hilo nuevo.
+            El contacto, sus operaciones y sus documentos <strong>no</strong> se tocan. Si vuelve a
+            escribir, se abre un hilo nuevo.
           </p>
 
           <DialogFooter>

@@ -29,7 +29,9 @@ export const contacts = pgTable("contacts", {
    * Campos definidos por el cliente en config/cliente.ts (`contacto.campos`):
    * { clave: valor }. Validados contra la config en src/lib/config/campos.ts.
    */
-  customFields: jsonb("custom_fields").notNull().default(sql`'{}'::jsonb`),
+  customFields: jsonb("custom_fields")
+    .notNull()
+    .default(sql`'{}'::jsonb`),
   /** Resumen del lead escrito por el agente (tool resumen_lead), con su fecha. */
   aiSummary: text("ai_summary"),
   aiSummaryAt: timestamp("ai_summary_at", { withTimezone: true }),
@@ -47,12 +49,8 @@ export const contacts = pgTable("contacts", {
   }),
   assignedAt: timestamp("assigned_at", { withTimezone: true }),
   tenantId: uuid("tenant_id").references(() => tenants.id),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const agentJobs = pgTable("agent_jobs", {
@@ -71,12 +69,8 @@ export const agentJobs = pgTable("agent_jobs", {
   tenantId: uuid("tenant_id").references(() => tenants.id),
   attempts: integer("attempts").notNull().default(0),
   error: text("error"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const pipelines = pgTable("pipelines", {
@@ -86,12 +80,8 @@ export const pipelines = pgTable("pipelines", {
   name: text("name").notNull(),
   isDefault: boolean("is_default").notNull().default(false),
   order: integer("order").notNull().default(0),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const pipelineStages = pgTable(
@@ -115,7 +105,7 @@ export const pipelineStages = pgTable(
     isWon: boolean("is_won").notNull().default(false),
     isLost: boolean("is_lost").notNull().default(false),
   },
-  (t) => [unique("pipeline_stages_pipeline_key").on(t.pipelineId, t.key)]
+  (t) => [unique("pipeline_stages_pipeline_key").on(t.pipelineId, t.key)],
 );
 
 export const deals = pgTable("deals", {
@@ -133,12 +123,8 @@ export const deals = pgTable("deals", {
   expectedClose: timestamp("expected_close", { withTimezone: true }),
   probability: integer("probability").notNull().default(0),
   notes: text("notes"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const activities = pgTable("activities", {
@@ -153,9 +139,7 @@ export const activities = pgTable("activities", {
   dealId: text("deal_id").references(() => deals.id),
   scheduledAt: timestamp("scheduled_at", { withTimezone: true }),
   completedAt: timestamp("completed_at", { withTimezone: true }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const crmSettings = pgTable("crm_settings", {
@@ -193,9 +177,7 @@ export const messages = pgTable("messages", {
   deliveredAt: timestamp("delivered_at", { withTimezone: true }),
   readAt: timestamp("read_at", { withTimezone: true }),
   tenantId: uuid("tenant_id").references(() => tenants.id),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const whatsappTemplates = pgTable("whatsapp_templates", {
@@ -208,12 +190,8 @@ export const whatsappTemplates = pgTable("whatsapp_templates", {
   components: jsonb("components").notNull(),
   status: text("status").notNull().default("PENDING"),
   metaTemplateId: text("meta_template_id"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 // Multi-tenancy (Fase 1 WhatsApp Coexistence). RLS y tenant_members -> Fase 2.
@@ -221,9 +199,7 @@ export const tenants = pgTable("tenants", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 // Una fila por numero de WhatsApp conectado. `phone_number_id` es la clave de
@@ -239,12 +215,8 @@ export const whatsappAccounts = pgTable("whatsapp_accounts", {
   accessToken: text("access_token"),
   status: text("status").notNull().default("active"),
   connectedAt: timestamp("connected_at", { withTimezone: true }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 // ============================================================
@@ -268,12 +240,8 @@ export const channelAccounts = pgTable("channel_accounts", {
   externalRef: text("external_ref"),
   status: text("status").notNull().default("active"),
   connectedAt: timestamp("connected_at", { withTimezone: true }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 // El hilo real. Un contacto puede tener varias: WhatsApp e Instagram no se mezclan.
@@ -315,16 +283,10 @@ export const conversations = pgTable(
     needsHumanAt: timestamp("needs_human_at", { withTimezone: true }),
     /** Campos ctwa_* y meta_ad_* de Zernio: de que anuncio vino el lead. */
     metadata: jsonb("metadata"),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [
-    unique("conversations_provider_external_key").on(t.provider, t.externalId),
-  ]
+  (t) => [unique("conversations_provider_external_key").on(t.provider, t.externalId)],
 );
 
 // Identidad por canal. Reemplaza a `contacts.phone` como clave de deduplicacion:
@@ -339,16 +301,9 @@ export const contactIdentities = pgTable(
     channel: text("channel").notNull(),
     externalId: text("external_id").notNull(),
     handle: text("handle"),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [
-    unique("contact_identities_channel_external_key").on(
-      t.channel,
-      t.externalId
-    ),
-  ]
+  (t) => [unique("contact_identities_channel_external_key").on(t.channel, t.externalId)],
 );
 
 // Un agente distinto por canal. NULL = usar el fallback (crm_settings y despues el
@@ -365,14 +320,10 @@ export const agentConfigs = pgTable(
     systemPrompt: text("system_prompt"),
     enabledTools: text("enabled_tools").array(),
     model: text("model"),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [unique("agent_configs_tenant_channel_key").on(t.tenantId, t.channel)]
+  (t) => [unique("agent_configs_tenant_channel_key").on(t.tenantId, t.channel)],
 );
 
 /**
@@ -391,9 +342,7 @@ export const webhookEvents = pgTable("webhook_events", {
   attempts: integer("attempts").notNull().default(0),
   payload: jsonb("payload"),
   error: text("error"),
-  receivedAt: timestamp("received_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  receivedAt: timestamp("received_at", { withTimezone: true }).notNull().defaultNow(),
   processedAt: timestamp("processed_at", { withTimezone: true }),
 });
 
@@ -413,12 +362,8 @@ export const teamMembers = pgTable("team_members", {
   /** admin | asesor */
   role: text("role").notNull().default("asesor"),
   active: boolean("active").notNull().default(true),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 /** Una fila por dispositivo: el mismo asesor en celular y notebook tiene dos. */
@@ -433,12 +378,10 @@ export const pushSubscriptions = pgTable(
     p256dh: text("p256dh").notNull(),
     auth: text("auth").notNull(),
     userAgent: text("user_agent"),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
   },
-  (t) => [unique("push_subscriptions_member_endpoint_key").on(t.memberId, t.endpoint)]
+  (t) => [unique("push_subscriptions_member_endpoint_key").on(t.memberId, t.endpoint)],
 );
 
 /**
@@ -452,19 +395,21 @@ export const automations = pgTable("automations", {
   description: text("description"),
   trigger: text("trigger").notNull(),
   enabled: boolean("enabled").notNull().default(true),
-  config: jsonb("config").notNull().default(sql`'{}'::jsonb`),
+  config: jsonb("config")
+    .notNull()
+    .default(sql`'{}'::jsonb`),
   /** `[{ field, op, value }]` sobre el payload del disparador. Vacio = siempre. */
-  filters: jsonb("filters").notNull().default(sql`'[]'::jsonb`),
+  filters: jsonb("filters")
+    .notNull()
+    .default(sql`'[]'::jsonb`),
   /** `[{ type, params }]` en orden de ejecucion. */
-  actions: jsonb("actions").notNull().default(sql`'[]'::jsonb`),
+  actions: jsonb("actions")
+    .notNull()
+    .default(sql`'[]'::jsonb`),
   /** `seed` (vino en una migracion, no se borra) | `user` (creada desde la UI). */
   source: text("source").notNull().default("user"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 /**
@@ -483,16 +428,12 @@ export const automationRuns = pgTable("automation_runs", {
   }),
   /** pending | processing | done | skipped | failed */
   status: text("status").notNull().default("pending"),
-  processAfter: timestamp("process_after", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  processAfter: timestamp("process_after", { withTimezone: true }).notNull().defaultNow(),
   attempts: integer("attempts").notNull().default(0),
   payload: jsonb("payload"),
   result: jsonb("result"),
   error: text("error"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   processedAt: timestamp("processed_at", { withTimezone: true }),
 });
 
@@ -512,9 +453,7 @@ export const notifications = pgTable("notifications", {
   url: text("url"),
   contactId: text("contact_id").references(() => contacts.id, { onDelete: "set null" }),
   readAt: timestamp("read_at", { withTimezone: true }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 /**
@@ -536,7 +475,5 @@ export const documents = pgTable("documents", {
   /** pending | ready */
   status: text("status").notNull().default("pending"),
   uploadedBy: uuid("uploaded_by").references(() => teamMembers.id, { onDelete: "set null" }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
