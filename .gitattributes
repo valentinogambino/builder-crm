@@ -1,0 +1,2 @@
+# Oxfmt escribe LF; sin esto, autocrlf deja CRLF en Windows y vp fmt --check falla.
+* text=auto eol=lf
