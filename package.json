@@ -29,6 +29,7 @@
     "verificar": "node scripts/verificar-instancia.mjs",
     "auth:preparar": "node scripts/preparar-auth-autoalojado.mjs",
     "claves:supabase": "node scripts/generar-claves-supabase.mjs",
+    "apple:secreto": "node scripts/apple-secreto.mjs",
     "local": "node scripts/local.mjs"
   },
   "dependencies": {

@@ -58,3 +58,6 @@ Thumbs.db
 # Modo local: base embebida y datos de prueba de la maquina de cada uno
 .local/
 .vitest/
+.claude/skills/
+.agents/skills/
+.claude/agents/

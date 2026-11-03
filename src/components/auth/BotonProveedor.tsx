@@ -4,7 +4,13 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
-import { IconoGoogle, IconoProveedorGenerico } from "@/components/icons/proveedores";
+import type { Provider } from "@supabase/supabase-js";
+import { IconoApple, IconoGoogle, IconoProveedorGenerico } from "@/components/icons/proveedores";
+
+const ICONOS: Record<string, typeof IconoGoogle> = {
+  google: IconoGoogle,
+  apple: IconoApple,
+};
 
 interface Props {
   proveedor: string;
@@ -25,7 +31,7 @@ export function BotonProveedor({ proveedor, nombre, deshabilitado }: Props) {
     setCargando(true);
     const supabase = createClient();
     const { error: err } = await supabase.auth.signInWithOAuth({
-      provider: proveedor as "google",
+      provider: proveedor as Provider,
       options: { redirectTo: `${window.location.origin}/auth/callback` },
     });
     if (err) {
@@ -34,6 +40,8 @@ export function BotonProveedor({ proveedor, nombre, deshabilitado }: Props) {
     }
     // Si salio bien, el navegador ya se fue al proveedor.
   }
+
+  const Icono = ICONOS[proveedor] ?? IconoProveedorGenerico;
 
   return (
     <div className="space-y-2">
@@ -46,10 +54,8 @@ export function BotonProveedor({ proveedor, nombre, deshabilitado }: Props) {
       >
         {cargando ? (
           <Loader2 className="h-4 w-4 animate-spin mr-2" />
-        ) : proveedor === "google" ? (
-          <IconoGoogle className="h-4 w-4 mr-2" />
         ) : (
-          <IconoProveedorGenerico className="h-4 w-4 mr-2" />
+          <Icono className="h-4 w-4 mr-2" />
         )}
         Continuar con {nombre}
       </Button>

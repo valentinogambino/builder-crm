@@ -39,6 +39,14 @@ export async function proveedoresExternos(): Promise<ProveedorExterno[]> {
   }
 }
 
+/**
+ * Apple deja elegir "Ocultar mi correo" y entrega una direccion de relevo que no es la
+ * que el administrador cargo en el equipo. Sirve para explicarlo en `/sin-acceso`.
+ */
+export function esCorreoRelevoApple(email: string | null | undefined): boolean {
+  return /@privaterelay\.appleid\.com$/i.test((email ?? "").trim());
+}
+
 /** Nombre para mostrar en el boton. */
 export const NOMBRE_PROVEEDOR: Record<ProveedorExterno, string> = {
   google: "Google",

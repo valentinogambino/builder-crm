@@ -4,6 +4,23 @@ Que trae cada version de Builder CRM y que hacer para actualizar. SemVer segun l
 le importa a quien opera una instancia (ver "Versiones" en el [README](README.md)):
 mayor = pasos manuales, menor = funciones nuevas, parche = arreglos.
 
+## Sin publicar
+
+### Actualizar desde 2.1.x
+
+Nada que hacer. Entrar con Apple queda apagado hasta que lo enciendas en el servidor de
+autenticacion.
+
+### Nuevo
+
+- **Entrar con Apple, opcional.** Con Apple encendido en GoTrue o en Supabase cloud,
+  el login muestra "Continuar con Apple" con su logo, junto a email y contrasena (que no
+  cambian) y a Google. Igual que con Google, entrar no da acceso: decide Ajustes ->
+  Equipo. `npm run apple:secreto` genera el secreto de cliente (un JWT que Apple hace
+  vencer a los seis meses) a partir de la clave `.p8`, y `/sin-acceso` explica el caso
+  de quien eligio "Ocultar mi correo". Paso a paso en
+  [docs/APPLE-AUTH.md](docs/APPLE-AUTH.md); spec en `specs/nucleo/12-entrar-con-apple.md`.
+
 ## 2.1.0 — 2026-10-30
 
 ### Actualizar desde 2.0.x

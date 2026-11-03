@@ -137,7 +137,7 @@ if (!email || !password) {
       ok("Login (Supabase Auth)", email);
 
       // Que formas de entrar admite la instancia. Es informativo: el acceso real lo
-      // decide team_members, no el proveedor. Ver docs/GOOGLE-AUTH.md.
+      // decide team_members, no el proveedor. Ver docs/GOOGLE-AUTH.md y docs/APPLE-AUTH.md.
       try {
         const ajustes = await fetch(`${supabaseUrl.replace(/\/$/, "")}/auth/v1/settings`, {
           headers: { apikey: anonKey },
