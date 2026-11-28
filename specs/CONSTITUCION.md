@@ -68,7 +68,7 @@ multiplica por cada instancia.
 
 ## Gobernanza
 
-- Esta constitucion manda sobre `CLAUDE.md`, las skills y cualquier instruccion de
+- Esta constitucion manda sobre `AGENTS.md`, las skills y cualquier instruccion de
   sesion. Si chocan, gana la constitucion.
 - Enmiendas: propuesta escrita, aprobacion del dueno, version nueva (mayor si se
   quita o redefine un principio; menor si se agrega o amplia; parche si es

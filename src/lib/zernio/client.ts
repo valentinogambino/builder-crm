@@ -14,7 +14,7 @@ import type { ZernioError, ZernioResult } from "./types";
  * Son variables de ejecucion: la instancia se construye una vez y cada cliente pone las
  * suyas al desplegar. Capturarlas en constantes del modulo ataba su valor al momento del
  * primer import, que es el mismo tropiezo que obligo a volver perezoso el cliente de base
- * (ver src/db/index.ts y la nota en CLAUDE.md). Esto no cuesta nada: son lecturas de un
+ * (ver src/db/index.ts y la nota en AGENTS.md). Esto no cuesta nada: son lecturas de un
  * objeto en memoria.
  */
 const API_BASE_POR_DEFECTO = "https://zernio.com/api/v1";

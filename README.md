@@ -47,7 +47,7 @@ pero no hace falta ser miembro de nada para que sea tuyo.
   [`docs/SUPABASE-EN-VPS.md`](docs/SUPABASE-EN-VPS.md)).
 - Para desplegar: un VPS con **Coolify** y un dominio.
 - Opcional: **OpenRouter** (agente), **Zernio** (canales), bucket S3 (documentos).
-- **Claude Code** con el repo abierto; ver [`CLAUDE.md`](CLAUDE.md) y
+- **Claude Code** con el repo abierto; ver [`AGENTS.md`](AGENTS.md) y
   [`docs/MCP.md`](docs/MCP.md).
 
 ## Probarlo en tu PC (2 minutos, sin crear ninguna cuenta)

@@ -97,5 +97,5 @@ Es esta spec.
 ## Fuera de alcance
 
 - API para un cerebro externo (microservicio): queda documentada como extension
-  posible en CLAUDE.md, no se implementa.
+  posible en AGENTS.md, no se implementa.
 - Agendar generico: el agendamiento es del modulo `visitas` (Fase 9).
